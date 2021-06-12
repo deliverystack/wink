@@ -8,7 +8,7 @@ wink is a constant work in progress as its author(s) discover(s) more Windows fe
 
 wince is a bash shell script that you can use to build and run wink. \
 
-````
+```
 //TODO: address hard-coding in wince
 ```
 
