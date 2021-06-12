@@ -1,0 +1,46 @@
+#!/bin/sh -x
+
+clear
+rustup update
+rustfmt --config max_width=2500 /mnt/c/temp/wink/src/main.rs
+
+if [ $? -ne 0 ]; then
+    echo rustfmt failed
+    exit 2
+else
+    cd /mnt/c/temp/wink
+    cargo update 
+    cargo-clippy 2>&1 | egrep -iq warning
+
+    if [ $? -eq 0 ]; then
+        cargo-clippy 
+        echo cargo-clippy failed
+        exit 3
+    else
+#        cargo clean --target-dir /tmp/wink.build
+#        cargo check --target-dir /tmp/wink.build
+#        cargo doc --target-dir /tmp/wink.build
+        cargo build --target-dir /tmp/wink.build --release # affects binary path below 
+
+        if [ $? -ne 0 ]; then
+            echo cargo build failed
+            exit 4
+        else
+            ls -l /tmp/wink.build/release/wink
+            cp /mnt/c/temp/wink/src/main.rs /tmp/main.rs.`date +%N`.bak
+            rm ~/bin/wink
+            cp /tmp/wink.build/release/wink ~/bin
+            # use newly built Linux wink to build Windows wink binary
+#            ~/bin/wink cmd cargo.exe clean --target-dir /mnt/c/temp/wink.build
+#            ~/bin/wink cmd cargo.exe check --target-dir /mnt/c/temp/wink.build
+#            ~/bin/wink cmd cargo.exe doc --target-dir /mnt/c/temp/wink.build
+            ~/bin/wink cmd cargo.exe build --release --target-dir "C:\\temp\\wink.build" # affects binary path below 
+            ls -l /mnt/c/temp/wink.build/release/wink.exe
+            ~/bin/wink cmd /mnt/c/temp/wink.build/release/wink.exe help
+            ~/bin/wink $@
+        fi
+    fi
+fi
+
+cd - > /dev/null
+exit 0
