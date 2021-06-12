@@ -1,9 +1,19 @@
-// convert between Unix and Windows file paths
-// when running in Windows, return arg.
-// when running under Bash, invoke wslpath.
-// unix true will pass -u (convert Windows path to Unix)
-// unix false will pass -w (convert Unix path to Windows)
+//! The wink.wsl module contains a function for converting between Windows and Linux file system paths.
 
+//TODO: this logic belongs in a library, not wink
+
+/// Convert between Unix and Windows file paths.
+/// The arg argument is the path to the file.
+/// The unix argument indicates whether to convert that path to Unix or Windows.
+/// Example usage:
+/// ```
+/// let results = Command::new("cmd.exe").arg("/c").arg("echo").arg("%USERPROFILE%").output().expect("failed to execute process");
+/// let userpath: String = match results.status.code() {
+///     Some(0) => wsl::wsl_path_or_self(String::from_utf8_lossy(&results.stdout).trim(), false /*unix*/ ),
+///    _ => String::from(""),
+/// };
+/// ```
+// note: // unc path must start with \\; be careful not to replace \\ with / unintionally
 pub fn wsl_path_or_self(arg: &str, unix: bool) -> String {
     if (cfg!(target_os = "windows") && !unix) || (unix && arg.starts_with('/')) {
         arg.to_string()
@@ -17,17 +27,7 @@ pub fn wsl_path_or_self(arg: &str, unix: bool) -> String {
         to_run.arg(arg);
         let results = to_run.output().expect("failed to execute process");
         match results.status.code() {
-            Some(0) => {
-                let output = &String::from_utf8_lossy(&results.stdout).to_owned().to_string();
-
-                if output.starts_with('\\') {
-                    // unc path must start with \\
-                    return String::from(output).replace("\n", "");
-                }
-
-                String::from(output).replace("\n", "")
-            }
-
+            Some(0) => String::from(&String::from_utf8_lossy(&results.stdout).to_owned().to_string()).replace("\n", ""),
             _ => arg.to_string(),
         }
     }
