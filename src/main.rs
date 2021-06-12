@@ -1,3 +1,14 @@
+//! wink is a command line tool that provides access to Windows and Windows Subsystem for Linux (WSL) features and programs.
+
+//! wink provides a simple interface for invoking almost any Windows or WSL feature
+//! using cmd.exe /c, using explorer.exe, using bash.exe, or by invoking the executable directly.
+
+//! wink uses cargo, so you can use cargo build to build wink. You can also use the wince script to build wink.
+
+//! ```//TODO: less hard-coding in wince build script```
+
+//! Run wink with no command line parameters to get usage information.
+
 use regex::Regex;
 use std::env;
 
@@ -8,7 +19,14 @@ mod invocablecategorylist;
 mod invoker;
 mod wsl;
 
+/// The help() function renders usage information about the wink command to stdout.
+
+/// The msg argument is a message indicating why the command rendered usage information.
+/// The args argument is the command line including the invoked command (wink) and command line arguments.
+/// The categories argument contains lists of invocables used to render usage information.
+
 fn help(msg: &str, args: Vec<String>, mut categories: Vec<invocablecategory::InvocableCategory>) {
+    // cmd = basename(wink.exe)
     let cmd = Regex::new(r".*[\\/](?P<name>[^\\/]+$)").unwrap().replace_all(args[0].as_str(), "$name");
 
     println!();
@@ -78,6 +96,8 @@ fn help(msg: &str, args: Vec<String>, mut categories: Vec<invocablecategory::Inv
     }
 }
 
+/// The main() function of the program accepts command line arguments through env::args.collect()
+/// rather than as parameters.
 fn main() {
     // command line arguments
     let args: Vec<String> = env::args().collect();
@@ -174,7 +194,6 @@ fn main() {
     help(&format!("Command not recognized: {0}", first_arg), args, category_list.categories.to_vec());
 }
 
-// stikynot
 //TODO: check for same command in multiple invocables accross all categories
 //TODO: sysinternals not working?
 // "get" => Invoker::cmd("echo"), // Windows File System explorer //TODO: rename echo?
