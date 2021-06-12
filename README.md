@@ -8,15 +8,15 @@ wink is a constant work in progress as its author(s) discover(s) more Windows fe
 
 wince is a bash shell script that you can use to build and run wink. \
 
-`
+````
 //TODO: address hard-coding in wince
-`
+```
 
 You can compile wink for WSL both Windows and Linux, or you can use a single binary from both cmd.exe and bash.exe shells. From a bash.exe shell, you can invoke the Windows wink.exe or Linux wink binary directly. From a cmd.exe shell, you can use bash.exe with the -c argument to invoke the Linux binary.
 
-`
+```
 bash.exe -c /path/to/wink
-`
+```
 
 To get usage information, run wink with the -h (help) argument. In general, pass a command code as the first argument to wink (after optional arguments described below), followed by any arguments that you want to pass to the corresponding command.
 
@@ -26,9 +26,9 @@ For a JSON representation of wink's internal configurtion, use the -e (export) a
 
 If you use the same JSON format in $HOME/.wink.json (WSL) or %USERPROFILE%\\wink.json, you can add and possibly override wink commands without updating the source code. 
 
-`
+```
 //TODO: try making .wink.json a symbolic link to wink.json
-`
+```
 
 Wink has a few dependencies for regular expression processing, common type derivation, and JSON serialziation/deserialization.
 
