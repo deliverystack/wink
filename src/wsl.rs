@@ -1,5 +1,3 @@
-use std::process::Command;
-
 // convert between Unix and Windows file paths
 // when running in Windows, return arg.
 // when running under Bash, invoke wslpath.
@@ -10,7 +8,7 @@ pub fn wsl_path_or_self(arg: &str, unix: bool) -> String {
     if cfg!(target_os = "windows") {
         arg.to_string()
     } else {
-        let mut to_run = Command::new("wslpath");
+        let mut to_run = std::process::Command::new("wslpath");
         if unix {
             to_run.arg("-u");
         } else {
