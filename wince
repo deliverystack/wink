@@ -2,7 +2,7 @@
 
 clear
 rustup update
-rustfmt --config max_width=2500 /mnt/c/temp/wink/src/main.rs
+rustfmt --config max_width=2500 /mnt/c/temp/wink/src/*.rs
 
 if [ $? -ne 0 ]; then
     echo rustfmt failed
@@ -19,7 +19,7 @@ else
     else
 #        cargo clean --target-dir /tmp/wink.build
 #        cargo check --target-dir /tmp/wink.build
-#        cargo doc --target-dir /tmp/wink.build
+        cargo doc --target-dir /tmp/wink.build
         cargo build --target-dir /tmp/wink.build --release # affects binary path below 
 
         if [ $? -ne 0 ]; then
@@ -27,7 +27,7 @@ else
             exit 4
         else
             ls -l /tmp/wink.build/release/wink
-            cp /mnt/c/temp/wink/src/main.rs /tmp/main.rs.`date +%N`.bak
+#            cp /mnt/c/temp/wink/src/main.rs /tmp/main.rs.`date +%N`.bak
             rm ~/bin/wink
             cp /tmp/wink.build/release/wink ~/bin
             # use newly built Linux wink to build Windows wink binary
