@@ -1,19 +1,20 @@
-use serde::{Deserialize, Serialize};
+//! The InvocableCategoryList struct contains a list of InvocableCategories that each contain a list of Invocables.
+
 use std::env;
 
 use crate::file;
 use crate::invocablecategory;
 
 // a list of categories of invocable features
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(serde::Serialize, serde::Deserialize, Debug, Clone)]
 pub struct InvocableCategoryList {
     pub categories: Vec<invocablecategory::InvocableCategory>,
 }
 
 impl InvocableCategoryList {
-    // return an InvocableCategoryList populated from a hard-coded list of categories
-    // plus the contents of $HOME/.wink.json or $USERPROFILE/wink.json
-    // write messages about any category and code conflicts to standard error
+    /// Return an InvocableCategoryList populated from a hard-coded list of categories
+    /// plus the contents of $HOME/.wink.json or $USERPROFILE/wink.json.
+    /// Write messages about any category and code conflicts to standard error.
     pub fn get() -> InvocableCategoryList {
         let mut category_list = InvocableCategoryList { categories: Vec::new() };
 
@@ -48,6 +49,10 @@ impl InvocableCategoryList {
         let mut security = invocablecategory::InvocableCategory::new("Security");
         security.add_security();
         category_list.categories.push(security);
+
+        let mut linux = invocablecategory::InvocableCategory::new("Linux");
+        linux.add_linux();
+        category_list.categories.push(linux);
 
         let mut miscellaneous = invocablecategory::InvocableCategory::new("Miscelaneous");
         miscellaneous.add_miscellaneous();
