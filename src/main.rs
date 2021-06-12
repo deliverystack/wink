@@ -1,6 +1,4 @@
 // stikynot
-// https://docs.microsoft.com/en-us/windows/uwp/launch-resume/launch-settings-app
-// https://4sysops.com/wiki/list-of-ms-settings-uri-commands-to-open-specific-settings-in-windows-10/
 //TODO: check for same command in multiple invocables accross all categories
 //TODO: sysinternals not working?
 // "get" => Invoker::cmd("echo"), // Windows File System explorer //TODO: rename echo?
