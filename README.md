@@ -44,6 +44,16 @@ serde_json = "1.0"
 
 Some sources for command codes:
 
-https://docs.microsoft.com/en-us/windows/uwp/launch-resume/launch-settings-app
+* https://docs.microsoft.com/en-us/windows/uwp/launch-resume/launch-settings-app
 
-https://4sysops.com/wiki/list-of-ms-settings-uri-commands-to-open-specific-settings-in-windows-10/
+* https://4sysops.com/wiki/list-of-ms-settings-uri-commands-to-open-specific-settings-in-windows-10/
+
+Files:
+
+-invocable.rs (struct): Metadata about a command that the system can invoke.
+-invocablecategory.rs (struct): A named list of invocables.
+-invocablecategorylist.rs (struct): A list of named lists of invocables.
+-invoker (struct): Invokes the command specified by an invocable.
+-wsl (lib): Function to convert between WSL and Windows file paths.
+-file.rs (lib): Function to read a file into a string.
+-main.rs (program): Processes command line arguments, creates an invocablecategorylist, runs the command or shows help
