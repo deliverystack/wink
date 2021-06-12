@@ -24,9 +24,11 @@ If you use the same JSON format in $HOME/.wink.json (WSL) or %USERPROFILE%\\wink
 
 Wink has a few dependencies for regular expression processing, common type derivation, and JSON serialziation/deserialization.
 
-`[dependencies]
+```
+[dependencies]
 regex = "1"
 derive-new = "0.5"
 serde = { version = "1.0", features = ["derive"] }
-serde_json = "1.0"`
+serde_json = "1.0"
+```
 
