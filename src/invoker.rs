@@ -14,8 +14,7 @@ impl Invoker {
     /// This function creates a command line from the specified invocable and args,
     /// writes that command line to stdout if verbose is true,
     /// and invokes that command line.
-    //TODO: invoker::Invoker::invoke(invocable, dry_run, verbose, pass); just doesn't look right to document.
-
+    //TODO:     invoker::Invoker::invoke(invocable, dry_run, verbose, pass); just doesn't look right to document.
     pub fn invoke(invocable: &invocable::Invocable, dry_run: bool, verbose: bool, args: Vec<String>) -> String {
         // create three constants for substituting tokens in command paths
         let results = Command::new("cmd.exe").arg("/c").arg("echo").arg("%USERPROFILE%").output().expect("failed to execute process");
