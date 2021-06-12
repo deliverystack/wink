@@ -14,7 +14,7 @@ wince is a bash shell script that you can use to build and run wink binaries for
 //TODO: address hard-coding in wince
 ```
 
-You can compile wink for WSL both Windows and Linux, or you can use a single binary from both cmd.exe and bash.exe shells. From a bash.exe shell, you can invoke the Windows wink.exe or Linux wink binary directly. From a cmd.exe shell, you can use bash.exe with the -c argument to invoke the Linux binary.
+You can compile wink for WSL both Windows and Linux, or you can use a single binary from both cmd.exe and bash.exe shells. Other than testing, there is no reason to do either of the following, but from a bash.exe shell, you can invoke the Windows wink.exe or Linux wink binary directly, and from a cmd.exe shell, you can use bash.exe with the -c argument to invoke the Linux wink binary (or call wink bash /path/to/wink, which does the same thing).
 
 ```
 bash.exe -c /path/to/wink
@@ -32,7 +32,7 @@ If you use the same JSON format in $HOME/.wink.json (WSL) or %USERPROFILE%\\wink
 //TODO: try making .wink.json a symbolic link to wink.json
 ```
 
-Wink has a few dependencies for regular expression processing, common type derivation, and JSON serialziation/deserialization.
+Wink has a few dependencies for regular expression processing, common type derivation, and JSON serialziation/deserialization (see Cargo.toml).
 
 ```
 [dependencies]
@@ -42,13 +42,13 @@ serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 ```
 
-Some sources for command codes:
+Some sources for command lines and command codes:
 
 * https://docs.microsoft.com/en-us/windows/uwp/launch-resume/launch-settings-app
 
 * https://4sysops.com/wiki/list-of-ms-settings-uri-commands-to-open-specific-settings-in-windows-10/
 
-Files (in the /src directory):
+Files in the /src directory:
 
 - invocable.rs (struct): Metadata about a command that the system can invoke.
 - invocablecategory.rs (struct): A named list of invocables.
