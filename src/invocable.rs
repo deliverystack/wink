@@ -1,8 +1,8 @@
-use serde::{Deserialize, Serialize};
+//use serde::{Deserialize, Serialize};
 use std::cmp::Ordering;
 
 // metadata about an invocable feature
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(serde::Serialize, serde::Deserialize, Debug, Clone)]
 pub struct Invocable {
     pub command_code: String,   // command code for matching command line argument
     pub description: String,    // for help information
@@ -10,9 +10,10 @@ pub struct Invocable {
     pub use_cmd: bool,          // cmd.exe [command]
     pub use_start: bool,        // cmd.exe start [command] //TODO: replace start with call except start/b
     pub background: bool,       // cmd.exe start /b [command]
-    pub use_call: bool,         // cmd.exe start /b [command]
-    pub use_explorer: bool,     // [cmd.exe] explorer.exe [/start | start /b]] [command]
-    pub arguments: Vec<String>, // [explorer.exe | cmd.exe [/start | start /b] [command]] [arguments]
+    pub use_call: bool,         // cmd.exe call <command> [arguments]
+    pub use_explorer: bool,     // [cmd.exe] explorer.exe [/start | start /b]] <command> [arguments]
+    pub use_bash: bool,         // bash.exe -c <command> [arguments]
+    pub arguments: Vec<String>, // [explorer.exe | cmd.exe [/start | start /b] <command> [arguments]
 }
 
 impl Eq for Invocable {}
@@ -37,7 +38,7 @@ impl PartialEq for Invocable {
 
 impl Invocable {
     pub fn base(command_code: &'static str, command: &'static str, description: &'static str, args: &[&str]) -> Invocable {
-        let mut inv = Invocable { command_code: command_code.to_string(), command: command.to_string(), description: description.to_string(), use_cmd: false, use_start: false, background: false, use_call: false, use_explorer: false, arguments: vec![] };
+        let mut inv = Invocable { command_code: command_code.to_string(), command: command.to_string(), description: description.to_string(), use_cmd: false, use_start: false, background: false, use_call: false, use_explorer: false, use_bash: false, arguments: vec![] };
 
         for arg in args.iter() {
             inv.arguments.push(arg.to_string());
@@ -82,5 +83,15 @@ impl Invocable {
 
     pub fn cmd(command_code: &'static str, command: &'static str, description: &'static str) -> Invocable {
         Invocable::cmd_with(command_code, command, description, &[])
+    }
+
+    pub fn sh_with(command_code: &'static str, command: &'static str, description: &'static str, args: &[&str]) -> Invocable {
+        let mut inv = Invocable::base(command_code, command, description, args);
+        inv.use_bash = true;
+        inv
+    }
+
+    pub fn sh(command_code: &'static str, command: &'static str, description: &'static str) -> Invocable {
+        Invocable::sh_with(command_code, command, description, &[])
     }
 }

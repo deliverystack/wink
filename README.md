@@ -1,10 +1,10 @@
 # wink
 
-WARNING: WINK WAS NOT WRITTEN BY ANYONE WITH ANY EXPERTISE IN RUST, WINDOWS, LINUX, OR SYSTEMS PROGRAMMING, AND IS LARGELY UNTESTED. USE AT YOUR OWN RISK.
+WARNING: WINK WAS NOT WRITTEN BY ANYONE WITH ANY EXPERTISE IN RUST, WINDOWS, LINUX, OR SYSTEMS PROGRAMMING, AND IS LARGELY UNTESTED, ESPECIALLY ANY PARTS INVOLVING CONFIGURATION FILES. USE AT YOUR OWN RISK, NOTING THAT SOME COMMANDS MAY SHUT DOWN THE COMPUTER.
 
-The wink command line tool lets you access hundreds of Windows applications and features with just a few keystrokes.
+The wink command line tool lets you access hundreds of Linux and Windows applications and features with just a few keystrokes from both Windows Console and Windows Subsystem for Linux (WSL) shells.
 
-wink is written in rust using cargo and intended to be run from Windows cmd.exe and Windows Subsystem for Linux (WSL) bash.exe shells.
+wink is written in rust using cargo and intended to be run from the Windows Console (cmd.exe), PowerShell, and Windows Subsystem for Linux (WSL) bash.exe shell windows.
 
 wink is a constant work in progress as its author(s) discover(s) more Windows features and how to access them and adds support for more third-party Windows applications.
 
@@ -48,7 +48,7 @@ Some sources for command codes:
 
 * https://4sysops.com/wiki/list-of-ms-settings-uri-commands-to-open-specific-settings-in-windows-10/
 
-Files:
+Files (in the /src directory):
 
 - invocable.rs (struct): Metadata about a command that the system can invoke.
 - invocablecategory.rs (struct): A named list of invocables.
@@ -56,4 +56,4 @@ Files:
 - invoker (struct): Invokes the command specified by an invocable.
 - wsl (lib): Function to convert between WSL and Windows file paths.
 - file.rs (lib): Function to read a file into a string.
-- main.rs (program): Processes command line arguments, creates an invocablecategorylist, runs the command or shows help
+- main.rs (program): Processes command line arguments, creates an InvocableCategoryList, identify and run the Invocable or render help

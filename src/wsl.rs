@@ -5,7 +5,7 @@
 // unix false will pass -w (convert Unix path to Windows)
 
 pub fn wsl_path_or_self(arg: &str, unix: bool) -> String {
-    if cfg!(target_os = "windows") {
+    if (cfg!(target_os = "windows") && !unix) || (unix && arg.starts_with('/')) {
         arg.to_string()
     } else {
         let mut to_run = std::process::Command::new("wslpath");

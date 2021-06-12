@@ -47,6 +47,8 @@ impl Invoker {
         // otherwise invoke the executable directly
         if invocable.use_cmd || invocable.use_start || invocable.background {
             cmd = "cmd.exe";
+        } else if invocable.use_bash {
+            cmd = "bash.exe"
         } else if invocable.use_explorer {
             cmd = "explorer.exe";
         } else {
@@ -70,6 +72,12 @@ impl Invoker {
             command_line.push_str("/c ");
         }
 
+        if invocable.use_bash {
+            //TODO:  if invocable.background
+            torun.arg("-c");
+            command_line.push_str("-c ");
+        }
+
         // both start and start /b require start
         if invocable.use_start || invocable.background {
             torun.arg("start");
@@ -89,8 +97,8 @@ impl Invoker {
         }
 
         // if executable specified with cmd.exe then add windows path to executable to command line
-        if (invocable.use_cmd || invocable.use_start || invocable.background || invocable.use_explorer) && !invocable.command.is_empty() {
-            let command: &String = &wsl::wsl_path_or_self(&invocable.command.replace("$pf64", &pf64).replace("$pf86", &pf86).replace("$userpath", &userpath).replace("$syslive", "\\\\live.sysinternals.com\\tools\\"), false);
+        if (invocable.use_cmd || invocable.use_start || invocable.background || invocable.use_explorer || invocable.use_bash) && !invocable.command.is_empty() {
+            let command: &String = &wsl::wsl_path_or_self(&invocable.command.replace("$pf64", &pf64).replace("$pf86", &pf86).replace("$userpath", &userpath).replace("$syslive", "\\\\live.sysinternals.com\\tools\\"), invocable.use_bash);
             torun.arg(command);
             command_line.push_str(command);
             command_line.push(' ');
@@ -98,7 +106,7 @@ impl Invoker {
 
         // add arguments from command configuration to command line
         for arg in invocable.arguments.iter() {
-            let param: &String = &wsl::wsl_path_or_self(arg, false);
+            let param: &String = &wsl::wsl_path_or_self(arg, invocable.use_bash);
             torun.arg(param);
             command_line.push_str(param);
             command_line.push(' ');
@@ -106,7 +114,7 @@ impl Invoker {
 
         // append args from called command line to command line
         for arg in args.iter() {
-            let param: &String = &wsl::wsl_path_or_self(arg, false);
+            let param: &String = &wsl::wsl_path_or_self(arg, invocable.use_bash);
             torun.arg(param);
             command_line.push_str(param);
             command_line.push(' ');
