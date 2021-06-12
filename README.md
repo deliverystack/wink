@@ -40,3 +40,8 @@ serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 ```
 
+Some sources for command codes:
+
+https://docs.microsoft.com/en-us/windows/uwp/launch-resume/launch-settings-app
+
+https://4sysops.com/wiki/list-of-ms-settings-uri-commands-to-open-specific-settings-in-windows-10/
