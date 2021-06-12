@@ -6,7 +6,7 @@ The wink command line tool lets you access hundreds of Linux and Windows applica
 
 wink is written in rust using cargo and intended to be run from the Windows Console (cmd.exe), PowerShell, and Windows Subsystem for Linux (WSL) bash.exe shell windows.
 
-wink is a constant work in progress as its author(s) discover(s) more Windows features and how to access them and adds support for more third-party Windows applications.
+wink is a constant work in progress as its author(s) learn about rust and discover(s) more Windows features and how to access them and add(s) support for more third-party Windows applications.
 
 wince is a bash shell script that you can use to build and run wink. \
 
