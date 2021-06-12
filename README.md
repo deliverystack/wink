@@ -10,4 +10,4 @@ wince is a ?nix shell script that you can use to build and run wink.
 
 You can compile wink for WSL both Windows and Linux, or you can use a single binary from both cmd.exe and bash.exe shells. From a bash.exe shell, you can invoke the Windows wink.exe or Linux wink binary directly. From a cmd.exe shell, you can use bash.exe with the -c argument to invoke the Linux binary.
 
-bash.exe -c /path/to/wink
+  bash.exe -c /path/to/wink
