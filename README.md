@@ -22,7 +22,11 @@ If you use the same JSON format in $HOME/.wink.json (WSL) or %USERPROFILE%\\wink
 
 `//TODO: try making .wink.json a symbolic link to wink.json`
 
+Wink has a few dependencies for regular expression processing, common type derivation, and JSON serialziation/deserialization.
 
-
-
+`[dependencies]
+regex = "1"
+derive-new = "0.5"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"`
 
