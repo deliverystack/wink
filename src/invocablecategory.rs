@@ -1,33 +1,37 @@
-use serde::{Deserialize, Serialize};
+//! The InvocableCategory struct contains a name for the category and a list of Invocables for that category.
+//! An InvocableCategoryList creates an InvocableCategory and can use any of the Add() functions in InvocableCategory
+//! to add Invocables to that category.
 use std::cmp::Ordering;
 
 use crate::invocable;
 
-// a category/list of invocable features
-#[derive(Clone, Serialize, Deserialize, Debug)]
+#[derive(Clone, serde::Serialize, serde::Deserialize, Debug)]
 pub struct InvocableCategory {
+    /// The friendly name of the category.
     pub name: String,
+
+    /// The list of Invocables in the category.
     pub invocables: Vec<invocable::Invocable>,
 }
 
-// for sort
+/// For sorting a list of InvocableCategories by name
 impl Eq for InvocableCategory {}
 
-// for sort
+/// For sorting a list of InvocableCategories by name
 impl Ord for InvocableCategory {
     fn cmp(&self, other: &Self) -> Ordering {
         self.name.cmp(&other.name)
     }
 }
 
-// for sort
+/// For sorting a list of InvocableCategories by name
 impl PartialOrd for InvocableCategory {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
         Some(self.cmp(other))
     }
 }
 
-// for sort
+/// For sorting a list of InvocableCategories by name
 impl PartialEq for InvocableCategory {
     fn eq(&self, other: &Self) -> bool {
         self.name == other.name
@@ -35,12 +39,13 @@ impl PartialEq for InvocableCategory {
 }
 
 impl InvocableCategory {
-    // create an InvocableCategory
+    /// Retrieve an InvocableCategory with the given name and an empty list of invocables.
     pub fn new(name: &'static str) -> InvocableCategory {
         InvocableCategory { name: name.to_string(), invocables: vec![] }
     }
 
-    // add an Invocable to this InvocableCategory; write to stderr if the  command code is a duplicate.
+    /// Add an Invocable to the list in this InvocableCategory.
+    /// Write to stderr if the  command code is a duplicate withih this category.
     //TODO: this duplicates logic on file read; might as well check everything in that once place (consolidate this logic).
     pub fn add(&mut self, invocable: invocable::Invocable) {
         for compare in self.invocables.iter() {
@@ -52,6 +57,7 @@ impl InvocableCategory {
         self.invocables.push(invocable);
     }
 
+    /// Add Microsoft Office Invocables to the list of Invocables in this InvocableCategory.
     pub fn add_office(&mut self) {
         self.add(invocable::Invocable::exp("onenote", "onenote:", "Microsoft OneNote")); //  ONENOTE.EXE
         self.add(invocable::Invocable::bin("excel", "$pf64/Microsoft Office/root/Office16/EXCEL.EXE", "Microsoft Excel"));
@@ -62,10 +68,10 @@ impl InvocableCategory {
         // C:\Program Files\Microsoft OneDrive\onedrive.exe
     }
 
+    /// Add Windows locations Invocables to the list of Invocables in this InvocableCategory.
     pub fn add_locations(&mut self) {
         self.add(invocable::Invocable::exp("portdev", "shell:::{35786D3C-B075-49b9-88DD-029876E11C01}", "Portable Devices folder"));
         self.add(invocable::Invocable::exp("thisdev", "shell:::{5b934b42-522b-4c34-bbfe-37a3ef7b9c90}", "This Device folder"));
-
         self.add(invocable::Invocable::exp("homegrp", "shell:::{6785BFAC-9D2D-4be5-B7E2-59937E8FB80A}", "Home Group folder"));
         self.add(invocable::Invocable::exp("commonpl", "shell:::{d34a6ca6-62c2-4c34-8a7c-14709c1ad938}", "Common Places"));
         self.add(invocable::Invocable::exp("removabl", "shell:::{a6482830-08eb-41e2-84c1-73920c2badb9}", "Removable Devices folder"));
@@ -80,7 +86,6 @@ impl InvocableCategory {
         self.add(invocable::Invocable::exp("appdata", "shell:AppData", "")); //TODO: doc
         self.add(invocable::Invocable::exp("admtools", "shell:Common Administrative Tools", "")); //TODO: doc
         self.add(invocable::Invocable::exp("unupdate", "shell:AppUpdatesFolder", "Installed Updates/Uninstall an Update")); //TODO: doc // shell:::{d450a8a1-9568-45c7-9c0e-b4f9fb4537bd}
-
         self.add(invocable::Invocable::exp("burn", "shell:CD Burning", "")); //TODO: doc
         self.add(invocable::Invocable::exp("resource", "shell:ResourceDir", "")); //TODO: doc
         self.add(invocable::Invocable::exp("savegame", "shell:SavedGames", "")); //TODO: doc
@@ -141,26 +146,28 @@ impl InvocableCategory {
         self.add(invocable::Invocable::exp("msvideo", "microsoftvideo:", ""));
     }
 
+    /// Add SysInternals utilities Invocables to the list of Invocables in this InvocableCategory.
+    /// https://live.sysinternals.com/ https://docs.microsoft.com/en-us/sysinternals/
     pub fn add_sysinternals(&mut self) {
-        // https://live.sysinternals.com/ https://docs.microsoft.com/en-us/sysinternals/
         self.add(invocable::Invocable::cmd_with("bginfo", "$syslivebginfo64.exe", "Set desktop background to system information", &["-accepteula"]));
         self.add(invocable::Invocable::cmd_with("handle", "$syslivehandle64.exe", "List open file handles", &["-accepteula"]));
         self.add(invocable::Invocable::cmd_with("listdlls", "$syslivelistdlls64.exe", "List processes and their DLLs", &["-accepteula"]));
-        //        "whoson" => Invoker::cmd(format!("{}whoson64.exe", &["-accepteula"]), // nosuch?
+        //TODO: "whoson" => Invoker::cmd(format!("{}whoson64.exe", &["-accepteula"]), // nosuch?
         self.add(invocable::Invocable::cmd_with("procexp", "$sysliveprocexp64.exe", "Process Explorer", &["-accepteula"]));
         self.add(invocable::Invocable::cmd_with("pslist", "$syslivepslist64.exe", "Process lister", &["-accepteula"]));
         self.add(invocable::Invocable::cmd_with("pskill", "$syslivepskill.exe", "Process killer", &["-accepteula"]));
         self.add(invocable::Invocable::cmd_with("procmon", "$sysliveprocmon64.exe", "Process Monitor", &["-accepteula"]));
         self.add(invocable::Invocable::cmd_with("autoruns", "$sysliveautoruns64.exe", "Identify and control startup processes", &["-accepteula"]));
         self.add(invocable::Invocable::cmd_with("diskview", "$syslivediskview64.exe", "Disk space usage visualizer", &["-accepteula"]));
-        self.add(invocable::Invocable::cmd_with("du", "$syslive/du64.exe", "Disk usage", &["-accepteula"]));
+        self.add(invocable::Invocable::cmd_with("du", "$syslivedu64.exe", "Disk usage", &["-accepteula"]));
+        self.add(invocable::Invocable::cmd_with("zoomit", "$syslivezoomit63.exe", "crash it, change it, mail – upgrade it, Charge it, point it, zoom it, press it, Snap it, work it, quick – erase it...Technologic", &["-accepteula"]));
     }
 
+    /// Add Windows settings Invocables to the list of Invocables in this InvocableCategory.
     pub fn add_settings(&mut self) {
         self.add(invocable::Invocable::exp("srchsets", "ms-settings:cortana-windowssearch", "Windows Search (Cortana) Settings"));
         self.add(invocable::Invocable::exp("filehist", "shell:::{F6B6E965-E9B2-444B-9286-10C9152EDBC5}", "File History"));
         self.add(invocable::Invocable::exp("syncset", "ms-settings:sync", "Sync Settings...settings"));
-
         self.add(invocable::Invocable::exp("devices", "shell:::{A8A91A66-3A7D-4424-8D24-04E180695C7A}", "Devices and Printers"));
         self.add(invocable::Invocable::exp("storsp", "shell:::{F942C606-0914-47AB-BE56-1321B8035096}", "Manage Storage Spaces"));
         self.add(invocable::Invocable::exp("control", "shell:ControlPanelFolder", "Control Panel (small icons)")); // shell:::{21EC2020-3AEA-1069-A2DD-08002B30309D}
@@ -175,13 +182,11 @@ impl InvocableCategory {
         self.add(invocable::Invocable::cmd("loc", "telephon.cpl", "Location Information control panel"));
         self.add(invocable::Invocable::cmd("mouse", "main.cpl", "Mouse control panel"));
         self.add(invocable::Invocable::exp("power", "shell:::{025A5937-A6BE-4686-A844-36FE4BEC8B6D}", "Power control panel")); // powercfg.cpl
-
         self.add(invocable::Invocable::cmd("sound", "mmsys.cpl", "Sound control panel"));
         self.add(invocable::Invocable::cmd("sysprop", "sysdm.cpl", "Sound Properties control panel")); // SystemPropertiesHardware.exe SystemPropertiesAdvanced.exe
         self.add(invocable::Invocable::exp("about", "ms-settings:about", "About settings")); // shell:::{BB06C0E4-D293-4f75-8A90-CB05B6477EEE}
         self.add(invocable::Invocable::exp("autoplay", "ms-settings:autoplay", "Autoplay Settings (defaults)"));
         self.add(invocable::Invocable::exp("autoplyd", "shell:::{9C60DE1E-E5FC-40f4-A487-460851A8D915}", "Autoplay Settings by Device type"));
-
         self.add(invocable::Invocable::exp("battery", "ms-settings:batterysaver", "Battery settings"));
         self.add(invocable::Invocable::exp("captures", "ms-settings:gaming-gamedvr", "Screen capture settings"));
         self.add(invocable::Invocable::exp("clp", "ms-settings:clipboard", "Clipboard settings"));
@@ -191,9 +196,7 @@ impl InvocableCategory {
         self.add(invocable::Invocable::exp("default", "ms-settings:defaultapps", "Choose default applications settings")); // shell:::{2559a1f7-21d7-11d4-bdaf-00c04f60b9f0}
         self.add(invocable::Invocable::exp("devdisc", "ms-settings-connectabledevices:devicediscovery", "Connectable device discovery settings"));
         self.add(invocable::Invocable::exp("focus", "ms-settings:quiethours", "Quiet hours/focus assist settungs")); // ms-settings:quietmomentshome ms-settings:quietmomentsscheduled ms-settings:quietmomentspresentation ms-settings:quietmomentsgame
-
         self.add(invocable::Invocable::exp("morfonts", "shell:::{93412589-74D4-4E4E-AD0E-E0CB621440FD}", "More Font settings"));
-
         self.add(invocable::Invocable::exp("gamemode", "ms-settings:gaming-gamemode", "Game mode settings"));
         self.add(invocable::Invocable::exp("graphics", "ms-settings:display-advancedgraphics", "Advanced graphics settings"));
         self.add(invocable::Invocable::exp("keyboard", "ms-settings:keyboard", "Keyboard settings")); //TODO: language?
@@ -215,7 +218,6 @@ impl InvocableCategory {
         self.add(invocable::Invocable::exp("sounds", "ms-settings:sound", "Sound settings")); //TODO: doc
         self.add(invocable::Invocable::exp("storpol", "ms-settings:storagepolicies", "Storage Policies")); //TODO: doc
         self.add(invocable::Invocable::exp("storsens", "ms-settings:storagesense", "Storage Sense"));
-
         self.add(invocable::Invocable::exp("tablet", "ms-settings:tabletmode", "Tablet Mode settings"));
         self.add(invocable::Invocable::exp("themes", "ms-settings:themes", "Windows Themes settings"));
         self.add(invocable::Invocable::exp("touchpad", "ms-settings:devices-touchpad", "Touchpad settings"));
@@ -245,12 +247,12 @@ impl InvocableCategory {
         self.add(invocable::Invocable::exp("findmydv", "ms-settings:findmydevice", "Find my device settings"));
         self.add(invocable::Invocable::exp("region", "ms-settings:regionformatting", "Regional formatting settings"));
         self.add(invocable::Invocable::exp("language", "ms-settings:regionlanguage", "Regional language settings")); // ms-settings:regionlanguage-languageoptions ms-settings:regionlanguage-setdisplaylanguage ms-settings:regionlanguage-adddisplaylanguage
-
         self.add(invocable::Invocable::exp("settings", "ms-settings:", "Settings control panel"));
         self.add(invocable::Invocable::exp("start", "ms-settings:personalization-start", "Start Menu personalization settings"));
         self.add(invocable::Invocable::exp("startfol", "ms-settings:personalization-start-places", "Personalize/choose which folders appear on the start menu"));
     }
 
+    /// Add Windows programs and features Invocables to the list of Invocables in this InvocableCategory.
     pub fn add_features(&mut self) {
         self.add(invocable::Invocable::exp("features", "ms-settings:appsfeatures", "Optional Apps and Features Sttings")); // optionalfeatures.exe shell:::{67718415-c450-4f3c-bf8a-b487642dc39b}
         self.add(invocable::Invocable::exp("optional", "ms-settings:optionalfeatures", "Optional Features Settings"));
@@ -261,19 +263,15 @@ impl InvocableCategory {
         self.add(invocable::Invocable::exp("updater", "ms-settings:windowsupdate-restartoptions", "Windows Update Restart Options Settings"));
         self.add(invocable::Invocable::exp("updateo", "ms-settings:windowsupdate-options", "Windows Update Advanced Option Settingss"));
         self.add(invocable::Invocable::exp("updateah", "ms-settings:windowsupdate-activehours", "Windows Update Active Hours Settings"));
-
         self.add(invocable::Invocable::exp("delivopt", "ms-settings:delivery-optimization", "Microsoft Updates Delivery Optimization Settings"));
-
-        // shell:::{7b81be6a-ce2b-4676-a29e-eb907a5126c5}",
     }
 
+    /// Add networking components to the list of Invocables in this InvocableCategory.
     pub fn add_networking(&mut self) {
         self.add(invocable::Invocable::exp("remoteapp", "shell:::{241D7C96-F8BF-4F85-B01F-E2B043341A4B}", "RemoteApp and Desktop Connections"));
-
         self.add(invocable::Invocable::exp("yurphone", "ms-settings:mobile-devices", "Mobile Devices/Your Phone"));
         self.add(invocable::Invocable::exp("addphone", "ms-settings:mobile-devices-addphone-direct", "Mobile Devices/Add Phone"));
         self.add(invocable::Invocable::exp("addnetp", "shell:::{D4480A50-BA28-11d1-8E75-00C04FA31A86}", "Add Network Place"));
-
         self.add(invocable::Invocable::exp("netcon", "shell:ConnectionsFolder", "Network Connections folder")); // ncpa.cpl
         self.add(invocable::Invocable::exp("netshare", "shell:::{8E908FC9-BECC-40f6-915B-F4CA0E70D03D}", "Network and Sharing Center"));
         self.add(invocable::Invocable::exp("netavail", "ms-availablenetworks:", "Available networks"));
@@ -288,9 +286,9 @@ impl InvocableCategory {
         self.add(invocable::Invocable::exp("wifisets", "ms-settings:network-wifi", "")); //TODO: doc
         self.add(invocable::Invocable::exp("bluetoo", "ms-settings:bluetooth", "")); //TODO: doc
         self.add(invocable::Invocable::exp("netstat", "ms-settings:network", "Network status"));
-        // ms-settings:network-status
     }
 
+    /// Add Windows privacy controls Invocables to the list of Invocables in this InvocableCategory.
     pub fn add_privacy(&mut self) {
         self.add(invocable::Invocable::exp("srchprm", "ms-settings:search-permissions", "Permissions and History"));
         self.add(invocable::Invocable::exp("privacy", "ms-settings:privacy", "Privacy settings control panel"));
@@ -303,7 +301,6 @@ impl InvocableCategory {
         self.add(invocable::Invocable::exp("pcalls", "ms-settings:privacy-phonecalls", "Phone Calls privacy settings"));
         self.add(invocable::Invocable::exp("pcals", "ms-settings:privacy-calendar", "Calendar privacy settings"));
         self.add(invocable::Invocable::exp("pcallh", "ms-settings:privacy-callhistory", "Call History privacy settings"));
-
         self.add(invocable::Invocable::exp("pcam", "ms-settings:privacy-webcam", "")); //TODO: doc
         self.add(invocable::Invocable::exp("pcontact", "ms-settings:privacy-contacts", "")); //TODO: doc
         self.add(invocable::Invocable::exp("pdev", "ms-settings:privacy-customdevices", "Custom/Other Devices privacy settings")); //TODO: doc
@@ -321,9 +318,9 @@ impl InvocableCategory {
         self.add(invocable::Invocable::exp("ptype", "ms-settings:privacy-speechtyping", "")); //TODO: doc
         self.add(invocable::Invocable::exp("pvoicea", "ms-settings:privacy-voiceactivation", "")); //TODO: doc
         self.add(invocable::Invocable::exp("stalkme", "ms-settings:privacy-location", "Location privacy settings"));
-        //TODO: doc
     }
 
+    /// Add shutdown commands to the list of Invocables in this InvocableCategory.
     pub fn add_shutdown(&mut self) {
         self.add(invocable::Invocable::bin_with("boot", "shutdown.exe", "Reboot", &["/r"])); // "/t", "30"]), //reboot in 30 seconds unless shutdown.exe /a
         self.add(invocable::Invocable::bin_with("bootopt", "shutdown.exe", "Reboot to boot options", &["/r", "/o"])); //"/t", "30"]), // reboot to boot options in 30 seconds unless shutdown.exe /a
@@ -335,6 +332,7 @@ impl InvocableCategory {
         // reboot to boot options in 30 seconds unless shutdown.exe /a         //TODO: new/doc
     }
 
+    /// Add Windows Ease of Access settings Invocables to the list of Invocables in this InvocableCategory.
     pub fn add_ease_of_access(&mut self) {
         self.add(invocable::Invocable::exp("eatcur", "ms-settings:easeofaccess-cursor", "Ease of access text cursor settings"));
         self.add(invocable::Invocable::exp("eamag", "ms-settings:easeofaccess-magnifier", "Ease of access magnifier"));
@@ -349,11 +347,9 @@ impl InvocableCategory {
         self.add(invocable::Invocable::exp("eanar", "ms-settings:easeofaccess-narrator", "Ease of access narrator settings")); // ms-settings:easeofaccess-narrator-isautostartenabled
         self.add(invocable::Invocable::exp("ease", "shell:::{D555645E-D4F8-4c29-A827-D93C859C4F2A}", "Ease of Access Settings")); // "control.exe",  &["access.cpl"]));
         self.add(invocable::Invocable::exp("captions", "ms-settings:easeofaccess-closedcaptioning", "Ease of access closed captioning settings"));
-
-        //        self.add(invocable::Invocable::exp("eacur", "ms-settings:easeofaccess-cursorandpointersize", "Ease of access cursor and pointer size")); //TODO: fail
-        //        self.add(invocable::Invocable::exp("eapoint", "ms-settings:easeofaccess-MousePointer", "Ease of access mouse pointer settings")); //TODO: fail
     }
 
+    /// Add security-related Invocables to the list of Invocables in this InvocableCategory.
     pub fn add_security(&mut self) {
         self.add(invocable::Invocable::exp("user", "shell:::{60632754-c523-4b62-b45c-4172da012619}", "User Accounts"));
         self.add(invocable::Invocable::cmd_with("userpass", "control.exe", "", &["userpasswords2"]));
@@ -370,9 +366,7 @@ impl InvocableCategory {
         self.add(invocable::Invocable::exp("signin", "ms-settings:signinoptions", "Security sign-in settings"));
         self.add(invocable::Invocable::exp("seccntr", "windowsdefender:", "Windows Security Center/Security at a Glance"));
         self.add(invocable::Invocable::exp("winsec", "ms-settings:windowsdefender", "Windows Security Settings"));
-
         self.add(invocable::Invocable::exp("bitlock", "shell:::{D9EF8727-CAC2-4e60-809E-86F80A666C91}", "Bitlocker Drive Encryption"));
-
         self.add(invocable::Invocable::cmd("authman", "azman.msc", "Security Authorization Manager"));
         self.add(invocable::Invocable::cmd("certmgr", "certmgr.msc", "Security Certificate Manager"));
         self.add(invocable::Invocable::cmd("useracts", "netplwiz.exe", "Security User Accounts"));
@@ -380,6 +374,26 @@ impl InvocableCategory {
         self.add(invocable::Invocable::cmd("uac", "UserAccountControlSettings.exe", ""));
     }
 
+    /// Add Linux Invocables to the list of Invocables in this InvocableCategory.
+    pub fn add_linux(&mut self) {
+        self.add(invocable::Invocable::sh("wince", "/home/jw/bin/wince", "Run the shell script that recompiles this program"));
+        self.add(invocable::Invocable::sh("bash", "", "Run the Unix command specified on the command line"));
+        self.add(invocable::Invocable::sh("gimp", "/usr/bin/gimp", "gimp (image manipulation)"));
+        self.add(invocable::Invocable::sh("microsoft-edge", "/usr/bin/microsoft-edge-dev", "microsoft-edge (brower)"));
+        self.add(invocable::Invocable::sh("google-chrome", "/usr/bin/google-chrome", "google-chrome (browser)"));
+        self.add(invocable::Invocable::sh("gedit", "/usr/bin/gedit", "gedit (graphical editor)"));
+        self.add(invocable::Invocable::sh("xlogo", "/usr/bin/xlogo", "xlogo (visual X logo)"));
+        self.add(invocable::Invocable::sh("xmore", "/usr/bin/xmore", "xmore (read-only text UI)"));
+        self.add(invocable::Invocable::sh("xgc", "/usr/bin/xgc", "xgc (graphics demo)"));
+        self.add(invocable::Invocable::sh("xman", "/usr/bin/xman", "xman (man pages)"));
+        self.add(invocable::Invocable::sh("xcalc", "/usr/bin/xcalc", "xcalc (calculator)"));
+        self.add(invocable::Invocable::sh("xeyes", "/usr/bin/xeyes", "xeyes (visual eyeballs)"));
+        self.add(invocable::Invocable::sh("xclock", "/usr/bin/xclock", "xclock (visual clock)"));
+        self.add(invocable::Invocable::sh("lvlc", "/usr/bin/lvlc", "Linux VLC (media player)"));
+        self.add(invocable::Invocable::sh("nautilus", "/usr/bin/nautilus", "nautilus (file browser)"));
+    }
+
+    /// Add miscelaneous Invocables to the list of Invocables in this InvocableCategory.
     pub fn add_miscellaneous(&mut self) {
         self.add(invocable::Invocable::sh("wince", "/home/jw/bin/wince", "wince"));
         self.add(invocable::Invocable::sh("bash", "", "bash"));
@@ -387,13 +401,11 @@ impl InvocableCategory {
         self.add(invocable::Invocable::sh("microsoft-edge", "/usr/bin/microsoft-edge-dev", "microsoft-edge"));
         self.add(invocable::Invocable::sh("google-chrome", "/usr/bin/google-chrome", "google-chrome"));
         self.add(invocable::Invocable::sh("gedit", "/usr/bin/gedit", "gimp"));
-
         self.add(invocable::Invocable::sh("xcalc", "/usr/bin/xcalc", "xcalc"));
         self.add(invocable::Invocable::sh("xeyes", "/usr/bin/xeyes", "xeyes"));
         self.add(invocable::Invocable::sh("xclock", "/usr/bin/xclock", "xclock"));
         self.add(invocable::Invocable::sh("lvlc", "/usr/bin/lvlc", "Linux VLC"));
         self.add(invocable::Invocable::sh("nautilus", "/usr/bin/nautilus", "nautilus"));
-
         self.add(invocable::Invocable::exp("insider", "ms-settings:windowsinsider", "Microsoft Windows Insider Program"));
         self.add(invocable::Invocable::exp("wintab", "shell:::{3080F90E-D7AD-11D9-BD98-0000947B0257}", "Switch windows (Windows+Tab)"));
         self.add(invocable::Invocable::exp("showd", "shell:::{3080F90D-D7AD-11D9-BD98-0000947B0257}", "Show Windows desktop"));
@@ -401,13 +413,13 @@ impl InvocableCategory {
         self.add(invocable::Invocable::cmd("quickass", "quickassist.exe", "Windows Quick Assist"));
     }
 
+    /// Add Windows utilities Invocables to the list of Invocables in this InvocableCategory.
     pub fn add_utilities(&mut self) {
         self.add(invocable::Invocable::exp("run", "shell:::{2559a1f3-21d7-11d4-bdaf-00c04f60b9f0}", "Windows Run Dialog"));
         self.add(invocable::Invocable::cmd("lpksetup", "lpksetup.exe", "Language Pack Setup"));
         self.add(invocable::Invocable::cmd("msinfo32", "msinfo32.exe", "System Information"));
         self.add(invocable::Invocable::cmd("verifier", "verifier.exe", "Driver Verifier Manager"));
         self.add(invocable::Invocable::cmd("iexplore", "$pf64/Internet Explorer/iexplore.exe", "Internet Explorer"));
-
         self.add(invocable::Invocable::cmd_with("pwrd", "rundll32.exe", "Steps Recorder", &["keymgr.dll,PRShowSaveWizardExW"]));
         self.add(invocable::Invocable::cmd("tpm", "tpminit.exe", "Trusted Platform Module"));
         self.add(invocable::Invocable::cmd("odbcconf", "odbcconf.exe", ""));
@@ -450,9 +462,7 @@ impl InvocableCategory {
         self.add(invocable::Invocable::bin("rd", "mstsc.exe", "Remote Desktop Client"));
         self.add(invocable::Invocable::bin("msdt", "msdt.exe", "Microsoft Support Diagnostics Tool"));
         self.add(invocable::Invocable::exp("soundrec", "shell:appsFolder\\Microsoft.WindowsSoundRecorder_8wekyb3d8bbwe!App", "Sound Recorder")); // TODO: wrong
-
         self.add(invocable::Invocable::exp("sticky", "shell:appsFolder\\Microsoft.MicrosoftStickyNotes_8wekyb3d8bbwe!App", "Sticky Notes")); // TODO: wrong
-
         self.add(invocable::Invocable::exp("calc", "calculator:", "Calculator"));
         self.add(invocable::Invocable::exp("clock", "ms-clock:", "Clock"));
         self.add(invocable::Invocable::exp("cam", "microsoft.windows.camera:", "Camera"));
@@ -486,11 +496,10 @@ impl InvocableCategory {
         self.add(invocable::Invocable::cmd("services", "services.msc", "Windows Services"));
     }
 
+    /// Add various Windows application Invocables to the list of Invocables in this InvocableCategory.
     pub fn add_applications(&mut self) {
         self.add(invocable::Invocable::bin("zoom", "$userpath/AppData/Roaming/Zoom/bin/Zoom.exe", "Zoom"));
         self.add(invocable::Invocable::cmd_with("killzoom", "taskkill.exe", "Kill Zoom", &["/im", "zoom.exe"]));
-        //TODO: sysinternals zoomit
-
         self.add(invocable::Invocable::bin("ransack", "$pf64/Mythicsoft/Agent Ransack/AgentRansack.exe", "Mozilla Thunderbird email client"));
         self.add(invocable::Invocable::bin("email", "shell:::{2559a1f5-21d7-11d4-bdaf-00c04f60b9f0}", "Default email program"));
         self.add(invocable::Invocable::bin("slack", "$userpath/AppData/Local/slack/slack.exe", "Slack"));
@@ -531,3 +540,7 @@ impl InvocableCategory {
         ));
     }
 }
+
+//TODO: shell:::{7b81be6a-ce2b-4676-a29e-eb907a5126c5}", // ms-settings:network-status
+//TODO:        self.add(invocable::Invocable::exp("eacur", "ms-settings:easeofaccess-cursorandpointersize", "Ease of access cursor and pointer size")); //TODO: fail
+//TODO:        self.add(invocable::Invocable::exp("eapoint", "ms-settings:easeofaccess-MousePointer", "Ease of access mouse pointer settings")); //TODO: fail
