@@ -19,7 +19,6 @@ else
     else
 #        cargo clean --target-dir /tmp/wink.build
 #        cargo check --target-dir /tmp/wink.build
-
         cargo doc --target-dir /tmp/wink.build
         cargo build --target-dir /tmp/wink.build --release # affects binary path below 
 
