@@ -1,5 +1,7 @@
 # wink
 
+WARNING: WINK WAS NOT WRITTEN BY ANYONE WITH ANY EXPERTISE IN RUST, WINDOWS, LINUX, OR SYSTEMS PROGRAMMING, AND IS LARGELY UNTESTED. USE AT YOUR OWN RISK.
+
 The wink command line tool lets you access hundreds of Windows applications and features with just a few keystrokes.
 
 wink is written in rust using cargo and intended to be run from Windows cmd.exe and Windows Subsystem for Linux (WSL) bash.exe shells.

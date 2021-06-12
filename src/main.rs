@@ -4,17 +4,9 @@ use regex::Regex;
 use serde::{Deserialize, Serialize};
 use std::cmp::Ordering;
 use std::env;
-use std::io::Read;
 
+mod file;
 mod wsl;
-
-// read the specified file into a string
-fn read_file(path: &str) -> Result<String, std::io::Error> {
-    let mut file = std::fs::File::open(path)?;
-    let mut data = String::new();
-    file.read_to_string(&mut data)?;
-    Ok(data)
-}
 
 //TODO: is this the right way to define a container for static methods?
 // creates and invokes command lines from invocables
@@ -831,7 +823,7 @@ impl InvocableCategoryList {
         };
 
         // if the file exists, read it into a temporary InvocableCategoryList
-        match read_file(&file) {
+        match file::read_file(&file) {
             Ok(contents) => {
                 let deserialized: InvocableCategoryList = serde_json::from_str(&contents).unwrap();
 
