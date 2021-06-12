@@ -1,3 +1,6 @@
+//! The Invoker struct contains a method that constructs and invokes the command line
+//! for an Invocable.
+
 use std::process::Command;
 
 use crate::invocable;
@@ -8,7 +11,11 @@ use crate::wsl;
 pub struct Invoker {}
 
 impl Invoker {
-    // create and command line, output if verbose, run unless dry
+    /// This function creates a command line from the specified invocable and args,
+    /// writes that command line to stdout if verbose is true,
+    /// and invokes that command line.
+    //TODO: invoker::Invoker::invoke(invocable, dry_run, verbose, pass); just doesn't look right to document.
+
     pub fn invoke(invocable: &invocable::Invocable, dry_run: bool, verbose: bool, args: Vec<String>) -> String {
         // create three constants for substituting tokens in command paths
         let results = Command::new("cmd.exe").arg("/c").arg("echo").arg("%USERPROFILE%").output().expect("failed to execute process");
@@ -104,6 +111,8 @@ impl Invoker {
             command_line.push(' ');
         }
 
+        //TODO: for bash.exe, it seems that the entire command line should appear as a properly quoted string.
+        // bash.exe -c wslpath -u C:/temp does not work, but bash.exe -c "wslpath -u C:/temp" does
         // add arguments from command configuration to command line
         for arg in invocable.arguments.iter() {
             let param: &String = &wsl::wsl_path_or_self(arg, invocable.use_bash);
