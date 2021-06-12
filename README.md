@@ -8,7 +8,7 @@ wink is written in rust using cargo and intended to be run from the Windows Cons
 
 wink is a constant work in progress as its author(s) learn about rust and discover(s) more Windows features and how to access them and add(s) support for more third-party Windows applications.
 
-wince is a bash shell script that you can use to build and run wink. \
+wince is a bash shell script that you can use to build and run wink binaries for both Windows and WSL.
 
 ```
 //TODO: address hard-coding in wince
