@@ -1,66 +1,12 @@
-// stikynot
-//TODO: check for same command in multiple invocables accross all categories
-//TODO: sysinternals not working?
-// "get" => Invoker::cmd("echo"), // Windows File System explorer //TODO: rename echo?
-//        "exp" => Invoker::exp("", &[]),    // Windows File System explorer
-
-/* wince shell script to build and run
-
-#!/bin/sh -x
-
-clear
-rustup update
-rustfmt --config max_width=2500 /mnt/c/temp/wink/src/main.rs
-
-if [ $? -ne 0 ]; then
-    echo rustfmt failed
-    exit 2
-else
-    cd /mnt/c/temp/wink
-    cargo update
-    cargo-clippy 2>&1 | egrep -iq warning
-
-    if [ $? -eq 0 ]; then
-        cargo-clippy
-        echo cargo-clippy failed
-        exit 3
-    else
-#        cargo clean --target-dir /tmp/wink.build
-#        cargo check --target-dir /tmp/wink.build
-#        cargo doc --target-dir /tmp/wink.build
-        cargo build --target-dir /tmp/wink.build --release # affects binary path below
-
-        if [ $? -ne 0 ]; then
-            echo cargo build failed
-            exit 4
-        else
-            ls -l /tmp/wink.build/release/wink
-            cp /mnt/c/temp/wink/src/main.rs /tmp/main.rs.`date +%N`.bak
-            rm ~/bin/wink
-            cp /tmp/wink.build/release/wink ~/bin
-            # use newly built Linux wink to build Windows wink binary
-#            ~/bin/wink cmd cargo.exe clean --target-dir /mnt/c/temp/wink.build
-#            ~/bin/wink cmd cargo.exe check --target-dir /mnt/c/temp/wink.build
-#            ~/bin/wink cmd cargo.exe doc --target-dir /mnt/c/temp/wink.build
-            ~/bin/wink cmd cargo.exe build --release --target-dir "C:\\temp\\wink.build" # affects binary path below
-            ls -l /mnt/c/temp/wink.build/release/wink.exe
-            ~/bin/wink cmd /mnt/c/temp/wink.build/release/wink.exe help
-            ~/bin/wink $@
-        fi
-    fi
-fi
-
-cd - > /dev/null
-exit 0
-
-*/
+use std::process::Command;
 
 use regex::Regex;
 use serde::{Deserialize, Serialize};
 use std::cmp::Ordering;
 use std::env;
 use std::io::Read;
-use std::process::Command;
+
+mod wsl;
 
 // read the specified file into a string
 fn read_file(path: &str) -> Result<String, std::io::Error> {
@@ -68,40 +14,6 @@ fn read_file(path: &str) -> Result<String, std::io::Error> {
     let mut data = String::new();
     file.read_to_string(&mut data)?;
     Ok(data)
-}
-
-// convert between Unix and Windows file paths
-// when running in Windows, return arg.
-// when running under Bash, invoke wslpath.
-// unix true will pass -u (convert Windows path to Unix)
-// unix false will pass -w (convert Unix path to Windows)
-fn wsl_path_or_self(arg: &str, unix: bool) -> String {
-    if cfg!(target_os = "windows") {
-        arg.to_string()
-    } else {
-        let mut to_run = Command::new("wslpath");
-        if unix {
-            to_run.arg("-u");
-        } else {
-            to_run.arg("-w");
-        }
-        to_run.arg(arg);
-        let results = to_run.output().expect("failed to execute process");
-        match results.status.code() {
-            Some(0) => {
-                let output = &String::from_utf8_lossy(&results.stdout).to_owned().to_string();
-
-                if output.starts_with('\\') {
-                    // unc path must start with \\
-                    return String::from(output).replace("\n", "");
-                }
-
-                String::from(output).replace("\n", "")
-            }
-
-            _ => arg.to_string(),
-        }
-    }
 }
 
 //TODO: is this the right way to define a container for static methods?
@@ -114,19 +26,19 @@ impl Invoker {
         // create three constants for substituting tokens in command paths
         let results = Command::new("cmd.exe").arg("/c").arg("echo").arg("%USERPROFILE%").output().expect("failed to execute process");
         let userpath: String = match results.status.code() {
-            Some(0) => wsl_path_or_self(String::from_utf8_lossy(&results.stdout).trim(), false),
+            Some(0) => wsl::wsl_path_or_self(String::from_utf8_lossy(&results.stdout).trim(), false),
             _ => String::from(""),
         };
 
         let results = Command::new("cmd.exe").arg("/c").arg("echo").arg("%ProgramFiles%").output().expect("failed to execute process");
         let pf64: String = match results.status.code() {
-            Some(0) => wsl_path_or_self(String::from_utf8_lossy(&results.stdout).trim(), false),
+            Some(0) => wsl::wsl_path_or_self(String::from_utf8_lossy(&results.stdout).trim(), false),
             _ => String::from(""),
         };
 
         let results = Command::new("cmd.exe").arg("/c").arg("echo").arg("%ProgramFiles(x86)%").output().expect("failed to execute process");
         let pf86 = match results.status.code() {
-            Some(0) => wsl_path_or_self(String::from_utf8_lossy(&results.stdout).trim(), false),
+            Some(0) => wsl::wsl_path_or_self(String::from_utf8_lossy(&results.stdout).trim(), false),
             _ => String::from(""),
         };
 
@@ -141,7 +53,7 @@ impl Invoker {
         // otherwise invoke the executable directly
         // this would be the executable to invoke
         //TODO: create maybe_executable in else block below instead of here; maybe requires cmd to be String?
-        let maybe_executable = &wsl_path_or_self(&invocable.command.replace("$pf64", &pf64).replace("$pf86", &pf86).replace("$userpath", &userpath).replace("$syslive", "\\\\live.sysinternals.com\\tools\\"), !cfg!(target_os = "windows"));
+        let maybe_executable = &wsl::wsl_path_or_self(&invocable.command.replace("$pf64", &pf64).replace("$pf86", &pf86).replace("$userpath", &userpath).replace("$syslive", "\\\\live.sysinternals.com\\tools\\"), !cfg!(target_os = "windows"));
 
         // if directed to use cmd.exe or start or start /b, then use cmd.exe /c
         // else if directed to use explorer.exe, then use explorer.exe
@@ -191,7 +103,7 @@ impl Invoker {
 
         // if executable specified with cmd.exe then add windows path to executable to command line
         if (invocable.use_cmd || invocable.use_start || invocable.background || invocable.use_explorer) && !invocable.command.is_empty() {
-            let command: &String = &wsl_path_or_self(&invocable.command.replace("$pf64", &pf64).replace("$pf86", &pf86).replace("$userpath", &userpath).replace("$syslive", "\\\\live.sysinternals.com\\tools\\"), false);
+            let command: &String = &wsl::wsl_path_or_self(&invocable.command.replace("$pf64", &pf64).replace("$pf86", &pf86).replace("$userpath", &userpath).replace("$syslive", "\\\\live.sysinternals.com\\tools\\"), false);
             torun.arg(command);
             command_line.push_str(command);
             command_line.push(' ');
@@ -199,7 +111,7 @@ impl Invoker {
 
         // add arguments from command configuration to command line
         for arg in invocable.arguments.iter() {
-            let param: &String = &wsl_path_or_self(arg, false);
+            let param: &String = &wsl::wsl_path_or_self(arg, false);
             torun.arg(param);
             command_line.push_str(param);
             command_line.push(' ');
@@ -207,7 +119,7 @@ impl Invoker {
 
         // append args from called command line to command line
         for arg in args.iter() {
-            let param: &String = &wsl_path_or_self(arg, false);
+            let param: &String = &wsl::wsl_path_or_self(arg, false);
             torun.arg(param);
             command_line.push_str(param);
             command_line.push(' ');
@@ -449,7 +361,7 @@ impl InvocableCategory {
         self.add(Invocable::exp("setstart", "ms-settings:startupapps", "")); //TODO: doc
         self.add(Invocable::exp("setvideo", "ms-settings:videoplayback", "")); //TODO: doc
         self.add(Invocable::exp("sounddev", "ms-settings:sound-devices", "")); //TODO: doc
-        self.add(Invocable::exp("sounds", "ms-settings:sound", "")); //TODO: doc
+        self.add(Invocable::exp("sounds", "ms-settings:sound", "Sound settings")); //TODO: doc
         self.add(Invocable::exp("storpol", "ms-settings:storagepolicies", "Storage Policies")); //TODO: doc
         self.add(Invocable::exp("storsens", "ms-settings:storagesense", "Storage Sense"));
 
@@ -1131,7 +1043,7 @@ fn main() {
                 let mut pass: Vec<String> = vec![];
 
                 for arg in args.iter().skip(first_arg_index + 1) {
-                    pass.push(wsl_path_or_self(arg, false));
+                    pass.push(wsl::wsl_path_or_self(arg, false));
                 }
 
                 Invoker::invoke(invocable, dry_run, verbose, pass);
@@ -1142,3 +1054,9 @@ fn main() {
 
     help(&format!("Command not recognized: {0}", first_arg), args, category_list.categories.to_vec());
 }
+
+// stikynot
+//TODO: check for same command in multiple invocables accross all categories
+//TODO: sysinternals not working?
+// "get" => Invoker::cmd("echo"), // Windows File System explorer //TODO: rename echo?
+//        "exp" => Invoker::exp("", &[]),    // Windows File System explorer
