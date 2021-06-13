@@ -25,8 +25,11 @@ pub fn wsl_path_or_self(arg: &str, unix: bool) -> String {
 
         to_run.arg(arg);
 
+        //TODO: check whether error control works when wslpath fails (for cmd.exe) 
+        // or when path does not exist
+        //TODO: use bash.exe to invoke wslpath for cmd.exe
         if let Ok(val) = to_run.output() {
-            return String::from(&String::from_utf8_lossy(&val.stdout).replace("\n", ""));
+            return String::from_utf8_lossy(&val.stdout).replace("\n", "");
         }
     }
 
