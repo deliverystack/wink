@@ -395,17 +395,6 @@ impl InvocableCategory {
 
     /// Add miscelaneous Invocables to the list of Invocables in this InvocableCategory.
     pub fn add_miscellaneous(&mut self) {
-        self.add(invocable::Invocable::sh("wince", "/home/jw/bin/wince", "wince"));
-        self.add(invocable::Invocable::sh("bash", "", "bash"));
-        self.add(invocable::Invocable::sh("gimp", "/usr/bin/gimp", "gimp"));
-        self.add(invocable::Invocable::sh("microsoft-edge", "/usr/bin/microsoft-edge-dev", "microsoft-edge"));
-        self.add(invocable::Invocable::sh("google-chrome", "/usr/bin/google-chrome", "google-chrome"));
-        self.add(invocable::Invocable::sh("gedit", "/usr/bin/gedit", "gimp"));
-        self.add(invocable::Invocable::sh("xcalc", "/usr/bin/xcalc", "xcalc"));
-        self.add(invocable::Invocable::sh("xeyes", "/usr/bin/xeyes", "xeyes"));
-        self.add(invocable::Invocable::sh("xclock", "/usr/bin/xclock", "xclock"));
-        self.add(invocable::Invocable::sh("lvlc", "/usr/bin/lvlc", "Linux VLC"));
-        self.add(invocable::Invocable::sh("nautilus", "/usr/bin/nautilus", "nautilus"));
         self.add(invocable::Invocable::exp("insider", "ms-settings:windowsinsider", "Microsoft Windows Insider Program"));
         self.add(invocable::Invocable::exp("wintab", "shell:::{3080F90E-D7AD-11D9-BD98-0000947B0257}", "Switch windows (Windows+Tab)"));
         self.add(invocable::Invocable::exp("showd", "shell:::{3080F90D-D7AD-11D9-BD98-0000947B0257}", "Show Windows desktop"));
