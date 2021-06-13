@@ -80,9 +80,9 @@ impl InvocableCategoryList {
             Ok(home) => home + "/.wink.json",
             Err(_home) => match env::var("USERPROFILE") {
                 Ok(val) => (val + "/wink.json"),
-                Err(val) => {
-                    eprintln!("Couldn't get HOME or USERPROFILE environment variable : {}", val);
-                    String::from("")
+                Err(_val) => {
+                    //                    eprintln!("Couldn't get HOME or USERPROFILE environment variable : {}", val);
+                    String::from("") // probably a better way to prevent attempted file reading
                 }
             },
         };
@@ -146,7 +146,8 @@ impl InvocableCategoryList {
                     }
                 }
             }
-            Err(err) => eprintln!("No custom configuration in {0} : {1}", file, err),
+            //            Err(err) => eprintln!("No custom configuration in {0} : {1}", file, err),
+            Err(_err) => {}
         }
 
         category_list
