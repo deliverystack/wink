@@ -400,6 +400,7 @@ impl InvocableCategory {
         self.add(invocable::Invocable::exp("showd", "shell:::{3080F90D-D7AD-11D9-BD98-0000947B0257}", "Show Windows desktop"));
         self.add(invocable::Invocable::exp("trouble", "ms-settings:troubleshoot", "Troubleshooting Windows"));
         self.add(invocable::Invocable::cmd("quickass", "quickassist.exe", "Windows Quick Assist"));
+        self.add(invocable::Invocable::bin_with("wupdate", "wsl.exe", "Update WSL", &["--update"]));
     }
 
     /// Add Windows utilities Invocables to the list of Invocables in this InvocableCategory.
