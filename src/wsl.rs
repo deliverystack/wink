@@ -15,20 +15,20 @@
 /// ```
 // note: // unc path must start with \\; be careful not to replace \\ with / unintionally
 pub fn wsl_path_or_self(arg: &str, unix: bool) -> String {
-    if (cfg!(target_os = "windows") && !unix) || (unix && arg.starts_with('/')) {
-        arg.to_string()
-    } else {
+    if (unix && !arg.starts_with('/')) || (!unix && arg.starts_with('/')) {
         let mut to_run = std::process::Command::new("wslpath");
         if unix {
             to_run.arg("-u");
         } else {
             to_run.arg("-w");
         }
+
         to_run.arg(arg);
-        let results = to_run.output().expect("failed to execute process");
-        match results.status.code() {
-            Some(0) => String::from(&String::from_utf8_lossy(&results.stdout).to_owned().to_string()).replace("\n", ""),
-            _ => arg.to_string(),
+
+        if let Ok(val) = to_run.output() {
+            return String::from(&String::from_utf8_lossy(&val.stdout).replace("\n", ""));
         }
     }
+
+    arg.to_string()
 }
