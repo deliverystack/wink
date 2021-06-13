@@ -2,12 +2,15 @@
 
 clear
 rustup update
+
+# this is the directory that contains the source code
 rustfmt --config max_width=2500 /mnt/c/temp/wink/src/*.rs
 
 if [ $? -ne 0 ]; then
     echo rustfmt failed
     exit 2
 else
+    # this is the directory that contains cargo.toml
     cd /mnt/c/temp/wink
     cargo update 
     cargo-clippy 2>&1 | egrep -iq warning
@@ -19,6 +22,7 @@ else
     else
 #        cargo clean --target-dir /tmp/wink.build
 #        cargo check --target-dir /tmp/wink.build
+
         cargo doc --target-dir /tmp/wink.build
         cargo build --target-dir /tmp/wink.build --release # affects binary path below 
 
