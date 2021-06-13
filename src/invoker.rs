@@ -110,22 +110,40 @@ impl Invoker {
             command_line.push(' ');
         }
 
+        let mut bash_command = String::from("");
+
         //TODO: for bash.exe, it seems that the entire command line should appear as a properly quoted string.
         // bash.exe -c wslpath -u C:/temp does not work, but bash.exe -c "wslpath -u C:/temp" does
         // add arguments from command configuration to command line
         for arg in invocable.arguments.iter() {
             let param: &String = &wsl::wsl_path_or_self(arg, invocable.use_bash);
-            torun.arg(param);
-            command_line.push_str(param);
-            command_line.push(' ');
+
+            if invocable.use_bash {
+                bash_command = format!("{0}{1} ", bash_command, param); //TOOD: quote?
+            } else {
+                torun.arg(param);
+                command_line.push_str(param);
+                command_line.push(' ');
+            }
         }
 
         // append args from called command line to command line
         for arg in args.iter() {
             let param: &String = &wsl::wsl_path_or_self(arg, invocable.use_bash);
-            torun.arg(param);
-            command_line.push_str(param);
-            command_line.push(' ');
+
+            if invocable.use_bash {
+                bash_command = format!("{0}{1} ", bash_command, param); //TOOD: quote?
+            } else {
+                torun.arg(param);
+                command_line.push_str(param);
+                command_line.push(' ');
+            }
+        }
+
+        if !bash_command.is_empty() {
+            bash_command = bash_command.trim().to_string();
+            command_line.push_str(&bash_command);
+            torun.arg(bash_command);
         }
 
         if verbose {
