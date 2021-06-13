@@ -111,7 +111,8 @@ fn main() {
         Err(_e) => {
             if !cfg!(target_os = "windows") {
                 help("Runs only under Windows and Windows Subsystem for Linux (WSL). Define WSL_DISTRO_NAME environment variable to override.", args, category_list.categories.to_vec());
-                return;
+                std::process::exit(1);
+                //                return;
             }
         }
     }
@@ -126,7 +127,8 @@ fn main() {
 
         if arg == "help" {
             help("Help requested", args, category_list.categories.to_vec());
-            return;
+            std::process::exit(1);
+            //            return;
         }
 
         // if the argument is not help and does not start with a slash or a dash, then it should be a command code
@@ -141,7 +143,8 @@ fn main() {
             // show help for -h or -?
             } else if char == 'h' || char == '?' {
                 help("Help requested", args, category_list.categories.to_vec());
-                return;
+                std::process::exit(1);
+            //                return;
             // -v
             } else if char == 'v' {
                 verbose = true;
@@ -152,7 +155,8 @@ fn main() {
                 export = true;
             } else {
                 help(format!("Unrecognized command line option in {0} : {1}", arg, char).as_str(), args, category_list.categories.to_vec());
-                return;
+                std::process::exit(1);
+                //                return;
             }
         }
 
@@ -171,7 +175,8 @@ fn main() {
 
     if first_arg.is_empty() {
         help("No command specified", args, category_list.categories.to_vec());
-        return;
+        std::process::exit(1);
+        //        return;
     }
 
     // find the invocable maching the argument from the list of invocable categories
@@ -186,12 +191,15 @@ fn main() {
                 }
 
                 invoker::Invoker::invoke(invocable, dry_run, verbose, pass);
-                return; // avoid help() default below //TODO: return 0, return 1 for help, return 2 below
+                std::process::exit(0); // TODO: return result from command
+                                       //                return; // avoid help() default below //TODO: return 0, return 1 for help, return 2 below
             }
         }
     }
 
     help(&format!("Command not recognized: {0}", first_arg), args, category_list.categories.to_vec());
+    std::process::exit(2);
+    // return
 }
 
 //TODO: check for same command in multiple invocables accross all categories
