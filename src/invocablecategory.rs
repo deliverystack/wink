@@ -254,7 +254,7 @@ impl InvocableCategory {
 
     /// Add Windows programs and features Invocables to the list of Invocables in this InvocableCategory.
     pub fn add_features(&mut self) {
-        self.add(invocable::Invocable::exp("features", "ms-settings:appsfeatures", "Optional Apps and Features Sttings")); // optionalfeatures.exe shell:::{67718415-c450-4f3c-bf8a-b487642dc39b}
+        self.add(invocable::Invocable::exp("features", "ms-settings:appsfeatures", "Optional Apps and Features Settings")); // optionalfeatures.exe shell:::{67718415-c450-4f3c-bf8a-b487642dc39b}
         self.add(invocable::Invocable::exp("optional", "ms-settings:optionalfeatures", "Optional Features Settings"));
         self.add(invocable::Invocable::cmd("programs", "appwiz.cpl", "Uninstall or Change a Program"));
         self.add(invocable::Invocable::cmd("defaults", "shell:::{17cd9488-1228-4b2f-88ce-4298e93e0966}", "Default Programs"));
