@@ -29,7 +29,11 @@ pub fn wsl_path_or_self(arg: &str, unix: bool) -> String {
         // or when path does not exist
         //TODO: use bash.exe to invoke wslpath for cmd.exe
         if let Ok(val) = to_run.output() {
-            return String::from_utf8_lossy(&val.stdout).replace("\n", "");
+            let result = String::from_utf8_lossy(&val.stdout).replace("\n", "");
+
+            if !result.is_empty() {
+                return result;
+            }
         }
     }
 
