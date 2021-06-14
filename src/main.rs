@@ -173,7 +173,7 @@ fn main() {
         None => String::new(),
     };
 
-    if first_arg.is_empty() {
+    if first_arg.is_empty() && !export {
         help("No command specified", args, category_list.categories.to_vec());
         std::process::exit(1);
         //        return;
@@ -195,6 +195,10 @@ fn main() {
                                        //                return; // avoid help() default below //TODO: return 0, return 1 for help, return 2 below
             }
         }
+    }
+
+    if export {
+        std::process::exit(0);
     }
 
     help(&format!("Command not recognized: {0}", first_arg), args, category_list.categories.to_vec());
