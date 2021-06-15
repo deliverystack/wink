@@ -86,7 +86,8 @@ fn help(msg: &str, args: Vec<String>, mut categories: Vec<invocablecategory::Inv
     println!("{0:>12} [opts] <code> [arguments]     : invoke command by command code", cmd);
     println!("            -d dry (do not execute)");
     println!("            -e export (dump configuraiton JSON)");
-    println!("            -v verbose (print command line)");
+    println!("            -p pretty-print (for use with -e)");
+    println!("            -v verbose (print command line)\n");
     println!("{0} help                          : display command usage information", cmd);
 
     if cfg!(target_os = "windows") {
@@ -120,6 +121,7 @@ fn main() {
     let mut dry_run: bool = false; // -d command line option
     let mut verbose: bool = false; // -v command line option
     let mut export: bool = false; // -e command line option
+    let mut pretty: bool = false; // -p command line option
     let mut first_arg_index = 1; // number of processed command line arguments (first is command name)
 
     for arg in args.iter().skip(1) {
@@ -151,6 +153,8 @@ fn main() {
             // -d
             } else if char == 'd' {
                 dry_run = true;
+            } else if char == 'p' {
+                pretty = true;
             } else if char == 'e' {
                 export = true;
             } else {
@@ -163,13 +167,18 @@ fn main() {
         first_arg_index += 1;
     }
 
+    if pretty && !export {
+        help("-p invalid without -e", args, category_list.categories.to_vec()); //TODO: help could print command line passed to it
+        std::process::exit(1);
+    }
+
     // first_arg should be the command code
     let first_arg = match args.get(first_arg_index) {
         Some(arg) => arg.to_lowercase(),
         None => String::new(),
     };
 
-    if first_arg.is_empty() && !export {
+    if first_arg.is_empty() && !(export || dry_run) {
         help("No command specified", args, category_list.categories.to_vec());
         std::process::exit(1);
         //        return;
@@ -187,7 +196,11 @@ fn main() {
                 }
 
                 if export {
-                    println!("{}", serde_json::to_string(&invocable).unwrap());
+                    if pretty {
+                        println!("{}", serde_json::to_string_pretty(&invocable).unwrap());
+                    } else {
+                        println!("{}", serde_json::to_string(&invocable).unwrap());
+                    }
                 }
 
                 invoker::Invoker::invoke(invocable, dry_run, verbose, pass);
@@ -198,7 +211,14 @@ fn main() {
     }
 
     if export {
-        println!("{}", serde_json::to_string(&category_list).unwrap());
+        if pretty {
+            println!("{}", serde_json::to_string_pretty(&category_list).unwrap());
+        } else {
+            println!("{}", serde_json::to_string(&category_list).unwrap());
+        }
+    }
+
+    if export || dry_run {
         std::process::exit(0);
     }
 
