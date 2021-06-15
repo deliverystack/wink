@@ -1,0 +1,21 @@
+{
+  "categories": [
+    {
+      "name": "YYZ",
+      "invocables": [
+	     {
+          "command_code": "alarms",
+          "description": "Windows Alarms and Clock",
+          "command": "shell:AppsFolder\\Microsoft.WindowsAlarms_8wekyb3d8bbwe!App",
+          "use_cmd": false,
+          "use_start": false,
+          "background": false,
+          "use_call": false,
+          "use_explorer": true,
+          "use_bash": false,
+          "arguments": []
+        }
+      ]
+    }
+  ]
+}
