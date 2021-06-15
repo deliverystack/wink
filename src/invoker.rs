@@ -20,19 +20,19 @@ impl Invoker {
         let results = Command::new("cmd.exe").arg("/c").arg("echo").arg("%USERPROFILE%").output().expect("failed to execute process");
         let userpath: String = match results.status.code() {
             Some(0) => wsl::wsl_path_or_self(String::from_utf8_lossy(&results.stdout).trim(), false),
-            _ => String::from(""),
+            _ => String::new(),
         };
 
         let results = Command::new("cmd.exe").arg("/c").arg("echo").arg("%ProgramFiles%").output().expect("failed to execute process");
         let pf64: String = match results.status.code() {
             Some(0) => wsl::wsl_path_or_self(String::from_utf8_lossy(&results.stdout).trim(), false),
-            _ => String::from(""),
+            _ => String::new(),
         };
 
         let results = Command::new("cmd.exe").arg("/c").arg("echo").arg("%ProgramFiles(x86)%").output().expect("failed to execute process");
         let pf86 = match results.status.code() {
             Some(0) => wsl::wsl_path_or_self(String::from_utf8_lossy(&results.stdout).trim(), false),
-            _ => String::from(""),
+            _ => String::new(),
         };
 
         // for -v [verbose] command line option
@@ -110,7 +110,7 @@ impl Invoker {
             command_line.push(' ');
         }
 
-        let mut bash_command = String::from("");
+        let mut bash_command = String::new();
 
         //TODO: for bash.exe, it seems that the entire command line should appear as a properly quoted string.
         // bash.exe -c wslpath -u C:/temp does not work, but bash.exe -c "wslpath -u C:/temp" does
@@ -157,13 +157,13 @@ impl Invoker {
                 let results = torun.output().expect("failed to execute process");
                 let err = String::from_utf8_lossy(&results.stderr);
 
-                if err != "" {
+                if !err.is_empty() {
                     eprintln!("{}", err);
                 }
 
                 let out = String::from_utf8_lossy(&results.stdout);
 
-                if out != "" {
+                if !out.is_empty() {
                     println!("{}", out);
                 }
             }
