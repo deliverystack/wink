@@ -10,7 +10,7 @@
 /// let results = Command::new("cmd.exe").arg("/c").arg("echo").arg("%USERPROFILE%").output().expect("failed to execute process");
 /// let userpath: String = match results.status.code() {
 ///     Some(0) => wsl::wsl_path_or_self(String::from_utf8_lossy(&results.stdout).trim(), false /*unix*/ ),
-///    _ => String::from(""),
+///    _ => String::new(),
 /// };
 /// ```
 // note: // unc path must start with \\; be careful not to replace \\ with / unintionally
@@ -29,7 +29,7 @@ pub fn wsl_path_or_self(arg: &str, unix: bool) -> String {
         // or when path does not exist
         //TODO: use bash.exe to invoke wslpath for cmd.exe
         if let Ok(val) = to_run.output() {
-            let result = String::from_utf8_lossy(&val.stdout).replace("\n", "");
+            let result = String::from_utf8_lossy(&val.stdout).trim().to_string(); //.replace("\n", "");
 
             if !result.is_empty() {
                 return result;

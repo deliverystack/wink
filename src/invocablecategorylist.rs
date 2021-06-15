@@ -82,7 +82,7 @@ impl InvocableCategoryList {
                 Ok(val) => (val + "/wink.json"),
                 Err(_val) => {
                     //                    eprintln!("Couldn't get HOME or USERPROFILE environment variable : {}", val);
-                    String::from("") // probably a better way to prevent attempted file reading
+                    String::new() // probably a better way to prevent attempted file reading
                 }
             },
         };
