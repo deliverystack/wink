@@ -443,7 +443,7 @@ impl InvocableCategory {
         self.add(invocable::Invocable::exp("fam", "ms-wpc:", "Ask for permission (family)"));
         self.add(invocable::Invocable::bin("isoburn", "isoburn.exe", "ISO disk burner"));
         self.add(invocable::Invocable::bin("notepad", "notepad.exe", "Windows Notepad"));
-        self.add(invocable::Invocable::bin("wordpad", "pf86/Windows NT/Accessories/wordpad.exe", "Windows Wordpad"));
+        self.add(invocable::Invocable::bin("wordpad", "$pf86/Windows NT/Accessories/wordpad.exe", "Windows Wordpad"));
         self.add(invocable::Invocable::bin("mp", "pf64/windows media player/wmplayer.exe", "Windows Media Player"));
         self.add(invocable::Invocable::exp("sync", "shell:::{9C73F5E5-7AE7-4E32-A8E8-8D23B85255BF}", "Sync Center"));
         self.add(invocable::Invocable::bin("paint", "paint.exe", "Windows Paint"));
