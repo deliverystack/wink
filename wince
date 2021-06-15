@@ -20,9 +20,8 @@ else
         echo cargo-clippy failed
         exit 3
     else
-#        cargo clean --target-dir /tmp/wink.build
-#        cargo check --target-dir /tmp/wink.build
-
+        cargo clean --target-dir /tmp/wink.build
+        cargo check --target-dir /tmp/wink.build
         cargo doc --target-dir /tmp/wink.build
         cargo build --target-dir /tmp/wink.build --release # affects binary path below 
 
@@ -30,24 +29,17 @@ else
             echo cargo build failed
             exit 4
         else
-            ls -l /tmp/wink.build/release/wink
-            /tmp/wink.build/release/wink exp /tmp/wink.build/doc/wink/index.html
-
-#            cp /mnt/c/temp/wink/src/main.rs /tmp/main.rs.`date +%N`.bak
-            rm ~/bin/wink
-            cp /tmp/wink.build/release/wink ~/bin
-            # use newly built Linux wink to build Windows wink binary
-#            ~/bin/wink cmd cargo.exe clean --target-dir /mnt/c/temp/wink.build
-#            ~/bin/wink cmd cargo.exe check --target-dir /mnt/c/temp/wink.build
-#            ~/bin/wink cmd cargo.exe doc --target-dir /mnt/c/temp/wink.build
+            ls -l /tmp/wink.build/release/wink # show file size and build date
+            /tmp/wink.build/release/wink exp /tmp/wink.build/doc/wink/index.html # open documentation
+            cp /tmp/wink.build/release/wink ~/bin # install new binary for Linux
             ~/bin/wink cmd cargo.exe build --release --target-dir "C:\\temp\\wink.build" # affects binary path below 
-            /mnt/c/temp/wink.build/release/wink.exe -ep > /tmp/wink.build/doc/wink/wink.json
-            cp /tmp/wink.build/doc/wink/wink.json .
-            ~/bin/wink $@
+            /mnt/c/temp/wink.build/release/wink.exe -ep > /tmp/wink.build/doc/wink/wink.json # export JSON to docs
+            cp /tmp/wink.build/doc/wink/wink.json . # copy JSON to git
+            ~/bin/wink $@ # run Linux build with parameters supplied on command line
         fi
     fi
 fi
 
-cp /mnt/c/temp/wink/wince ~/bin
-cd - > /dev/null
+cp /mnt/c/temp/wink/wince ~/bin # instll this wince shell script
+cd - > /dev/null # revert to the previous directory
 exit 0
