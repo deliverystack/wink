@@ -523,7 +523,7 @@ impl InvocableCategory {
         self.add(invocable::Invocable::bin("postman", "$userpath/AppData/Local/Postman/Postman.exe", "Postman"));
 
         self.add(invocable::Invocable::bin("zoom", "$userpath/AppData/Roaming/Zoom/bin/Zoom.exe", "Zoom"));
-        self.add(invocable::Invocable::cmd_with("killzoom", "taskkill.exe", "Kill Zoom", &["/im", "zoom.exe"]));
+        self.add(invocable::Invocable::cmd_with("killzoom", "taskkill.exe", "Kill Zoom", &["/t", "/f", "/im", "zoom.exe"]));
         self.add(invocable::Invocable::bin("ransack", "$pf64/Mythicsoft/Agent Ransack/AgentRansack.exe", "Mozilla Thunderbird email client"));
         self.add(invocable::Invocable::bin("email", "shell:::{2559a1f5-21d7-11d4-bdaf-00c04f60b9f0}", "Default email program"));
         self.add(invocable::Invocable::bin("slack", "$userpath/AppData/Local/slack/slack.exe", "Slack"));
