@@ -70,6 +70,8 @@ impl InvocableCategory {
 
     /// Add Windows locations Invocables to the list of Invocables in this InvocableCategory.
     pub fn add_locations(&mut self) {
+        self.add(invocable::Invocable::cmd("fsmgmt", "fsmgmt", "Shared Folders"));
+
         self.add(invocable::Invocable::exp("portdev", "shell:::{35786D3C-B075-49b9-88DD-029876E11C01}", "Portable Devices folder"));
         self.add(invocable::Invocable::exp("thisdev", "shell:::{5b934b42-522b-4c34-bbfe-37a3ef7b9c90}", "This Device folder"));
         self.add(invocable::Invocable::exp("homegrp", "shell:::{6785BFAC-9D2D-4be5-B7E2-59937E8FB80A}", "Home Group folder"));
@@ -175,7 +177,7 @@ impl InvocableCategory {
         self.add(invocable::Invocable::exp("fileopt", "shell:::{6DFD7C5C-2451-11d3-A299-00C04F8EF6AF}", "File Explorer settings"));
         self.add(invocable::Invocable::cmd_with("oldfonts", "control.exe", "Legacy fonts control panel", &["fonts"])); //TODO: duplicate?
         self.add(invocable::Invocable::cmd("perfopt", "SystemPropertiesPerformance.exe", "Performance Options"));
-        self.add(invocable::Invocable::cmd("devman", "hdwwiz.cpl", "Device Manager control pane"));
+        self.add(invocable::Invocable::cmd("devman", "hdwwiz.cpl", "Device Manager control pane")); // devmgmt.msc
         self.add(invocable::Invocable::cmd("timedate", "timedate.cpl", "Date and Time control panel"));
         self.add(invocable::Invocable::cmd("inet", "inetcpl.cpl", "Internet control panel"));
         self.add(invocable::Invocable::cmd("joy", "joy.cpl", "Game Controllers control panel"));
@@ -351,6 +353,9 @@ impl InvocableCategory {
 
     /// Add security-related Invocables to the list of Invocables in this InvocableCategory.
     pub fn add_security(&mut self) {
+        self.add(invocable::Invocable::cmd("secpol", "secpol.msc", "Security Policy"));
+        self.add(invocable::Invocable::cmd("gpedit", "gpedit.msc", "Local Group Policy Editor"));
+        self.add(invocable::Invocable::cmd("lusrmgr", "lusrmgr.msc", "Local Users and Groups"));
         self.add(invocable::Invocable::exp("user", "shell:::{60632754-c523-4b62-b45c-4172da012619}", "User Accounts"));
         self.add(invocable::Invocable::cmd_with("userpass", "control.exe", "", &["userpasswords2"]));
         self.add(invocable::Invocable::cmd("psr", "psr.exe", "Password Safe Repository"));
@@ -368,7 +373,8 @@ impl InvocableCategory {
         self.add(invocable::Invocable::exp("winsec", "ms-settings:windowsdefender", "Windows Security Settings"));
         self.add(invocable::Invocable::exp("bitlock", "shell:::{D9EF8727-CAC2-4e60-809E-86F80A666C91}", "Bitlocker Drive Encryption"));
         self.add(invocable::Invocable::cmd("authman", "azman.msc", "Security Authorization Manager"));
-        self.add(invocable::Invocable::cmd("certmgr", "certmgr.msc", "Security Certificate Manager"));
+        self.add(invocable::Invocable::cmd("certmgr", "certmgr.msc", "Security Certificate Manager - Current User"));
+        self.add(invocable::Invocable::cmd("certlm", "certlm.msc", "Security Certificate Manager - Local Machine"));
         self.add(invocable::Invocable::cmd("useracts", "netplwiz.exe", "Security User Accounts"));
         self.add(invocable::Invocable::exp("users", "shell:userprofiles", "User Profiles"));
         self.add(invocable::Invocable::cmd("uac", "UserAccountControlSettings.exe", ""));
@@ -420,6 +426,12 @@ impl InvocableCategory {
 
     /// Add Windows utilities Invocables to the list of Invocables in this InvocableCategory.
     pub fn add_utilities(&mut self) {
+        self.add(invocable::Invocable::cmd("diskman", "diskmgmt.msc", "Disk Management"));
+
+        self.add(invocable::Invocable::cmd("mmc", "mmc.exe", "Microsoft Management Console"));
+        self.add(invocable::Invocable::cmd("rsop", "rsop.mmc", "Microsoft")); //TODO: doc
+        self.add(invocable::Invocable::cmd("printman", "printmanagement.msc", "Print Management"));
+
         self.add(invocable::Invocable::exp("run", "shell:::{2559a1f3-21d7-11d4-bdaf-00c04f60b9f0}", "Windows Run Dialog"));
         self.add(invocable::Invocable::cmd("lpksetup", "lpksetup.exe", "Language Pack Setup"));
         self.add(invocable::Invocable::cmd("msinfo32", "msinfo32.exe", "System Information"));
@@ -427,6 +439,9 @@ impl InvocableCategory {
         self.add(invocable::Invocable::cmd("iexplore", "$pf64/Internet Explorer/iexplore.exe", "Internet Explorer"));
         self.add(invocable::Invocable::cmd_with("pwrd", "rundll32.exe", "Steps Recorder", &["keymgr.dll,PRShowSaveWizardExW"]));
         self.add(invocable::Invocable::cmd("tpm", "tpminit.exe", "Trusted Platform Module"));
+        self.add(invocable::Invocable::cmd("tpm.msc", "tpm.msc", "")); //TODO: doc
+        self.add(invocable::Invocable::cmd("devmode", "DevModeRunAsUserConfig.msc", "")); //TODO: doc
+
         self.add(invocable::Invocable::cmd("odbcconf", "odbcconf.exe", ""));
         self.add(invocable::Invocable::cmd("wmimgmt", "wmimgmt.msc", ""));
         self.add(invocable::Invocable::cmd("fsquirt", "fsquirt.exe", "Bluetooth File Transfer"));
@@ -436,7 +451,7 @@ impl InvocableCategory {
         self.add(invocable::Invocable::cmd("colorcpl", "colorcpl", "Color Management"));
         self.add(invocable::Invocable::cmd("compmgmt", "compmgmt.msc", "Computer Management"));
         self.add(invocable::Invocable::cmd_with("editenv", "rundll32.exe", "Edit environment variables", &["sysdm.cpl,EditEnvironmentVariables"]));
-        self.add(invocable::Invocable::cmd("comserv", "dcomcnfg.exe", "Component Services Configuration"));
+        self.add(invocable::Invocable::cmd("comserv", "dcomcnfg.exe", "Component Services Configuration")); // comexp.msc
         self.add(invocable::Invocable::cmd("printui", "printui.exe", "Print User Interface"));
         self.add(invocable::Invocable::cmd("eudcedit", "eudcedit.exe", "Private Character Editor"));
         self.add(invocable::Invocable::cmd("osk", "osk.exe", "On-screen keyboard"));
@@ -495,7 +510,7 @@ impl InvocableCategory {
         self.add(invocable::Invocable::cmd("taskmgr", "taskmgr.exe", "Windows Task Manager"));
         self.add(invocable::Invocable::cmd("taskschd", "taskschd.msc", "Windows Task Scheduler"));
         self.add(invocable::Invocable::bin("dvdplay", "dvdplay.exe", "DVD player (Windows Media Player)"));
-        self.add(invocable::Invocable::cmd("eventvwr", "eventwvr.msc", "Windows Event Viewer"));
+        self.add(invocable::Invocable::cmd("eventvwr", "eventvwr.msc", "Windows Event Viewer"));
         self.add(invocable::Invocable::cmd("regedt32", "regedt32.exe", "Windows Registry Editor"));
         self.add(invocable::Invocable::cmd("resmon", "resmon.exe", "Windows Resource Monitor"));
         self.add(invocable::Invocable::cmd("services", "services.msc", "Windows Services"));
@@ -503,7 +518,9 @@ impl InvocableCategory {
 
     /// Add various Windows application Invocables to the list of Invocables in this InvocableCategory.
     pub fn add_applications(&mut self) {
+        self.add(invocable::Invocable::bin("spotify", "$userpath/AppData/Roaming/Spotify/Spotify.exe", "Spotify"));
         self.add(invocable::Invocable::bin("mdp", "$pf86/MarkdownPad 2/MarkdownPad2.exe", "MarkdownPad2"));
+        self.add(invocable::Invocable::bin("postman", "$userpath/AppData/Local/Postman/Postman.exe", "Postman"));
 
         self.add(invocable::Invocable::bin("zoom", "$userpath/AppData/Roaming/Zoom/bin/Zoom.exe", "Zoom"));
         self.add(invocable::Invocable::cmd_with("killzoom", "taskkill.exe", "Kill Zoom", &["/im", "zoom.exe"]));
