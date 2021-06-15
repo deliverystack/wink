@@ -379,19 +379,19 @@ impl InvocableCategory {
         self.add(invocable::Invocable::sh("wince", "/home/jw/bin/wince", "Run the shell script that recompiles this program"));
 
         self.add(invocable::Invocable::sh("gowindow", "mkdir /mnt/c/temp/GoWindow.{ED7BA470-8E54-465E-825C-99712043E01C} > /dev/null 2>&1 ; explorer.exe `wslpath -w C:\\temp\\GoWindow.{ED7BA470-8E54-465E-825C-99712043E01C}`", "GoWindow (God Mode)"));
-/*        
-        self.add(invocable::Invocable::sh(
-            "ntt",
-            "
-            if [ \"$1\" = \"\" ]; then
-                cmd.exe /c wt.exe -w 0 nt bash.exe -c \"$0 $PWD\" 2>/dev/null
-            else
-                cd $1
-                bash.exe
-            fi",
-            "New Windows Terminal Tab in current directory",
-        ));
-*/
+        /*
+                self.add(invocable::Invocable::sh(
+                    "ntt",
+                    "
+                    if [ \"$1\" = \"\" ]; then
+                        cmd.exe /c wt.exe -w 0 nt bash.exe -c \"$0 $PWD\" 2>/dev/null
+                    else
+                        cd $1
+                        bash.exe
+                    fi",
+                    "New Windows Terminal Tab in current directory",
+                ));
+        */
         self.add(invocable::Invocable::sh("bash", "", "Run the Unix command specified on the command line"));
         self.add(invocable::Invocable::sh("gimp", "/usr/bin/gimp", "gimp (image manipulation)"));
         self.add(invocable::Invocable::sh("microsoft-edge", "/usr/bin/microsoft-edge-dev", "microsoft-edge (brower)"));
