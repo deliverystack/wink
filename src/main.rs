@@ -163,10 +163,6 @@ fn main() {
         first_arg_index += 1;
     }
 
-    if export {
-        println!("{}", serde_json::to_string(&category_list).unwrap());
-    }
-
     // first_arg should be the command code
     let first_arg = match args.get(first_arg_index) {
         Some(arg) => arg.to_lowercase(),
@@ -190,14 +186,19 @@ fn main() {
                     pass.push(wsl::wsl_path_or_self(arg, false));
                 }
 
+                if export {
+                    println!("{}", serde_json::to_string(&invocable).unwrap());
+                }
+
                 invoker::Invoker::invoke(invocable, dry_run, verbose, pass);
+                // avoid help() default below
                 std::process::exit(0); // TODO: return result from command
-                                       //                return; // avoid help() default below //TODO: return 0, return 1 for help, return 2 below
             }
         }
     }
 
     if export {
+        println!("{}", serde_json::to_string(&category_list).unwrap());
         std::process::exit(0);
     }
 
