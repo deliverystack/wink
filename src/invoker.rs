@@ -147,7 +147,7 @@ impl Invoker {
         }
 
         if verbose {
-            println!("-{}-", command_line);
+            println!("{}", command_line);
         }
 
         if !dry_run {
