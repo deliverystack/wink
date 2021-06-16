@@ -12,6 +12,7 @@ if [ $? -ne 0 ]; then
 else
     # this is the directory that contains cargo.toml
     cd /mnt/c/temp/wink
+    for f in **/*.rs; do ls -hs "$f" ; wc -l "$f" ; echo "" ; done
     cargo update 
     cargo-clippy 2>&1 | egrep -iq warning
 
@@ -20,8 +21,8 @@ else
         echo cargo-clippy failed
         exit 3
     else
-        cargo clean --target-dir /tmp/wink.build
-        cargo check --target-dir /tmp/wink.build
+#        cargo clean --target-dir /tmp/wink.build
+ #       cargo check --target-dir /tmp/wink.build
         cargo doc --target-dir /tmp/wink.build
         cargo build --target-dir /tmp/wink.build --release # affects binary path below 
 
