@@ -12,7 +12,7 @@ if [ $? -ne 0 ]; then
 else
     # this is the directory that contains cargo.toml
     cd /mnt/c/temp/wink
-    for f in **/*.rs; do ls -hs "$f" ; wc -l "$f" ; echo "" ; done
+    for f in **/*.rs; do ls -l "$f" ; wc -l "$f" ; echo "" ; done
     cargo update 
     cargo-clippy 2>&1 | egrep -iq warning
 
@@ -32,6 +32,9 @@ else
         else
             ls -l /tmp/wink.build/release/wink # show file size and build date
 #            /tmp/wink.build/release/wink exp /tmp/wink.build/doc/wink/index.html # open documentation
+            lsof /tmp/wink.build/release/wink
+            lsof ~/bin/wink
+            rm ~/bin/wink
             cp /tmp/wink.build/release/wink ~/bin # install new binary for Linux
             cargo.exe build --release --target-dir "C:\\temp\\wink.build" # affects binary path below 
             /mnt/c/temp/wink.build/release/wink.exe -ep > /tmp/wink.build/doc/wink/wink.json # export JSON to docs
