@@ -15,27 +15,28 @@
 /// ```
 // note: // unc path must start with \\; be careful not to replace \\ with / unintionally
 pub fn wsl_path_or_self(arg: &str, unix: bool) -> String {
-    if (unix && !arg.starts_with('/')) || (!unix && arg.starts_with('/')) {
-        let mut to_run = std::process::Command::new("wslpath");
-        if unix {
-            to_run.arg("-u");
-        } else {
-            to_run.arg("-w");
-        }
+    //    if (!unix || arg.starts_with('/')) {
+    //        // && arg.starts_with('/')) {
+    let mut to_run = std::process::Command::new("wslpath");
+    if unix {
+        to_run.arg("-u");
+    } else {
+        to_run.arg("-w");
+    }
 
-        to_run.arg(arg);
+    to_run.arg(arg);
 
-        //TODO: check whether error control works when wslpath fails (for cmd.exe)
-        // or when path does not exist
-        //TODO: use bash.exe to invoke wslpath for cmd.exe
-        if let Ok(val) = to_run.output() {
-            let result = String::from_utf8_lossy(&val.stdout).trim().to_string(); //.replace("\n", "");
+    //TODO: check whether error control works when wslpath fails (for cmd.exe)
+    // or when path does not exist
+    //TODO: use bash.exe to invoke wslpath for cmd.exe
+    if let Ok(val) = to_run.output() {
+        let result = String::from_utf8_lossy(&val.stdout).trim().to_string(); //.replace("\n", "");
 
-            if !result.is_empty() {
-                return result;
-            }
+        if !result.is_empty() {
+            return result;
         }
     }
+    //    }
 
     arg.to_string()
 }
