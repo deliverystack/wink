@@ -9,8 +9,8 @@
 
 //! Run wink with no command line parameters to get usage information.
 
-use regex::Regex;
-use std::env;
+//use regex::Regex;
+//use std::env;
 
 //extern crate term;
 //use term;
@@ -30,39 +30,89 @@ mod wsl;
 
 fn help(msg: &str, args: Vec<String>, mut categories: Vec<invocablecategory::InvocableCategory>) {
     // cmd = basename(wink.exe)
-    let cmd = Regex::new(r".*[\\/](?P<name>[^\\/]+$)").unwrap().replace_all(args[0].as_str(), "$name");
+    let cmd = regex::Regex::new(r".*[\\/](?P<name>[^\\/]+$)").unwrap().replace_all(args[0].as_str(), "$name");
 
-    println!();
-    println!("-----------------------------------------------------------------------------");
-    println!("{0:>12} : access  Windows and WSL features : {1}", cmd, msg);
-    println!(
-        "-----------------------------------------------------------------------------
-
+    print!(
+        "
 -----------------------------------------------------------------------------
-{0:>12} exp                explorer.exe
------------------------------------------------------------------------------
-{0:>12} exp <file.ext>     Set/open default application for extension
-{0:>12} exp <shell:sendto> Invoke command code (replace <shell:sendto>)
+{0:>12} : access  Windows and WSL features : {1}
 -----------------------------------------------------------------------------
 
 -----------------------------------------------------------------------------
-{0:>12} cmd                cmd.exe /c
+{0:>12} ",
+        cmd, msg
+    );
+    color("EXP");
+    print!(
+        "                explorer.exe
 -----------------------------------------------------------------------------
-{0:>12} cmd <cmd> [args]   Invoke Windows console command line
-{0:>12} cmd echo %PATH%    Display Windows environment variable
------------------------------------------------------------------------------
-
------------------------------------------------------------------------------
-{0:>12} bash                bash.exe -c
------------------------------------------------------------------------------
-{0:>12} bash /path [args]  Invoke shell command line
-{0:>12} bash echo '$USER'  Display WSL environment variable
------------------------------------------------------------------------------
-
------------------------------------------------------------------------------
-{0:>12} code [args]        See command code tables below
------------------------------------------------------------------------------",
+{0:>12} ",
         cmd
+    );
+    color("EXP");
+    print!(
+        " <file.ext>     Set/open default application for extension
+{0:>12} ",
+        cmd
+    );
+
+    color("EXP");
+    print!(
+        " <shell:sendto> Invoke command code (replace <shell:sendto>)
+-----------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------
+{0:>12} ",
+        cmd
+    );
+    color("CMD");
+    print!(
+        "                 cmd.exe /c
+-----------------------------------------------------------------------------
+{0:>12} ",
+        cmd
+    );
+    color("CMD");
+    print!(
+        " <cmd> [args]   Invoke Windows console command line
+{0:>12} ",
+        cmd
+    );
+    color("CMD");
+    print!(
+        " echo %PATH%    Display Windows environment variable
+-----------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------
+{0:>12} ",
+        cmd
+    );
+    color("BASH");
+    print!(
+        "                bash.exe -c
+-----------------------------------------------------------------------------
+{0:>12} ",
+        cmd
+    );
+    color("BASH");
+    print!(
+        " /path [args]  Invoke shell command line
+{0:>12} ",
+        cmd
+    );
+    color("BASH");
+    print!(
+        " echo '$USER'  Display WSL environment variable
+-----------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------
+{0:>12} ",
+        cmd
+    );
+    color("CODE");
+    println!(
+        " [args]        See command code tables below
+-----------------------------------------------------------------------------",
     );
 
     let mut count = 0;
@@ -91,17 +141,23 @@ fn help(msg: &str, args: Vec<String>, mut categories: Vec<invocablecategory::Inv
 
     println!("\n{0:>12} : {1} known command codes\n", cmd, count);
     println!("{0:>12} : access Windows features : {1}\n", cmd, msg);
-    println!("{0:>12} [opts] <code> [arguments]     : invoke command by command code", cmd);
+    print!("{0:>12} [opts] <", cmd);
+    color("CODE");
+    println!("> [arguments]");
     println!("            -d dry (do not execute)");
-    println!("            -e export (dump configuraiton JSON)");
+    println!("            -e export (configuraiton JSON)");
     println!("            -p pretty-print (for use with -e)");
     println!("            -v verbose (print command line)\n");
-    println!("{0} help                          : display command usage information", cmd);
+    print!("{0} ", cmd);
+    color("HELP");
+    println!(" :                  display command usage information");
+    print!("{0} ", cmd);
+    color("HELP");
 
     if cfg!(target_os = "windows") {
-        println!("{0} help | find /i \"text\"         : identify command code matching text", cmd);
+        println!(" | find /i \"text\" :: identify command code matching text");
     } else {
-        println!("{0} help | grep -i \"text\"         : identify command code matching text", cmd);
+        println!(" | grep -i \"text\" # identify command code matching text");
     }
 }
 
@@ -109,21 +165,17 @@ fn help(msg: &str, args: Vec<String>, mut categories: Vec<invocablecategory::Inv
 /// rather than as parameters.
 fn main() {
     // command line arguments
-    let args: Vec<String> = env::args().collect();
+    let args: Vec<String> = std::env::args().collect();
 
     // categories contain lists of invocables that map command codes to commands
     let category_list = invocablecategorylist::InvocableCategoryList::get();
 
     // if not running under WSL or Windows, it should not be possible to run Windows commands
-    match env::var("WSL_DISTRO_NAME") {
-        Ok(_e) => {}
-        Err(_e) => {
-            if !cfg!(target_os = "windows") {
-                help("Runs only under Windows and Windows Subsystem for Linux (WSL). Define WSL_DISTRO_NAME environment variable to override.", args, category_list.categories.to_vec());
-                std::process::exit(1);
-                //                return;
-            }
-        }
+
+    if !wsl::is_windows_or_wsl() {
+        help("Runs only under Windows and Windows Subsystem for Linux (WSL). Define WSL_DISTRO_NAME environment variable to override.", args, category_list.categories.to_vec());
+        std::process::exit(1);
+        //                return;
     }
 
     let mut dry_run: bool = false; // -d command line option
@@ -233,6 +285,14 @@ fn main() {
     help(&format!("Command not recognized: {0}", first_arg), args, category_list.categories.to_vec());
     std::process::exit(2);
     // return
+}
+
+fn color(msg: &str) {
+    let mut terminal = term::stdout().unwrap();
+    terminal.fg(term::color::BRIGHT_CYAN).unwrap();
+    terminal.attr(term::Attr::Bold).unwrap();
+    print!("{0}", msg);
+    terminal.reset().unwrap();
 }
 
 //TODO: check for same command in multiple invocables accross all categories
