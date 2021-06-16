@@ -2287,6 +2287,20 @@
           "use_explorer": true,
           "use_bash": false,
           "arguments": []
+        },
+        {
+          "command_code": "ss",
+          "description": "Screen Saver Settings",
+          "command": "control.exe",
+          "use_cmd": false,
+          "use_start": false,
+          "background": false,
+          "use_call": false,
+          "use_explorer": false,
+          "use_bash": false,
+          "arguments": [
+            "desk.cpl,,@screensaver"
+          ]
         }
       ]
     },
