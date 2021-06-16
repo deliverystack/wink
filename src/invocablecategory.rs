@@ -271,6 +271,8 @@ impl InvocableCategory {
 
     /// Add networking components to the list of Invocables in this InvocableCategory.
     pub fn add_networking(&mut self) {
+        self.add(invocable::Invocable::cmd_with("flushdns", "ipconfig.exe", "Flush DNS Cache", &["/flushdns"]));
+
         self.add(invocable::Invocable::exp("remoteapp", "shell:::{241D7C96-F8BF-4F85-B01F-E2B043341A4B}", "RemoteApp and Desktop Connections"));
         self.add(invocable::Invocable::exp("yurphone", "ms-settings:mobile-devices", "Mobile Devices/Your Phone"));
         self.add(invocable::Invocable::exp("addphone", "ms-settings:mobile-devices-addphone-direct", "Mobile Devices/Add Phone"));
@@ -325,7 +327,7 @@ impl InvocableCategory {
 
     /// Add shutdown commands to the list of Invocables in this InvocableCategory.
     pub fn add_shutdown(&mut self) {
-        self.add(invocable::Invocable::bin_with("boot", "shutdown.exe", "Reboot", &["/r"])); // "/t", "30"]), //reboot in 30 seconds unless shutdown.exe /a
+        self.add(invocable::Invocable::bin_with("boot", "shutdown.exe", "Reboot", &["/r", "/t", "10"])); // "/t", "30"]), //reboot in 30 seconds unless shutdown.exe /a
         self.add(invocable::Invocable::bin_with("bootopt", "shutdown.exe", "Reboot to boot options", &["/r", "/o"])); //"/t", "30"]), // reboot to boot options in 30 seconds unless shutdown.exe /a
         self.add(invocable::Invocable::bin_with("down", "shutdown.exe", "Shut down", &["/s"])); // "/t", "30"]), // shut down in 30 seconds unless shutdown.exe /a
         self.add(invocable::Invocable::bin_with("firmware", "shutdown.exe", "Reboot to firmware", &["/r", "/fw"])); // "/t", "30"]), // reboot to formware in 30 seconds unless shutdown.exe /a
@@ -519,6 +521,8 @@ impl InvocableCategory {
 
     /// Add various Windows application Invocables to the list of Invocables in this InvocableCategory.
     pub fn add_applications(&mut self) {
+        self.add(invocable::Invocable::bin("skype", "$pf86/Microsoft/Skype for Desktop/Skype.exe", "Skype"));
+
         self.add(invocable::Invocable::bin("spotify", "$userpath/AppData/Roaming/Spotify/Spotify.exe", "Spotify"));
         self.add(invocable::Invocable::bin("mdp", "$pf86/MarkdownPad 2/MarkdownPad2.exe", "MarkdownPad2"));
         self.add(invocable::Invocable::bin("postman", "$userpath/AppData/Local/Postman/Postman.exe", "Postman"));
