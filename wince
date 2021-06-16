@@ -3,16 +3,24 @@
 clear
 rustup update
 
+projdir=/mnt/c/temp/wink
+linbld=/tmp/wink.build
+winbld='C:\temp\wink.build'
+lwinbld=`wslpath $winbld`
+linstall=~/bin
+
 # this is the directory that contains the source code
-rustfmt --config max_width=2500 /mnt/c/temp/wink/src/*.rs
+rustfmt --config max_width=2500 $projdir/src/*.rs
 
 if [ $? -ne 0 ]; then
     echo rustfmt failed
     exit 2
 else
     # this is the directory that contains cargo.toml
-    cd /mnt/c/temp/wink
+    cd $projdir
+    set +x
     for f in **/*.rs; do ls -l "$f" ; wc -l "$f" ; echo "" ; done
+    set -x
     cargo update 
     cargo-clippy 2>&1 | egrep -iq warning
 
@@ -23,27 +31,31 @@ else
     else
 #        cargo clean --target-dir /tmp/wink.build
  #       cargo check --target-dir /tmp/wink.build
-        cargo doc --target-dir /tmp/wink.build
-        cargo build --target-dir /tmp/wink.build --release # affects binary path below 
+        cargo doc --target-dir $linbld
+        cargo build --target-dir $linbld --release # affects binary path below 
 
         if [ $? -ne 0 ]; then
             echo cargo build failed
             exit 4
         else
-            ls -l /tmp/wink.build/release/wink # show file size and build date
+            ls -l ${linbld}/release/wink # show file size and build date
 #            /tmp/wink.build/release/wink exp /tmp/wink.build/doc/wink/index.html # open documentation
-            lsof /tmp/wink.build/release/wink
-            lsof ~/bin/wink
-            rm ~/bin/wink
-            cp /tmp/wink.build/release/wink ~/bin # install new binary for Linux
-            cargo.exe build --release --target-dir "C:\\temp\\wink.build" # affects binary path below 
-            /mnt/c/temp/wink.build/release/wink.exe -ep > /tmp/wink.build/doc/wink/wink.json # export JSON to docs
-            cp /tmp/wink.build/doc/wink/wink.json . # copy JSON to git
-            ~/bin/wink $@ # run Linux build with parameters supplied on command line
+#            lsof /tmp/wink.build/release/wink
+#            lsof ~/bin/wink
+            rm ${linstall}/wink
+            cp ${linbld}/release/wink $linstall # install new binary for Linux
+            cargo.exe build --release --target-dir "$winbld" # affects binary path below 
+            ${winbld}/release/wink.exe -ep > ${linbld}/doc/wink/wink.json # export JSON to docs
+            ls -l ${linbld}/doc/wink/wink.json
+            cp ${linbld}/doc/wink/wink.json . # copy JSON to git
+            path=`cmd.exe /c echo %USERPROFILE% | sed -e 's/\r//g'` # should be in %PATH%
+            path=`wslpath $path | sed -e 's/\r//g'`/AppData/Local/Microsoft/WindowsApps 
+            cp ${lwinbld}/release/wink.exe $path # install Windows binary
+            ${linstall}/wink $@ # run Linux build with parameters supplied on command line
         fi
     fi
 fi
 
-cp /mnt/c/temp/wink/wince ~/bin # instll this wince shell script
+cp /mnt/c/temp/wink/wince $linstall # instll this wince shell script
 cd - > /dev/null # revert to the previous directory
 exit 0
