@@ -31,9 +31,9 @@ else
             exit 4
         else
             ls -l /tmp/wink.build/release/wink # show file size and build date
-            /tmp/wink.build/release/wink exp /tmp/wink.build/doc/wink/index.html # open documentation
+#            /tmp/wink.build/release/wink exp /tmp/wink.build/doc/wink/index.html # open documentation
             cp /tmp/wink.build/release/wink ~/bin # install new binary for Linux
-            ~/bin/wink cmd cargo.exe build --release --target-dir "C:\\temp\\wink.build" # affects binary path below 
+            cargo.exe build --release --target-dir "C:\\temp\\wink.build" # affects binary path below 
             /mnt/c/temp/wink.build/release/wink.exe -ep > /tmp/wink.build/doc/wink/wink.json # export JSON to docs
             cp /tmp/wink.build/doc/wink/wink.json . # copy JSON to git
             ~/bin/wink $@ # run Linux build with parameters supplied on command line
