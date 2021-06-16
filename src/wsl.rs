@@ -32,7 +32,7 @@ pub fn wsl_path_or_self(arg: &str, unix: bool) -> String {
     if let Ok(val) = to_run.output() {
         let result = String::from_utf8_lossy(&val.stdout).trim().to_string(); //.replace("\n", "");
 
-        if !result.is_empty() {
+        if !result.is_empty() && result.as_bytes().iter().filter(|&&c| c == b'\n').count() < 1 { // if more than one line, must be an error message
             return result;
         }
     }

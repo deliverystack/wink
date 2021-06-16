@@ -12,6 +12,9 @@
 use regex::Regex;
 use std::env;
 
+//extern crate term;
+//use term;
+
 mod file;
 mod invocable;
 mod invocablecategory;
@@ -64,6 +67,7 @@ fn help(msg: &str, args: Vec<String>, mut categories: Vec<invocablecategory::Inv
 
     let mut count = 0;
     categories.sort();
+    let mut terminal = term::stdout().unwrap();
 
     for mut category in categories {
         println!("\n{0}\n-----------------------------------------------------------------------------", category.name);
@@ -76,7 +80,11 @@ fn help(msg: &str, args: Vec<String>, mut categories: Vec<invocablecategory::Inv
                 desc = invocable.command;
             }
 
-            println!("{:>31} {}", invocable.command_code, desc);
+            terminal.fg(term::color::BRIGHT_CYAN).unwrap();
+            terminal.attr(term::Attr::Bold).unwrap();
+            print!("{:>31}", invocable.command_code.to_uppercase());
+            terminal.reset().unwrap();
+            println!(" {}", desc);
             count += 1;
         }
     }

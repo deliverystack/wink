@@ -129,7 +129,6 @@ impl Invoker {
 
         // append args from called command line to command line
         for arg in args.iter() {
-            println!("ARG from config: {0}", arg);
             let param: &String = &wsl::wsl_path_or_self(arg, invocable.use_bash);
 
             if invocable.use_bash {
@@ -148,7 +147,7 @@ impl Invoker {
         }
 
         if verbose {
-            println!("{}", command_line);
+            println!("-{}-", command_line);
         }
 
         if !dry_run {

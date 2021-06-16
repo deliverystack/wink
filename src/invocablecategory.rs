@@ -167,7 +167,6 @@ impl InvocableCategory {
 
     /// Add Windows settings Invocables to the list of Invocables in this InvocableCategory.
     pub fn add_settings(&mut self) {
-        self.add(invocable::Invocable::bin_with("ss", "control", "Screen Saver Settings", &["desk.cpl,,@screensaver"]));
         self.add(invocable::Invocable::exp("srchsets", "ms-settings:cortana-windowssearch", "Windows Search (Cortana) Settings"));
         self.add(invocable::Invocable::exp("filehist", "shell:::{F6B6E965-E9B2-444B-9286-10C9152EDBC5}", "File History"));
         self.add(invocable::Invocable::exp("syncset", "ms-settings:sync", "Sync Settings...settings"));
@@ -253,6 +252,7 @@ impl InvocableCategory {
         self.add(invocable::Invocable::exp("settings", "ms-settings:", "Settings control panel"));
         self.add(invocable::Invocable::exp("start", "ms-settings:personalization-start", "Start Menu personalization settings"));
         self.add(invocable::Invocable::exp("startfol", "ms-settings:personalization-start-places", "Personalize/choose which folders appear on the start menu"));
+        self.add(invocable::Invocable::bin_with("ss", "control.exe", "Screen Saver Settings", &["desk.cpl,,@screensaver"]));
     }
 
     /// Add Windows programs and features Invocables to the list of Invocables in this InvocableCategory.
