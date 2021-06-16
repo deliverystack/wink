@@ -167,6 +167,7 @@ impl InvocableCategory {
 
     /// Add Windows settings Invocables to the list of Invocables in this InvocableCategory.
     pub fn add_settings(&mut self) {
+        self.add(invocable::Invocable::bin_with("ss", "control", "Screen Saver Settings", &["desk.cpl,,@screensaver"]));
         self.add(invocable::Invocable::exp("srchsets", "ms-settings:cortana-windowssearch", "Windows Search (Cortana) Settings"));
         self.add(invocable::Invocable::exp("filehist", "shell:::{F6B6E965-E9B2-444B-9286-10C9152EDBC5}", "File History"));
         self.add(invocable::Invocable::exp("syncset", "ms-settings:sync", "Sync Settings...settings"));
@@ -540,7 +541,7 @@ impl InvocableCategory {
         self.add(invocable::Invocable::bin("vlc", "$pf86/VideoLAN/VLC/vlc.exe", "VLC Media Player"));
         self.add(invocable::Invocable::bin("winmerge", "$pf86/WinMerge/WinMergeU.exe", "WinMerge file and directory comparison tool"));
         self.add(invocable::Invocable::bkg("dotpeek", "$userpath/AppData/Local/JetBrains/Installations/dotPeek201/dotPeek64.exe", "JetBrains dotPeek .NET disassembler"));
-        self.add(invocable::Invocable::bin_with("teams", "$userpath/AppData/Local/Microsoft/Teams/Update.exe", "Microsoft Teams", &["--processStart", "Teams.exe"]));
+        self.add(invocable::Invocable::bin_with("teams", "$userpath/AppData/Local/Microsoft/Teams/Update.exe", "Microsoft Teams", &["--processStart", "Teams.exe"])); // TODO not working?
         self.add(invocable::Invocable::bin("vs", "$pf86/Microsoft Visual Studio/2019/Community/Common7/IDE/devenv.exe", "Microsoft Visual Studio"));
         self.add(invocable::Invocable::bin("vscode", "$userpath/AppData/Local/Programs/Microsoft VS Code/Code.exe", "Microsoft Visual Studio Code"));
         self.add(invocable::Invocable::bin("rider", "$pf64/JetBrains/JetBrains Rider 2021.1.2/bin/rider64.exe", "JetBrains Rider IDE"));
