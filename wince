@@ -45,7 +45,7 @@ else
             rm ${linstall}/wink
             cp ${linbld}/release/wink $linstall # install new binary for Linux
             cargo.exe build --release --target-dir "$winbld" # affects binary path below 
-            ${winbld}/release/wink.exe -ep > ${linbld}/doc/wink/wink.json # export JSON to docs
+            `wslpath ${winbld}`/release/wink.exe -ep > ${linbld}/doc/wink/wink.json # export JSON to docs
             ls -l ${linbld}/doc/wink/wink.json
             cp ${linbld}/doc/wink/wink.json . # copy JSON to git
             path=`cmd.exe /c echo %USERPROFILE% | sed -e 's/\r//g'` # should be in %PATH%
