@@ -4,6 +4,18 @@
       "name": "Applications",
       "invocables": [
         {
+          "command_code": "skype",
+          "description": "Skype",
+          "command": "$pf86/Microsoft/Skype for Desktop/Skype.exe",
+          "use_cmd": false,
+          "use_start": false,
+          "background": false,
+          "use_call": false,
+          "use_explorer": false,
+          "use_bash": false,
+          "arguments": []
+        },
+        {
           "command_code": "spotify",
           "description": "Spotify",
           "command": "$userpath/AppData/Roaming/Spotify/Spotify.exe",
@@ -2466,6 +2478,20 @@
     {
       "name": "Networking",
       "invocables": [
+        {
+          "command_code": "flushdns",
+          "description": "Flush DNS Cache",
+          "command": "ipconfig.exe",
+          "use_cmd": true,
+          "use_start": false,
+          "background": false,
+          "use_call": false,
+          "use_explorer": false,
+          "use_bash": false,
+          "arguments": [
+            "/flushdns"
+          ]
+        },
         {
           "command_code": "remoteapp",
           "description": "RemoteApp and Desktop Connections",
