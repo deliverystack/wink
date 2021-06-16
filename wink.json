@@ -3936,7 +3936,9 @@
           "use_explorer": false,
           "use_bash": false,
           "arguments": [
-            "/r"
+            "/r",
+            "/t",
+            "10"
           ]
         },
         {
