@@ -1,6 +1,81 @@
 {
   "categories": [
     {
+      "name": "Screen Savers",
+      "invocables": [
+        {
+          "command_code": "bubbles",
+          "description": "Bubbles Screen Saver",
+          "command": "Bubbles.scr",
+          "use_cmd": false,
+          "use_start": false,
+          "background": false,
+          "use_call": false,
+          "use_explorer": false,
+          "use_bash": false,
+          "arguments": [
+            "/run"
+          ]
+        },
+        {
+          "command_code": "mystify",
+          "description": "Mystify Screen Saver",
+          "command": "Mystify.scr",
+          "use_cmd": false,
+          "use_start": false,
+          "background": false,
+          "use_call": false,
+          "use_explorer": false,
+          "use_bash": false,
+          "arguments": [
+            "/run"
+          ]
+        },
+        {
+          "command_code": "photoss",
+          "description": "Photos Screen Saver",
+          "command": "PhotoScreensaver.scr",
+          "use_cmd": false,
+          "use_start": false,
+          "background": false,
+          "use_call": false,
+          "use_explorer": false,
+          "use_bash": false,
+          "arguments": [
+            "/run"
+          ]
+        },
+        {
+          "command_code": "ribbons",
+          "description": "Ribbons Screen Saver",
+          "command": "ribbons.scr",
+          "use_cmd": false,
+          "use_start": false,
+          "background": false,
+          "use_call": false,
+          "use_explorer": false,
+          "use_bash": false,
+          "arguments": [
+            "/run"
+          ]
+        },
+        {
+          "command_code": "ssText3d",
+          "description": "3D Text Screen Saver",
+          "command": "ssText3d.scr",
+          "use_cmd": false,
+          "use_start": false,
+          "background": false,
+          "use_call": false,
+          "use_explorer": false,
+          "use_bash": false,
+          "arguments": [
+            "/run"
+          ]
+        }
+      ]
+    },
+    {
       "name": "Applications",
       "invocables": [
         {
@@ -5415,23 +5490,6 @@
           "command_code": "od",
           "description": "Microsoft OneDrive",
           "command": "shell:::{018D5C66-4533-4307-9B53-224DE2ED1FE6}",
-          "use_cmd": false,
-          "use_start": false,
-          "background": false,
-          "use_call": false,
-          "use_explorer": true,
-          "use_bash": false,
-          "arguments": []
-        }
-      ]
-    },
-    {
-      "name": "YYZ",
-      "invocables": [
-        {
-          "command_code": "alarms",
-          "description": "Windows Alarms and Clock",
-          "command": "shell:AppsFolder\\Microsoft.WindowsAlarms_8wekyb3d8bbwe!App",
           "use_cmd": false,
           "use_start": false,
           "background": false,

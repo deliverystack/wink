@@ -148,7 +148,7 @@ impl InvocableCategory {
     }
 
     /// Add SysInternals utilities Invocables to the list of Invocables in this InvocableCategory.
-    /// https://live.sysinternals.com/ https://docs.microsoft.com/en-us/sysinternals/
+    /// <https://live.sysinternals.com/> <https://docs.microsoft.com/en-us/sysinternals/>
     pub fn add_sysinternals(&mut self) {
         self.add(invocable::Invocable::cmd_with("bginfo", "$syslivebginfo64.exe", "Set desktop background to system information", &["-accepteula"]));
         self.add(invocable::Invocable::cmd_with("handle", "$syslivehandle64.exe", "List open file handles", &["-accepteula"]));
@@ -535,6 +535,18 @@ impl InvocableCategory {
         self.add(invocable::Invocable::cmd("resmon", "resmon.exe", "Windows Resource Monitor"));
         self.add(invocable::Invocable::cmd("services", "services.msc", "Windows Services"));
         self.add(invocable::Invocable::cmd("mrt", "mrt.exe", "Malicious Software Removal Tool"));
+    }
+
+    /// Add known screen savers to the list of Invocables in this InvocableCategory.
+    pub fn add_screensavers(&mut self) {
+        //TODO: defaultss powershell.exe -command "& (Get-ItemProperty ‘HKCU:Control Panel\Desktop’).{SCRNSAVE.EXE}"
+        self.add(invocable::Invocable::bin_with("bubbles", "Bubbles.scr", "Bubbles Screen Saver", &["/run"]));
+        self.add(invocable::Invocable::bin_with("mystify", "Mystify.scr", "Mystify Screen Saver", &["/run"]));
+        self.add(invocable::Invocable::bin_with("photoss", "PhotoScreensaver.scr", "Photos Screen Saver", &["/run"]));
+        self.add(invocable::Invocable::bin_with("ribbons", "ribbons.scr", "Ribbons Screen Saver", &["/run"]));
+        self.add(invocable::Invocable::bin_with("ssText3d", "ssText3d.scr", "3D Text Screen Saver", &["/run"]));
+
+        //        self.add(invocable::Invocable::bin("scrnsave", "scrnsave.scr", "Ribbons Screen Saver", &["/run"]));
     }
 
     /// Add various Windows application Invocables to the list of Invocables in this InvocableCategory.
