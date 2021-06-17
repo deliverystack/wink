@@ -1,3 +1,8 @@
+// $ wink gowindow
+// wslpath: C:/temp/GoWindow.{ED7BA470-8E54-465E-825C-99712043E01C}: No such file or directory
+
+// /mnt/c/usr/bin/xeyes - wslpath seems to be adding path incorrectly
+
 //! wink is a command line tool that provides access to Windows and Windows Subsystem for Linux (WSL) features and programs.
 
 //! wink provides a simple interface for invoking almost any Windows or WSL feature
