@@ -72,7 +72,7 @@ fn help(msg: &str, args: Vec<String>, mut categories: Vec<invocablecategory::Inv
     );
     color("CMD");
     print!(
-        "                 cmd.exe /c
+        "                cmd.exe /c
 -----------------------------------------------------------------------------
 {0:>12} ",
         cmd
@@ -94,7 +94,7 @@ fn help(msg: &str, args: Vec<String>, mut categories: Vec<invocablecategory::Inv
     );
     color("BASH");
     print!(
-        "                bash.exe -c
+        "               bash.exe -c
 -----------------------------------------------------------------------------
 {0:>12} ",
         cmd
