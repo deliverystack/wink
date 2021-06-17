@@ -16,9 +16,14 @@
 // note: // unc path must start with \\; be careful not to replace \\ with / unintionally
 
 pub fn wsl_path_or_self(arg: &str, unix: bool) -> String {
-    //    if (!unix || arg.starts_with('/')) {
-    //        // && arg.starts_with('/')) {
+    let exists = std::path::Path::new(arg).exists();
+
+    if exists && (is_wsl() && unix) || (is_windows() && !unix) {
+        return arg.to_string();
+    }
+
     let mut to_run = std::process::Command::new("wslpath");
+
     if unix {
         to_run.arg("-u");
     } else {
@@ -27,13 +32,10 @@ pub fn wsl_path_or_self(arg: &str, unix: bool) -> String {
 
     to_run.arg(arg);
 
-    //TODO: check whether error control works when wslpath fails (for cmd.exe)
-    // or when path does not exist
-    //TODO: use bash.exe to invoke wslpath for cmd.exe
     if let Ok(val) = to_run.output() {
         let result = String::from_utf8_lossy(&val.stdout).trim().to_string(); //.replace("\n", "");
 
-        // if more than one line, must be an error message
+        // if exaclty one non-whitespace line written to stdout
         if !result.is_empty() && result.as_bytes().iter().filter(|&&c| c == b'\n').count() < 1 {
             return result;
         }
@@ -42,10 +44,17 @@ pub fn wsl_path_or_self(arg: &str, unix: bool) -> String {
     arg.to_string()
 }
 
+/// Return true if running under Windows (possibly a command shell) or WSL (possibly bash)
 pub fn is_windows_or_wsl() -> bool {
-    cfg!(target_os = "windows") || is_wsl()
+    is_windows() || is_wsl()
 }
 
+/// Return true if running under Windows (possibly a command shell)
+pub fn is_windows() -> bool {
+    cfg!(target_os = "windows")
+}
+
+/// Return true if running under WSL (possibly a bash)
 pub fn is_wsl() -> bool {
     match std::env::var("WSL_DISTRO_NAME") {
         Ok(_e) => true,
