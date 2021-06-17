@@ -18,6 +18,10 @@ impl InvocableCategoryList {
     pub fn get() -> InvocableCategoryList {
         let mut category_list = InvocableCategoryList { categories: Vec::new() };
 
+        let mut screensavers = invocablecategory::InvocableCategory::new("Screen Savers");
+        screensavers.add_screensavers();
+        category_list.categories.push(screensavers);
+
         let mut applications = invocablecategory::InvocableCategory::new("Applications");
         applications.add_applications();
         category_list.categories.push(applications);
