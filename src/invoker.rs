@@ -116,8 +116,10 @@ impl Invoker {
         // bash.exe -c wslpath -u C:/temp does not work, but bash.exe -c "wslpath -u C:/temp" does
         // add arguments from command configuration to command line
         for arg in invocable.arguments.iter() {
+            println!("Arg: {0}", arg);
             let param: &String = &wsl::wsl_path_or_self(arg, invocable.use_bash);
 
+            println!("Param: {0}", param);
             if invocable.use_bash {
                 bash_command = format!("{0}{1} ", bash_command, param); //TOOD: quote?
             } else {
@@ -142,6 +144,7 @@ impl Invoker {
 
         if !bash_command.is_empty() {
             bash_command = bash_command.trim().to_string();
+            println!("Bash command: {0}", bash_command);
             command_line.push_str(&bash_command);
             torun.arg(bash_command);
         }
