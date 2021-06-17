@@ -387,7 +387,7 @@ impl InvocableCategory {
     pub fn add_linux(&mut self) {
         self.add(invocable::Invocable::sh("wince", "/home/jw/bin/wince", "Run the shell script that recompiles this program"));
 
-        self.add(invocable::Invocable::sh("gowindow", "mkdir /mnt/c/temp/GoWindow.{ED7BA470-8E54-465E-825C-99712043E01C} > /dev/null 2>&1 ; explorer.exe `wslpath -w C:\\temp\\GoWindow.{ED7BA470-8E54-465E-825C-99712043E01C}`", "GoWindow (God Mode)"));
+        self.add(invocable::Invocable::sh("gowindow", "mkdir /mnt/c/temp/GoWindow.{ED7BA470-8E54-465E-825C-99712043E01C} > /dev/null 2>&1 ; explorer.exe \"C:\\temp\\GoWindow.{ED7BA470-8E54-465E-825C-99712043E01C}\"", "GoWindow (God Mode)"));
         /*
                 self.add(invocable::Invocable::sh(
                     "ntt",
