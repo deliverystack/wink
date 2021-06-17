@@ -4,6 +4,35 @@
       "name": "Screen Savers",
       "invocables": [
         {
+          "command_code": "sss",
+          "description": "Screen Saver Settings",
+          "command": "control.exe",
+          "use_cmd": false,
+          "use_start": false,
+          "background": false,
+          "use_call": false,
+          "use_explorer": false,
+          "use_bash": false,
+          "arguments": [
+            "desk.cpl,,@screensaver"
+          ]
+        },
+        {
+          "command_code": "defaultss",
+          "description": "Default Screen Saver",
+          "command": "powershell.exe",
+          "use_cmd": false,
+          "use_start": false,
+          "background": false,
+          "use_call": false,
+          "use_explorer": false,
+          "use_bash": false,
+          "arguments": [
+            "-command",
+            "&(Get-ItemProperty 'HKCU:Control Panel\\Desktop').{SCRNSAVE.EXE}"
+          ]
+        },
+        {
           "command_code": "blank",
           "description": "Blank Screen Saver",
           "command": "scrnsave.scr",
@@ -2586,20 +2615,6 @@
           "use_explorer": true,
           "use_bash": false,
           "arguments": []
-        },
-        {
-          "command_code": "ss",
-          "description": "Screen Saver Settings",
-          "command": "control.exe",
-          "use_cmd": false,
-          "use_start": false,
-          "background": false,
-          "use_call": false,
-          "use_explorer": false,
-          "use_bash": false,
-          "arguments": [
-            "desk.cpl,,@screensaver"
-          ]
         }
       ]
     },

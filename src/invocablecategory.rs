@@ -257,7 +257,6 @@ impl InvocableCategory {
         self.add(invocable::Invocable::exp("settings", "ms-settings:", "Settings control panel"));
         self.add(invocable::Invocable::exp("start", "ms-settings:personalization-start", "Start Menu personalization settings"));
         self.add(invocable::Invocable::exp("startfol", "ms-settings:personalization-start-places", "Personalize/choose which folders appear on the start menu"));
-        self.add(invocable::Invocable::bin_with("ss", "control.exe", "Screen Saver Settings", &["desk.cpl,,@screensaver"]));
     }
 
     /// Add Windows programs and features Invocables to the list of Invocables in this InvocableCategory.
@@ -539,7 +538,8 @@ impl InvocableCategory {
 
     /// Add known screen savers to the list of Invocables in this InvocableCategory.
     pub fn add_screensavers(&mut self) {
-        //TODO: defaultss powershell.exe -command "& (Get-ItemProperty ‘HKCU:Control Panel\Desktop’).{SCRNSAVE.EXE}"
+        self.add(invocable::Invocable::bin_with("sss", "control.exe", "Screen Saver Settings", &["desk.cpl,,@screensaver"]));
+        self.add(invocable::Invocable::bin_with("defaultss", "powershell.exe", "Default Screen Saver", &["-command", "&(Get-ItemProperty 'HKCU:Control Panel\\Desktop').{SCRNSAVE.EXE}"]));
 
         self.add(invocable::Invocable::bin_with("blank", "scrnsave.scr", "Blank Screen Saver", &["/s"])); // no settings (/c), no window support (/t)
 
