@@ -19,7 +19,12 @@ else
     # this is the directory that contains cargo.toml
     cd $projdir
     set +x
-    for f in **/*.rs; do ls -l "$f" ; wc -l "$f" ; echo "" ; done
+    
+#    for f in **/*.rs; do ls -l "$f" ; wc -l "$f" ; echo "" ; done
+    for f in **/*.rs; do 
+        ( wc -clw $f | sed -e 's/  */ /g'| cut -d' ' -f-4 | tr '\n' '\t' ; ls -l $f | cut -d' ' -f6- ) | cut -f 1,2 ; 
+    done
+
     set -x
     cargo update 
     cargo-clippy 2>&1 | egrep -iq warning
