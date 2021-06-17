@@ -540,11 +540,28 @@ impl InvocableCategory {
     /// Add known screen savers to the list of Invocables in this InvocableCategory.
     pub fn add_screensavers(&mut self) {
         //TODO: defaultss powershell.exe -command "& (Get-ItemProperty ‘HKCU:Control Panel\Desktop’).{SCRNSAVE.EXE}"
-        self.add(invocable::Invocable::bin_with("bubbles", "Bubbles.scr", "Bubbles Screen Saver", &["/run"]));
-        self.add(invocable::Invocable::bin_with("mystify", "Mystify.scr", "Mystify Screen Saver", &["/run"]));
-        self.add(invocable::Invocable::bin_with("photoss", "PhotoScreensaver.scr", "Photos Screen Saver", &["/run"]));
-        self.add(invocable::Invocable::bin_with("ribbons", "ribbons.scr", "Ribbons Screen Saver", &["/run"]));
-        self.add(invocable::Invocable::bin_with("ssText3d", "ssText3d.scr", "3D Text Screen Saver", &["/run"]));
+
+        self.add(invocable::Invocable::bin_with("blank", "scrnsave.scr", "Blank Screen Saver", &["/s"])); // no settings (/c), no window support (/t)
+
+        self.add(invocable::Invocable::bin_with("bubbles", "Bubbles.scr", "Bubbles Screen Saver", &["/s"]));
+        self.add(invocable::Invocable::bin_with("bubbless", "Bubbles.scr", "Bubbles Screen Saver settings", &["/c"]));
+        self.add(invocable::Invocable::bin_with("bubblesw", "Bubbles.scr", "Bubbles Screen Saver window", &["/t"]));
+
+        self.add(invocable::Invocable::bin_with("mystify", "Mystify.scr", "Mystify Screen Saver", &["/s"]));
+        //        self.add(invocable::Invocable::bin_with("mystifys", "Mystify.scr", "Mystify Screen Saver settings", &["/c"])); // no settings
+        self.add(invocable::Invocable::bin_with("mystifyw", "Mystify.scr", "Mystify Screen Saver window", &["/t"]));
+
+        self.add(invocable::Invocable::bin_with("photoss", "PhotoScreensaver.scr", "Photos Screen Saver", &["/s"]));
+        self.add(invocable::Invocable::bin_with("photosss", "PhotoScreensaver.scr", "Photos Screen Saver settings", &["/c"]));
+        self.add(invocable::Invocable::bin_with("photossw", "PhotoScreensaver.scr", "Photos Screen Saver window", &["/t"]));
+
+        self.add(invocable::Invocable::bin_with("ribbons", "ribbons.scr", "Ribbons Screen Saver", &["/s"]));
+        self.add(invocable::Invocable::bin_with("ribbonss", "ribbons.scr", "Ribbons Screen Saver settings", &["/c"]));
+        self.add(invocable::Invocable::bin_with("ribbonsw", "ribbons.scr", "Ribbons Screen Saver window", &["/t"]));
+
+        self.add(invocable::Invocable::bin_with("3dtss", "ssText3d.scr", "3D Text Screen Saver", &["/s"]));
+        self.add(invocable::Invocable::bin_with("3dtsss", "ssText3d.scr", "3D Text Screen Saver settings", &["/c"]));
+        self.add(invocable::Invocable::bin_with("3dtssw", "ssText3d.scr", "3D Text Screen Saver window", &["/t"]));
 
         //        self.add(invocable::Invocable::bin("scrnsave", "scrnsave.scr", "Ribbons Screen Saver", &["/run"]));
     }
