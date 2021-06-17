@@ -4,6 +4,20 @@
       "name": "Screen Savers",
       "invocables": [
         {
+          "command_code": "blank",
+          "description": "Blank Screen Saver",
+          "command": "scrnsave.scr",
+          "use_cmd": false,
+          "use_start": false,
+          "background": false,
+          "use_call": false,
+          "use_explorer": false,
+          "use_bash": false,
+          "arguments": [
+            "/s"
+          ]
+        },
+        {
           "command_code": "bubbles",
           "description": "Bubbles Screen Saver",
           "command": "Bubbles.scr",
@@ -14,7 +28,35 @@
           "use_explorer": false,
           "use_bash": false,
           "arguments": [
-            "/run"
+            "/s"
+          ]
+        },
+        {
+          "command_code": "bubbless",
+          "description": "Bubbles Screen Saver settings",
+          "command": "Bubbles.scr",
+          "use_cmd": false,
+          "use_start": false,
+          "background": false,
+          "use_call": false,
+          "use_explorer": false,
+          "use_bash": false,
+          "arguments": [
+            "/c"
+          ]
+        },
+        {
+          "command_code": "bubblesw",
+          "description": "Bubbles Screen Saver window",
+          "command": "Bubbles.scr",
+          "use_cmd": false,
+          "use_start": false,
+          "background": false,
+          "use_call": false,
+          "use_explorer": false,
+          "use_bash": false,
+          "arguments": [
+            "/t"
           ]
         },
         {
@@ -28,7 +70,21 @@
           "use_explorer": false,
           "use_bash": false,
           "arguments": [
-            "/run"
+            "/s"
+          ]
+        },
+        {
+          "command_code": "mystifyw",
+          "description": "Mystify Screen Saver window",
+          "command": "Mystify.scr",
+          "use_cmd": false,
+          "use_start": false,
+          "background": false,
+          "use_call": false,
+          "use_explorer": false,
+          "use_bash": false,
+          "arguments": [
+            "/t"
           ]
         },
         {
@@ -42,7 +98,35 @@
           "use_explorer": false,
           "use_bash": false,
           "arguments": [
-            "/run"
+            "/s"
+          ]
+        },
+        {
+          "command_code": "photosss",
+          "description": "Photos Screen Saver settings",
+          "command": "PhotoScreensaver.scr",
+          "use_cmd": false,
+          "use_start": false,
+          "background": false,
+          "use_call": false,
+          "use_explorer": false,
+          "use_bash": false,
+          "arguments": [
+            "/c"
+          ]
+        },
+        {
+          "command_code": "photossw",
+          "description": "Photos Screen Saver window",
+          "command": "PhotoScreensaver.scr",
+          "use_cmd": false,
+          "use_start": false,
+          "background": false,
+          "use_call": false,
+          "use_explorer": false,
+          "use_bash": false,
+          "arguments": [
+            "/t"
           ]
         },
         {
@@ -56,11 +140,39 @@
           "use_explorer": false,
           "use_bash": false,
           "arguments": [
-            "/run"
+            "/s"
           ]
         },
         {
-          "command_code": "ssText3d",
+          "command_code": "ribbonss",
+          "description": "Ribbons Screen Saver settings",
+          "command": "ribbons.scr",
+          "use_cmd": false,
+          "use_start": false,
+          "background": false,
+          "use_call": false,
+          "use_explorer": false,
+          "use_bash": false,
+          "arguments": [
+            "/c"
+          ]
+        },
+        {
+          "command_code": "ribbonsw",
+          "description": "Ribbons Screen Saver window",
+          "command": "ribbons.scr",
+          "use_cmd": false,
+          "use_start": false,
+          "background": false,
+          "use_call": false,
+          "use_explorer": false,
+          "use_bash": false,
+          "arguments": [
+            "/t"
+          ]
+        },
+        {
+          "command_code": "3dtss",
           "description": "3D Text Screen Saver",
           "command": "ssText3d.scr",
           "use_cmd": false,
@@ -70,7 +182,35 @@
           "use_explorer": false,
           "use_bash": false,
           "arguments": [
-            "/run"
+            "/s"
+          ]
+        },
+        {
+          "command_code": "3dtsss",
+          "description": "3D Text Screen Saver settings",
+          "command": "ssText3d.scr",
+          "use_cmd": false,
+          "use_start": false,
+          "background": false,
+          "use_call": false,
+          "use_explorer": false,
+          "use_bash": false,
+          "arguments": [
+            "/c"
+          ]
+        },
+        {
+          "command_code": "3dtssw",
+          "description": "3D Text Screen Saver window",
+          "command": "ssText3d.scr",
+          "use_cmd": false,
+          "use_start": false,
+          "background": false,
+          "use_call": false,
+          "use_explorer": false,
+          "use_bash": false,
+          "arguments": [
+            "/t"
           ]
         }
       ]
