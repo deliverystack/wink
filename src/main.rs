@@ -292,6 +292,7 @@ fn main() {
     // return
 }
 
+/// Writes the given message to STDOUT in a color other than the default.
 fn color(msg: &str) {
     let mut terminal = term::stdout().unwrap();
     terminal.fg(term::color::BRIGHT_CYAN).unwrap();
