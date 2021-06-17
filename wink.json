@@ -376,7 +376,7 @@
         {
           "command_code": "fsmgmt",
           "description": "Shared Folders",
-          "command": "fsmgmt",
+          "command": "fsmgmt.exe",
           "use_cmd": true,
           "use_start": false,
           "background": false,
@@ -1278,6 +1278,66 @@
     {
       "name": "Settings",
       "invocables": [
+        {
+          "command_code": "utilman",
+          "description": "Utility Manager (display)",
+          "command": "utilman.exe",
+          "use_cmd": true,
+          "use_start": false,
+          "background": false,
+          "use_call": false,
+          "use_explorer": false,
+          "use_bash": false,
+          "arguments": []
+        },
+        {
+          "command_code": "intl",
+          "description": "Region",
+          "command": "intl.cpl",
+          "use_cmd": true,
+          "use_start": false,
+          "background": false,
+          "use_call": false,
+          "use_explorer": false,
+          "use_bash": false,
+          "arguments": []
+        },
+        {
+          "command_code": "fontview",
+          "description": "Font Viewer",
+          "command": "fontview.exe",
+          "use_cmd": true,
+          "use_start": false,
+          "background": false,
+          "use_call": false,
+          "use_explorer": false,
+          "use_bash": false,
+          "arguments": []
+        },
+        {
+          "command_code": "sigverif",
+          "description": "File Signature Verification",
+          "command": "sigverif.exe",
+          "use_cmd": false,
+          "use_start": false,
+          "background": false,
+          "use_call": false,
+          "use_explorer": false,
+          "use_bash": false,
+          "arguments": []
+        },
+        {
+          "command_code": "iscsicpl",
+          "description": "iSCSI",
+          "command": "iscsicpl.exe",
+          "use_cmd": true,
+          "use_start": false,
+          "background": false,
+          "use_call": false,
+          "use_explorer": false,
+          "use_bash": false,
+          "arguments": []
+        },
         {
           "command_code": "srchsets",
           "description": "Windows Search (Cortana) Settings",
@@ -2181,7 +2241,7 @@
           "arguments": []
         },
         {
-          "command_code": "activat",
+          "command_code": "activatn",
           "description": "Windows activation settings",
           "command": "ms-settings:activation",
           "use_cmd": false,
@@ -2189,6 +2249,18 @@
           "background": false,
           "use_call": false,
           "use_explorer": true,
+          "use_bash": false,
+          "arguments": []
+        },
+        {
+          "command_code": "activate",
+          "description": "Activate Windows",
+          "command": "slui.exe",
+          "use_cmd": true,
+          "use_start": false,
+          "background": false,
+          "use_call": false,
+          "use_explorer": false,
           "use_bash": false,
           "arguments": []
         },
@@ -2578,7 +2650,7 @@
         },
         {
           "command_code": "nethood",
-          "description": "Network shortcuts",
+          "description": "Network Shortcuts",
           "command": "shell:NetHood",
           "use_cmd": false,
           "use_start": false,
@@ -2590,7 +2662,7 @@
         },
         {
           "command_code": "dialup",
-          "description": "Dialup networking settings",
+          "description": "Dialup Networking settings",
           "command": "ms-settings:network-dialup",
           "use_cmd": false,
           "use_start": false,
@@ -2602,7 +2674,7 @@
         },
         {
           "command_code": "ethernet",
-          "description": "Ethernet LAN cable networking settings",
+          "description": "Ethernet LAN Cable networking settings",
           "command": "ms-settings:network-ethernet",
           "use_cmd": false,
           "use_start": false,
@@ -2614,7 +2686,7 @@
         },
         {
           "command_code": "hotspot",
-          "description": "Mobile hotspot wifi network settings",
+          "description": "Mobile Hotspot Wi-Fi network settings",
           "command": "ms-settings:network-mobilehotspot",
           "use_cmd": false,
           "use_start": false,
@@ -2626,7 +2698,7 @@
         },
         {
           "command_code": "proxy",
-          "description": "",
+          "description": "Network Proxy settings",
           "command": "ms-settings:network-proxy",
           "use_cmd": false,
           "use_start": false,
@@ -2638,7 +2710,7 @@
         },
         {
           "command_code": "vpn",
-          "description": "",
+          "description": "Virtual Private Network settings",
           "command": "ms-settings:network-vpn",
           "use_cmd": false,
           "use_start": false,
@@ -2650,7 +2722,7 @@
         },
         {
           "command_code": "wheelsup",
-          "description": "",
+          "description": "Airplane Mode settingse",
           "command": "ms-settings:network-airplanemode",
           "use_cmd": false,
           "use_start": false,
@@ -2662,7 +2734,7 @@
         },
         {
           "command_code": "wifinets",
-          "description": "",
+          "description": "Wi-Fi Network settings",
           "command": "ms-settings:network-wifisettings",
           "use_cmd": false,
           "use_start": false,
@@ -2674,7 +2746,7 @@
         },
         {
           "command_code": "wifisets",
-          "description": "",
+          "description": "Wi-Fi Network settings",
           "command": "ms-settings:network-wifi",
           "use_cmd": false,
           "use_start": false,
@@ -2686,7 +2758,7 @@
         },
         {
           "command_code": "bluetoo",
-          "description": "",
+          "description": "Bluetooth settings",
           "command": "ms-settings:bluetooth",
           "use_cmd": false,
           "use_start": false,
@@ -2698,7 +2770,7 @@
         },
         {
           "command_code": "netstat",
-          "description": "Network status",
+          "description": "Network status settings",
           "command": "ms-settings:network",
           "use_cmd": false,
           "use_start": false,
@@ -3056,7 +3128,7 @@
       "invocables": [
         {
           "command_code": "eatcur",
-          "description": "Ease of access text cursor settings",
+          "description": "Ease of Access text cursor settings",
           "command": "ms-settings:easeofaccess-cursor",
           "use_cmd": false,
           "use_start": false,
@@ -3068,7 +3140,7 @@
         },
         {
           "command_code": "eamag",
-          "description": "Ease of access magnifier",
+          "description": "Ease of Access magnifier",
           "command": "ms-settings:easeofaccess-magnifier",
           "use_cmd": false,
           "use_start": false,
@@ -3080,7 +3152,7 @@
         },
         {
           "command_code": "eacolflt",
-          "description": "Ease of access color filter",
+          "description": "Ease of Access color filter",
           "command": "ms-settings:easeofaccess-colorfilter",
           "use_cmd": false,
           "use_start": false,
@@ -3092,7 +3164,7 @@
         },
         {
           "command_code": "eahighc",
-          "description": "Ease of access high contrast",
+          "description": "Ease of Access high contrast",
           "command": "ms-settings:easeofaccess-highcontrast",
           "use_cmd": false,
           "use_start": false,
@@ -3104,7 +3176,7 @@
         },
         {
           "command_code": "eaeyec",
-          "description": "Ease of access eye control",
+          "description": "Ease of Access eye control",
           "command": "ms-settings:easeofaccess-eyecontrol",
           "use_cmd": false,
           "use_start": false,
@@ -3116,7 +3188,7 @@
         },
         {
           "command_code": "eamouse",
-          "description": "Ease of access mouse settings",
+          "description": "Ease of Access mouse settings",
           "command": "ms-settings:easeofaccess-mouse",
           "use_cmd": false,
           "use_start": false,
@@ -3128,7 +3200,7 @@
         },
         {
           "command_code": "eakeyb",
-          "description": "Ease of access keyboard settings",
+          "description": "Ease of Access keyboard settings",
           "command": "ms-settings:easeofaccess-keyboard",
           "use_cmd": false,
           "use_start": false,
@@ -3140,7 +3212,7 @@
         },
         {
           "command_code": "easpeech",
-          "description": "Ease of access speech recognition settings",
+          "description": "Ease of Access speech recognition settings",
           "command": "ms-settings:easeofaccess-speechrecognition",
           "use_cmd": false,
           "use_start": false,
@@ -3152,7 +3224,7 @@
         },
         {
           "command_code": "eaaudio",
-          "description": "Ease of access audio settings",
+          "description": "Ease of Access audio settings",
           "command": "ms-settings:easeofaccess-audio",
           "use_cmd": false,
           "use_start": false,
@@ -3164,7 +3236,7 @@
         },
         {
           "command_code": "eadisp",
-          "description": "Ease of access display settings",
+          "description": "Ease of Access display settings",
           "command": "ms-settings:easeofaccess-display",
           "use_cmd": false,
           "use_start": false,
@@ -3176,7 +3248,7 @@
         },
         {
           "command_code": "eanar",
-          "description": "Ease of access narrator settings",
+          "description": "Ease of Access narrator settings",
           "command": "ms-settings:easeofaccess-narrator",
           "use_cmd": false,
           "use_start": false,
@@ -3200,7 +3272,7 @@
         },
         {
           "command_code": "captions",
-          "description": "Ease of access closed captioning settings",
+          "description": "Ease of Access closed captioning settings",
           "command": "ms-settings:easeofaccess-closedcaptioning",
           "use_cmd": false,
           "use_start": false,
@@ -3215,6 +3287,30 @@
     {
       "name": "Security",
       "invocables": [
+        {
+          "command_code": "rekeywiz",
+          "description": "Encrypt Filesystem with Certificate",
+          "command": "rekeywiz.exe",
+          "use_cmd": false,
+          "use_start": false,
+          "background": false,
+          "use_call": false,
+          "use_explorer": false,
+          "use_bash": false,
+          "arguments": []
+        },
+        {
+          "command_code": "credwiz",
+          "description": "Stored Usernames and Passwords",
+          "command": "credwiz.exe",
+          "use_cmd": true,
+          "use_start": false,
+          "background": false,
+          "use_call": false,
+          "use_explorer": false,
+          "use_bash": false,
+          "arguments": []
+        },
         {
           "command_code": "secpol",
           "description": "Security Policy",
@@ -3279,7 +3375,7 @@
         },
         {
           "command_code": "psr",
-          "description": "Password Safe Repository",
+          "description": "Steps Recorder",
           "command": "psr.exe",
           "use_cmd": true,
           "use_start": false,
@@ -3840,11 +3936,11 @@
           "command_code": "defaults",
           "description": "Default Programs",
           "command": "shell:::{17cd9488-1228-4b2f-88ce-4298e93e0966}",
-          "use_cmd": true,
+          "use_cmd": false,
           "use_start": false,
           "background": false,
           "use_call": false,
-          "use_explorer": false,
+          "use_explorer": true,
           "use_bash": false,
           "arguments": []
         },
@@ -4033,6 +4129,138 @@
       "name": "Utilities",
       "invocables": [
         {
+          "command_code": "iexpress",
+          "description": "Create a Self-Extracting Executable",
+          "command": "iexpress.exe",
+          "use_cmd": false,
+          "use_start": false,
+          "background": false,
+          "use_call": false,
+          "use_explorer": false,
+          "use_bash": false,
+          "arguments": []
+        },
+        {
+          "command_code": "cleanmgr",
+          "description": "Disk Cleanup",
+          "command": "cleanmgr.exe",
+          "use_cmd": false,
+          "use_start": false,
+          "background": false,
+          "use_call": false,
+          "use_explorer": false,
+          "use_bash": false,
+          "arguments": []
+        },
+        {
+          "command_code": "shrpubw",
+          "description": "Create Shared Folder Wiard",
+          "command": "shrpubw.exe",
+          "use_cmd": true,
+          "use_start": false,
+          "background": false,
+          "use_call": false,
+          "use_explorer": false,
+          "use_bash": false,
+          "arguments": []
+        },
+        {
+          "command_code": "rasphone",
+          "description": "Remove Access Phonebook",
+          "command": "rasphone.exe",
+          "use_cmd": true,
+          "use_start": false,
+          "background": false,
+          "use_call": false,
+          "use_explorer": false,
+          "use_bash": false,
+          "arguments": []
+        },
+        {
+          "command_code": "fxscover",
+          "description": "Fax Cover Page Editor",
+          "command": "fxscover.exe",
+          "use_cmd": false,
+          "use_start": false,
+          "background": false,
+          "use_call": false,
+          "use_explorer": false,
+          "use_bash": false,
+          "arguments": []
+        },
+        {
+          "command_code": "tabcal",
+          "description": "Digitizer Calibration Tool",
+          "command": "tabcal.exe",
+          "use_cmd": false,
+          "use_start": false,
+          "background": false,
+          "use_call": false,
+          "use_explorer": false,
+          "use_bash": false,
+          "arguments": []
+        },
+        {
+          "command_code": "cliconfg",
+          "description": "SQL Server Client Network Utility",
+          "command": "cliconfg.exe",
+          "use_cmd": true,
+          "use_start": false,
+          "background": false,
+          "use_call": false,
+          "use_explorer": false,
+          "use_bash": false,
+          "arguments": []
+        },
+        {
+          "command_code": "dpapimig",
+          "description": "Protected Content Migration",
+          "command": "dpapimig.exe",
+          "use_cmd": true,
+          "use_start": false,
+          "background": false,
+          "use_call": false,
+          "use_explorer": false,
+          "use_bash": false,
+          "arguments": []
+        },
+        {
+          "command_code": "printmig",
+          "description": "Printer Migration",
+          "command": "printbrmui.exe",
+          "use_cmd": true,
+          "use_start": false,
+          "background": false,
+          "use_call": false,
+          "use_explorer": false,
+          "use_bash": false,
+          "arguments": []
+        },
+        {
+          "command_code": "presset",
+          "description": "Presentation Settings",
+          "command": "PresentationSettings.exe",
+          "use_cmd": true,
+          "use_start": false,
+          "background": false,
+          "use_call": false,
+          "use_explorer": false,
+          "use_bash": false,
+          "arguments": []
+        },
+        {
+          "command_code": "kiosk",
+          "description": "Set up a Kiosk",
+          "command": "ms-settings:assignedaccess",
+          "use_cmd": false,
+          "use_start": false,
+          "background": false,
+          "use_call": false,
+          "use_explorer": true,
+          "use_bash": false,
+          "arguments": []
+        },
+        {
           "command_code": "diskman",
           "description": "Disk Management",
           "command": "diskmgmt.msc",
@@ -4058,7 +4286,7 @@
         },
         {
           "command_code": "rsop",
-          "description": "Microsoft",
+          "description": "Resultant Set of Policy",
           "command": "rsop.mmc",
           "use_cmd": true,
           "use_start": false,
@@ -4142,7 +4370,7 @@
         },
         {
           "command_code": "pwrd",
-          "description": "Steps Recorder",
+          "description": "keymgr.dll,PRShowSaveWizardExW",
           "command": "rundll32.exe",
           "use_cmd": true,
           "use_start": false,
@@ -4168,7 +4396,7 @@
         },
         {
           "command_code": "tpm.msc",
-          "description": "",
+          "description": "Trusted Platform Module Management on Local Computer",
           "command": "tpm.msc",
           "use_cmd": true,
           "use_start": false,
@@ -4204,7 +4432,7 @@
         },
         {
           "command_code": "wmimgmt",
-          "description": "",
+          "description": "WMI Management",
           "command": "wmimgmt.msc",
           "use_cmd": true,
           "use_start": false,
@@ -4663,6 +4891,30 @@
           "arguments": []
         },
         {
+          "command_code": "dxdiag",
+          "description": "DirectX Diagnostics Tool",
+          "command": "dxdiag.exe",
+          "use_cmd": false,
+          "use_start": false,
+          "background": false,
+          "use_call": false,
+          "use_explorer": false,
+          "use_bash": false,
+          "arguments": []
+        },
+        {
+          "command_code": "dfrgui",
+          "description": "Optimize Hard Drives",
+          "command": "dfrgui.exe",
+          "use_cmd": false,
+          "use_start": false,
+          "background": false,
+          "use_call": false,
+          "use_explorer": false,
+          "use_bash": false,
+          "arguments": []
+        },
+        {
           "command_code": "soundrec",
           "description": "Sound Recorder",
           "command": "shell:appsFolder\\Microsoft.WindowsSoundRecorder_8wekyb3d8bbwe!App",
@@ -4675,9 +4927,21 @@
           "arguments": []
         },
         {
-          "command_code": "sticky",
+          "command_code": "stikynot",
           "description": "Sticky Notes",
           "command": "shell:appsFolder\\Microsoft.MicrosoftStickyNotes_8wekyb3d8bbwe!App",
+          "use_cmd": false,
+          "use_start": false,
+          "background": false,
+          "use_call": false,
+          "use_explorer": true,
+          "use_bash": false,
+          "arguments": []
+        },
+        {
+          "command_code": "alarms",
+          "description": "Alarmns & Clock",
+          "command": "shell:AppsFolder\\Microsoft.WindowsAlarms_8wekyb3d8bbwe!App",
           "use_cmd": false,
           "use_start": false,
           "background": false,
@@ -4795,6 +5059,18 @@
           "arguments": []
         },
         {
+          "command_code": "sniptool",
+          "description": "SnippingTool",
+          "command": "SnippingTool.exe",
+          "use_cmd": true,
+          "use_start": false,
+          "background": false,
+          "use_call": false,
+          "use_explorer": false,
+          "use_bash": false,
+          "arguments": []
+        },
+        {
           "command_code": "store",
           "description": "Microsoft store",
           "command": "ms-windows-store:",
@@ -4880,7 +5156,7 @@
         },
         {
           "command_code": "dialer",
-          "description": "",
+          "description": "Phone Dialer",
           "command": "dialer.exe",
           "use_cmd": true,
           "use_start": false,
@@ -4904,7 +5180,7 @@
         },
         {
           "command_code": "magnify",
-          "description": "Screen wink ",
+          "description": "Screen magnifier",
           "command": "magnify.exe",
           "use_cmd": true,
           "use_start": false,
@@ -4928,7 +5204,7 @@
         },
         {
           "command_code": "msconfig",
-          "description": "",
+          "description": "Microsoft Configuration tool",
           "command": "msconfig.exe",
           "use_cmd": true,
           "use_start": false,
@@ -5050,6 +5326,18 @@
           "command_code": "services",
           "description": "Windows Services",
           "command": "services.msc",
+          "use_cmd": true,
+          "use_start": false,
+          "background": false,
+          "use_call": false,
+          "use_explorer": false,
+          "use_bash": false,
+          "arguments": []
+        },
+        {
+          "command_code": "mrt",
+          "description": "Malicious Software Removal Tool",
+          "command": "mrt.exe",
           "use_cmd": true,
           "use_start": false,
           "background": false,
