@@ -9,12 +9,22 @@ winbld='C:\temp\wink.build'
 lwinbld=`wslpath $winbld`
 linstall=~/bin
 
+cd $projdir
+cargo check 
+
+if [ $? -ne 0 ]; then
+    echo cargo check failed
+    cd - > /dev/null # revert to the previous directory
+    exit 2
+fi
+
 # this is the directory that contains the source code
 rustfmt --config max_width=2500 $projdir/src/*.rs
 
 if [ $? -ne 0 ]; then
     echo rustfmt failed
-    exit 2
+    cd - > /dev/null # revert to the previous directory
+    exit 3
 else
     # this is the directory that contains cargo.toml
     cd $projdir
@@ -26,22 +36,22 @@ else
     done
 
     set -x
-    cargo update 
+    cargo update -v 
     cargo-clippy 2>&1 | egrep -iq warning
 
     if [ $? -eq 0 ]; then
         cargo-clippy 
         echo cargo-clippy failed
-        exit 3
+        cd - > /dev/null # revert to the previous directory
+        exit 4
     else
 #        cargo clean --target-dir /tmp/wink.build
- #       cargo check --target-dir /tmp/wink.build
-        cargo doc --target-dir $linbld
-        cargo build --target-dir $linbld --release # affects binary path below 
+        cargo doc -v --open --target-dir $linbld
+        cargo build -v --target-dir $linbld --release # affects binary path below 
 
         if [ $? -ne 0 ]; then
             echo cargo build failed
-            exit 4
+            exit 5
         else
             ls -l ${linbld}/release/wink # show file size and build date
 #            /tmp/wink.build/release/wink exp /tmp/wink.build/doc/wink/index.html # open documentation
