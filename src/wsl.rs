@@ -14,7 +14,6 @@
 /// };
 /// ```
 // note: // unc path must start with \\; be careful not to replace \\ with / unintionally
-
 pub mod invocable;
 pub mod invocablecategory;
 pub mod invocablecategorylist;
@@ -67,17 +66,13 @@ pub fn is_wsl() -> bool {
     }
 }
 
-fn get_user_home() -> Result<String, Box<dyn std::error::Error>> { 
-    let key = if is_windows() {
-        "USERPROFILE"
-    } else {
-        "HOME"
-    };
+fn get_user_home() -> Result<String, Box<dyn std::error::Error>> {
+    let key = if is_windows() { "USERPROFILE" } else { "HOME" };
 
     Ok(std::env::var(key)?)
 }
 
-fn get_user_home_default() -> String { 
+fn get_user_home_default() -> String {
     match get_user_home() {
         Ok(h) => h,
         Err(_e) => String::new(),
@@ -91,4 +86,3 @@ fn get_config_file_path(name: &str) -> String {
         format!("{0}/.{1}", get_user_home_default(), name)
     }
 }
-
