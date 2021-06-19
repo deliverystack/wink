@@ -169,8 +169,6 @@ impl Invoker {
     }
 }
 
-
 //TODO: shell:::{7b81be6a-ce2b-4676-a29e-eb907a5126c5}", // ms-settings:network-status
 //TODO:        self.add(Invocable::exp("eacur", "ms-settings:easeofaccess-cursorandpointersize", "Ease of Access cursor and pointer size")); //TODO: fail
 //TODO:        self.add(Invocable::exp("eapoint", "ms-settings:easeofaccess-MousePointer", "Ease of Access mouse pointer settings")); //TODO: fail
-
