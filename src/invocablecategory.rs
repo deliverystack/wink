@@ -63,6 +63,9 @@ impl InvocableCategory {
         self.add(invocable::Invocable::bin("excel", "$pf64/Microsoft Office/root/Office16/EXCEL.EXE", "Microsoft Excel"));
         self.add(invocable::Invocable::bin("word", "$pf64/Microsoft Office/root/Office16/WINWORD.EXE", "Microsoft Word"));
         self.add(invocable::Invocable::bin("outlook", "$pf64/Microsoft Office/root/Office16/OUTLOOK.EXE", "Microsoft Outlook"));
+        self.add(invocable::Invocable::bin_with("oa", "$pf64/Microsoft Office/root/Office16/OUTLOOK.EXE", "Microsoft Outlook Attach File <path>", &["/a"]));
+        self.add(invocable::Invocable::bin_with("oc", "$pf64/Microsoft Office/root/Office16/OUTLOOK.EXE", "Microsoft Outlook Compose", &["/c", "imp.note"]));
+        self.add(invocable::Invocable::bin_with("om", "$pf64/Microsoft Office/root/Office16/OUTLOOK.EXE", "Microsoft Outlook Compose To <email>", &["/c", "imp.note", "/m"]));
         self.add(invocable::Invocable::bin("ppt", "$pf64/Microsoft Office/root/Office16/POWERPNT.EXE", "Microsoft PowerPoint"));
         self.add(invocable::Invocable::exp("od", "shell:::{018D5C66-4533-4307-9B53-224DE2ED1FE6}", "Microsoft OneDrive"));
         // C:\Program Files\Microsoft OneDrive\onedrive.exe
