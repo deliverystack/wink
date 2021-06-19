@@ -1,12 +1,3 @@
-//! An Invocable contains metadata about something that Windows can invoke,
-//! whether an executable,
-//! something that depends on a Windows process invoker such as explorer.exe,
-//! something that depends on cmd.exe,
-//! or something that depends on WSL bash.exe.
-
-// for sorting by command code for usage information display
-use std::cmp::Ordering;
-
 // metadata about an invocable feature
 #[derive(serde::Serialize, serde::Deserialize, Debug, Clone)]
 pub struct Invocable {
@@ -46,14 +37,14 @@ impl Eq for Invocable {}
 
 /// For sorting.
 impl Ord for Invocable {
-    fn cmp(&self, other: &Self) -> Ordering {
+    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
         self.command_code.cmp(&other.command_code)
     }
 }
 
 /// For sorting.
 impl PartialOrd for Invocable {
-    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
         Some(self.cmp(other))
     }
 }

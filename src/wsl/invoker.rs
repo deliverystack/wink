@@ -1,13 +1,9 @@
-//! The Invoker struct contains a method that constructs and invokes the command line
-//! for an Invocable.
-
-use std::process::Command;
-
-use crate::invocable;
-use crate::wsl;
-
 //TODO: is this the right way to define a container for static methods?
 // creates and invokes command lines from invocables
+
+use crate::wsl::invocable::Invocable;
+use crate::wsl::wsl_path_or_self;
+
 pub struct Invoker {}
 
 impl Invoker {
@@ -15,23 +11,23 @@ impl Invoker {
     /// writes that command line to stdout if verbose is true,
     /// and invokes that command line.
     //TODO:     invoker::Invoker::invoke(invocable, dry_run, verbose, pass); just doesn't look right to document.
-    pub fn invoke(invocable: &invocable::Invocable, dry_run: bool, verbose: bool, args: Vec<String>) -> String {
+    pub fn invoke(invocable: &Invocable, dry_run: bool, verbose: bool, args: Vec<String>) -> String {
         // create three constants for substituting tokens in command paths
-        let results = Command::new("cmd.exe").arg("/c").arg("echo").arg("%USERPROFILE%").output().expect("failed to execute process");
+        let results = std::process::Command::new("cmd.exe").arg("/c").arg("echo").arg("%USERPROFILE%").output().expect("failed to execute process");
         let userpath: String = match results.status.code() {
-            Some(0) => wsl::wsl_path_or_self(String::from_utf8_lossy(&results.stdout).trim(), false),
+            Some(0) => wsl_path_or_self(String::from_utf8_lossy(&results.stdout).trim(), false),
             _ => String::new(),
         };
 
-        let results = Command::new("cmd.exe").arg("/c").arg("echo").arg("%ProgramFiles%").output().expect("failed to execute process");
+        let results = std::process::Command::new("cmd.exe").arg("/c").arg("echo").arg("%ProgramFiles%").output().expect("failed to execute process");
         let pf64: String = match results.status.code() {
-            Some(0) => wsl::wsl_path_or_self(String::from_utf8_lossy(&results.stdout).trim(), false),
+            Some(0) => wsl_path_or_self(String::from_utf8_lossy(&results.stdout).trim(), false),
             _ => String::new(),
         };
 
-        let results = Command::new("cmd.exe").arg("/c").arg("echo").arg("%ProgramFiles(x86)%").output().expect("failed to execute process");
+        let results = std::process::Command::new("cmd.exe").arg("/c").arg("echo").arg("%ProgramFiles(x86)%").output().expect("failed to execute process");
         let pf86 = match results.status.code() {
-            Some(0) => wsl::wsl_path_or_self(String::from_utf8_lossy(&results.stdout).trim(), false),
+            Some(0) => wsl_path_or_self(String::from_utf8_lossy(&results.stdout).trim(), false),
             _ => String::new(),
         };
 
@@ -46,7 +42,7 @@ impl Invoker {
         // otherwise invoke the executable directly
         // this would be the executable to invoke
         //TODO: create maybe_executable in else block below instead of here; maybe requires cmd to be String?
-        let maybe_executable = &wsl::wsl_path_or_self(&invocable.command.replace("$pf64", &pf64).replace("$pf86", &pf86).replace("$userpath", &userpath).replace("$syslive", "\\\\live.sysinternals.com\\tools\\"), !cfg!(target_os = "windows"));
+        let maybe_executable = &wsl_path_or_self(&invocable.command.replace("$pf64", &pf64).replace("$pf86", &pf86).replace("$userpath", &userpath).replace("$syslive", "\\\\live.sysinternals.com\\tools\\"), !cfg!(target_os = "windows"));
 
         // if directed to use cmd.exe or start or start /b, then use cmd.exe /c
         // else if directed to use explorer.exe, then use explorer.exe
@@ -65,7 +61,7 @@ impl Invoker {
         command_line.push(' ');
 
         // the Command object to invoke the command line
-        let mut torun = Command::new(String::from(cmd));
+        let mut torun = std::process::Command::new(String::from(cmd));
 
         // /wait and /c for cmd.exe
         if invocable.use_cmd {
@@ -104,7 +100,7 @@ impl Invoker {
 
         // if executable specified with cmd.exe then add windows path to executable to command line
         if (invocable.use_cmd || invocable.use_start || invocable.background || invocable.use_explorer || invocable.use_bash) && !invocable.command.is_empty() {
-            let command: &String = &wsl::wsl_path_or_self(&invocable.command.replace("$pf64", &pf64).replace("$pf86", &pf86).replace("$userpath", &userpath).replace("$syslive", "\\\\live.sysinternals.com\\tools\\"), invocable.use_bash);
+            let command: &String = &wsl_path_or_self(&invocable.command.replace("$pf64", &pf64).replace("$pf86", &pf86).replace("$userpath", &userpath).replace("$syslive", "\\\\live.sysinternals.com\\tools\\"), invocable.use_bash);
             torun.arg(command);
             command_line.push_str(command);
             command_line.push(' ');
@@ -116,7 +112,7 @@ impl Invoker {
         // bash.exe -c wslpath -u C:/temp does not work, but bash.exe -c "wslpath -u C:/temp" does
         // add arguments from command configuration to command line
         for arg in invocable.arguments.iter() {
-            let param: &String = &wsl::wsl_path_or_self(arg, invocable.use_bash);
+            let param: &String = &wsl_path_or_self(arg, invocable.use_bash);
 
             if invocable.use_bash {
                 bash_command = format!("{0}{1} ", bash_command, param); //TOOD: quote?
@@ -129,7 +125,7 @@ impl Invoker {
 
         // append args from called command line to command line
         for arg in args.iter() {
-            let param: &String = &wsl::wsl_path_or_self(arg, invocable.use_bash);
+            let param: &String = &wsl_path_or_self(arg, invocable.use_bash);
 
             if invocable.use_bash {
                 bash_command = format!("{0}{1} ", bash_command, param); //TOOD: quote?
@@ -172,3 +168,9 @@ impl Invoker {
         command_line
     }
 }
+
+
+//TODO: shell:::{7b81be6a-ce2b-4676-a29e-eb907a5126c5}", // ms-settings:network-status
+//TODO:        self.add(Invocable::exp("eacur", "ms-settings:easeofaccess-cursorandpointersize", "Ease of Access cursor and pointer size")); //TODO: fail
+//TODO:        self.add(Invocable::exp("eapoint", "ms-settings:easeofaccess-MousePointer", "Ease of Access mouse pointer settings")); //TODO: fail
+

@@ -14,26 +14,19 @@
 
 //! Run wink with no command line parameters to get usage information.
 
-//use regex::Regex;
-//use std::env;
-
-//extern crate term;
-//use term;
-
-mod file;
-mod invocable;
-mod invocablecategory;
-mod invocablecategorylist;
-mod invoker;
 mod wsl;
 
-/// The help() function renders usage information about the wink command to stdout.
+use wsl::{
+    invocablecategory::InvocableCategory,
+    invocablecategorylist::InvocableCategoryList,
+    invoker::Invoker,
+};
 
+/// The help() function renders usage information about the wink command to stdout.
 /// The msg argument is a message indicating why the command rendered usage information.
 /// The args argument is the command line including the invoked command (wink) and command line arguments.
 /// The categories argument contains lists of invocables used to render usage information.
-
-fn help(msg: &str, args: Vec<String>, mut categories: Vec<invocablecategory::InvocableCategory>) {
+fn help(msg: &str, args: Vec<String>, mut categories: Vec<InvocableCategory>) {
     // cmd = basename(wink.exe)
     let cmd = regex::Regex::new(r".*[\\/](?P<name>[^\\/]+$)").unwrap().replace_all(args[0].as_str(), "$name");
 
@@ -173,11 +166,11 @@ fn main() {
     let args: Vec<String> = std::env::args().collect();
 
     // categories contain lists of invocables that map command codes to commands
-    let category_list = invocablecategorylist::InvocableCategoryList::get();
+    let category_list = InvocableCategoryList::get();
 
     // if not running under WSL or Windows, it should not be possible to run Windows commands
 
-    if !wsl::is_windows_or_wsl() {
+    if !crate::wsl::is_windows_or_wsl() {
         help("Runs only under Windows and Windows Subsystem for Linux (WSL). Define WSL_DISTRO_NAME environment variable to override.", args, category_list.categories.to_vec());
         std::process::exit(1);
         //                return;
@@ -268,7 +261,7 @@ fn main() {
                     }
                 }
 
-                invoker::Invoker::invoke(invocable, dry_run, verbose, pass);
+                Invoker::invoke(invocable, dry_run, verbose, pass);
                 // avoid help() default below
                 std::process::exit(0); // TODO: return result from command
             }
