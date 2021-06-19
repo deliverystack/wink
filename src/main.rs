@@ -16,11 +16,7 @@
 
 mod wsl;
 
-use wsl::{
-    invocablecategory::InvocableCategory,
-    invocablecategorylist::InvocableCategoryList,
-    invoker::Invoker,
-};
+use wsl::{invocablecategory::InvocableCategory, invocablecategorylist::InvocableCategoryList, invoker::Invoker};
 
 /// The help() function renders usage information about the wink command to stdout.
 /// The msg argument is a message indicating why the command rendered usage information.
