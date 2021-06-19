@@ -603,5 +603,3 @@ impl InvocableCategory {
         ));
     }
 }
-
-
