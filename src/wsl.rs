@@ -9,11 +9,16 @@
 /// ```
 /// let results = Command::new("cmd.exe").arg("/c").arg("echo").arg("%USERPROFILE%").output().expect("failed to execute process");
 /// let userpath: String = match results.status.code() {
-///     Some(0) => wsl::wsl_path_or_self(String::from_utf8_lossy(&results.stdout).trim(), false /*unix*/ ),
+///     Some(0) => wsl_path_or_self(String::from_utf8_lossy(&results.stdout).trim(), false /*unix*/ ),
 ///    _ => String::new(),
 /// };
 /// ```
 // note: // unc path must start with \\; be careful not to replace \\ with / unintionally
+
+pub mod invocable;
+pub mod invocablecategory;
+pub mod invocablecategorylist;
+pub mod invoker;
 
 pub fn wsl_path_or_self(arg: &str, unix: bool) -> String {
     let exists = std::path::Path::new(arg).exists();
@@ -57,7 +62,33 @@ pub fn is_windows() -> bool {
 /// Return true if running under WSL (possibly a bash)
 pub fn is_wsl() -> bool {
     match std::env::var("WSL_DISTRO_NAME") {
-        Ok(_e) => true,
+        Ok(_v) => true,
         Err(_e) => false,
     }
 }
+
+fn get_user_home() -> Result<String, Box<dyn std::error::Error>> { 
+    let key = if is_windows() {
+        "USERPROFILE"
+    } else {
+        "HOME"
+    };
+
+    Ok(std::env::var(key)?)
+}
+
+fn get_user_home_default() -> String { 
+    match get_user_home() {
+        Ok(h) => h,
+        Err(_e) => String::new(),
+    }
+}
+
+fn get_config_file_path(name: &str) -> String {
+    if is_windows() {
+        format!("{0}\\{1}", get_user_home_default(), name)
+    } else {
+        format!("{0}/.{1}", get_user_home_default(), name)
+    }
+}
+
