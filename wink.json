@@ -5630,6 +5630,51 @@
           "arguments": []
         },
         {
+          "command_code": "oa",
+          "description": "Microsoft Outlook Attach File <path>",
+          "command": "$pf64/Microsoft Office/root/Office16/OUTLOOK.EXE",
+          "use_cmd": false,
+          "use_start": false,
+          "background": false,
+          "use_call": false,
+          "use_explorer": false,
+          "use_bash": false,
+          "arguments": [
+            "/a"
+          ]
+        },
+        {
+          "command_code": "oc",
+          "description": "Microsoft Outlook Compose",
+          "command": "$pf64/Microsoft Office/root/Office16/OUTLOOK.EXE",
+          "use_cmd": false,
+          "use_start": false,
+          "background": false,
+          "use_call": false,
+          "use_explorer": false,
+          "use_bash": false,
+          "arguments": [
+            "/c",
+            "imp.note"
+          ]
+        },
+        {
+          "command_code": "om",
+          "description": "Microsoft Outlook Compose To <email>",
+          "command": "$pf64/Microsoft Office/root/Office16/OUTLOOK.EXE",
+          "use_cmd": false,
+          "use_start": false,
+          "background": false,
+          "use_call": false,
+          "use_explorer": false,
+          "use_bash": false,
+          "arguments": [
+            "/c",
+            "imp.note",
+            "/m"
+          ]
+        },
+        {
           "command_code": "ppt",
           "description": "Microsoft PowerPoint",
           "command": "$pf64/Microsoft Office/root/Office16/POWERPNT.EXE",
