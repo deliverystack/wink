@@ -1,5 +1,5 @@
-use crate::wsl::invocablecategory::InvocableCategory;
 use crate::wsl::get_config_file_path;
+use crate::wsl::invocablecategory::InvocableCategory;
 
 #[derive(serde::Serialize, serde::Deserialize, Debug, Clone)]
 pub struct InvocableCategoryList {
@@ -74,13 +74,14 @@ impl InvocableCategoryList {
         category_list.categories.push(office);
 
         let path: String = get_config_file_path("wink.json");
-        
+
         if std::path::Path::new(&path).exists() {
             //TODO: confirm: if the path exists, then propagate all errors, so OK to unwrap from here
-            let data = std::fs::read_to_string(&path).expect(&format!("Unable to read {0}", &path));
-            let deserialized: InvocableCategoryList = serde_json::from_str(&data).unwrap(); 
+            let data = std::fs::read_to_string(&path).unwrap_or_else(|_| panic!("Unable to read {0}", &path));
+            //            let data = std::fs::read_to_string(&path).expect(&format!("Unable to read {0}", &path));
+            let deserialized: InvocableCategoryList = serde_json::from_str(&data).unwrap();
 
-            //TODO: replace following check to update existing categories 
+            //TODO: replace following check to update existing categories
             // if any category already exists, it will appear twice; report it.
             for category in deserialized.categories.iter() {
                 for existing in category_list.categories.iter() {
@@ -125,4 +126,3 @@ impl InvocableCategoryList {
         category_list
     }
 }
-
