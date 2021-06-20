@@ -1,6 +1,11 @@
+//! An InvocableCategory has a name and a list of Invocables.
+
+//TODO: is there a better way to reference Invocable?
+
 use crate::wsl::invocable::Invocable;
 
 #[derive(Clone, serde::Serialize, serde::Deserialize, Debug)]
+
 pub struct InvocableCategory {
     /// The friendly name of the category.
     pub name: String,
@@ -589,7 +594,7 @@ impl InvocableCategory {
             "$pf86/Microsoft/Edge/Application/msedge.exe",
             "Microsoft Edge",
             &[
-                //                "--inprivate",
+                // "--inprivate", // the only difference between command codes edge and trackme
                 "--ash-force-desktop",
                 "--disable-background-mode",
                 "--disable-preconnect",

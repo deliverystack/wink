@@ -257,7 +257,7 @@ fn main() {
                     }
                 }
 
-                Invoker::invoke(invocable, dry_run, verbose, pass);
+                Invoker {}.invoke(invocable, dry_run, verbose, pass);
                 // avoid help() default below
                 std::process::exit(0); // TODO: return result from command
             }

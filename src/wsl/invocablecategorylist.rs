@@ -1,17 +1,25 @@
+//! An InvocableCategoryList contains a list of InvocableCategory,
+//! which are named categories that each contain a list of Invocable,
+//! where each Invocable contains metadata about a command that the operating system can invoke.
+
+//TODO: is there a better way to reference the get_config_file_path function and the InvocableCategory struct?
+
 use crate::wsl::get_config_file_path;
 use crate::wsl::invocablecategory::InvocableCategory;
 
 #[derive(serde::Serialize, serde::Deserialize, Debug, Clone)]
 pub struct InvocableCategoryList {
+    /// The categories field contains the list of InvocableCategory.
     pub categories: Vec<InvocableCategory>,
 }
 
 impl InvocableCategoryList {
     /// Return an InvocableCategoryList populated from a hard-coded list of categories
-    /// plus the contents of $HOME/.wink.json or $USERPROFILE/wink.json.
-    /// Write messages about any category and code conflicts to standard error.
+    /// plus the contents of $HOME/.wink.json (WSL) or $USERPROFILE/wink.json (Windows).
     pub fn get() -> InvocableCategoryList {
         let mut category_list = InvocableCategoryList { categories: Vec::new() };
+
+        //TODO: convert to a list of names and delegate methods
 
         let mut screensavers = InvocableCategory::new("Screen Savers");
         screensavers.add_screensavers();
@@ -76,12 +84,12 @@ impl InvocableCategoryList {
         let path: String = get_config_file_path("wink.json");
 
         if std::path::Path::new(&path).exists() {
-            //TODO: confirm: if the path exists, then propagate all errors, so OK to unwrap from here
+            // if the path exists, then propagate all errors, so OK to unwrap from here
             let data = std::fs::read_to_string(&path).unwrap_or_else(|_| panic!("Unable to read {0}", &path));
-            //            let data = std::fs::read_to_string(&path).expect(&format!("Unable to read {0}", &path));
             let deserialized: InvocableCategoryList = serde_json::from_str(&data).unwrap();
 
-            //TODO: replace following check to update existing categories
+            //TODO: replace following check to update hard-coded categories with anything from the configuration file.
+
             // if any category already exists, it will appear twice; report it.
             for category in deserialized.categories.iter() {
                 for existing in category_list.categories.iter() {
@@ -113,7 +121,7 @@ impl InvocableCategoryList {
                         if compcat.name != category.name {
                             for compinv in compcat.invocables.iter() {
                                 if invocable.command_code == compinv.command_code {
-                                    //TODO: function for error messages to show command name
+                                    //TODO: enhance to error messages to show command line or at least wink command name
                                     eprintln!("Command code {0} defined for both {1} {2} and {3} {4}", invocable.command_code, category.name, invocable.command, compcat.name, compinv.command);
                                 }
                             }

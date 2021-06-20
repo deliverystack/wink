@@ -1,4 +1,4 @@
-// metadata about an invocable feature
+//! An Invocable contains metadata about a command that Windows, cmd.exe, explorer.exe, or bash.exe can invoke.
 #[derive(serde::Serialize, serde::Deserialize, Debug, Clone)]
 pub struct Invocable {
     /// The command code for the user to enter on the command line

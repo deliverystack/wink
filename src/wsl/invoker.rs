@@ -1,5 +1,7 @@
-//TODO: is this the right way to define a container for static methods?
-// creates and invokes command lines from invocables
+//! Invoker contains a function that creates and invokes a command line
+//! based on metadata in an Invocable and command line arguments.
+
+//TODO: is this the best way to reference the Invocable struct and the wsl_path_or_self() function?
 
 use crate::wsl::invocable::Invocable;
 use crate::wsl::wsl_path_or_self;
@@ -11,7 +13,7 @@ impl Invoker {
     /// writes that command line to stdout if verbose is true,
     /// and invokes that command line.
     //TODO:     invoker::Invoker::invoke(invocable, dry_run, verbose, pass); just doesn't look right to document.
-    pub fn invoke(invocable: &Invocable, dry_run: bool, verbose: bool, args: Vec<String>) -> String {
+    pub fn invoke(&self, invocable: &Invocable, dry_run: bool, verbose: bool, args: Vec<String>) -> String {
         // create three constants for substituting tokens in command paths
         let results = std::process::Command::new("cmd.exe").arg("/c").arg("echo").arg("%USERPROFILE%").output().expect("failed to execute process");
         let userpath: String = match results.status.code() {
