@@ -28,11 +28,7 @@ To see what wink would do without actually doing it, such as to copy the command
 
 For a JSON representation of wink's internal configurtion, use the -e (export) argument.
 
-If you use the same JSON format in $HOME/.wink.json (WSL) or %USERPROFILE%\\wink.json, you can add and possibly override wink commands without updating the source code. 
-
-```
-//TODO: try making .wink.json a symbolic link to wink.json
-```
+If you use the same JSON format in $HOME/.wink.json (WSL) or %USERPROFILE%\\wink.json (where .wink.json can be a symbolic link to wink.json), you can add and possibly override wink commands without updating the source code. BEWARE THAT THIS LOGIC HAS NOT BEEN WELL THOUGHT-THROUGH OR TESTED.
 
 Wink has a few dependencies for regular expression processing, common type derivation, and JSON serialziation/deserialization (see Cargo.toml).
 
