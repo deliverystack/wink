@@ -4,6 +4,8 @@ WARNING: WINK WAS NOT WRITTEN BY ANYONE WITH ANY EXPERTISE IN RUST, WINDOWS, LIN
 
 The wink command line tool lets you access hundreds of Linux and Windows applications and features with just a few keystrokes from both Windows Console and Windows Subsystem for Linux (WSL) shells.
 
+https://wslguy.net/2021/05/25/rust-command-line-tool-to-access-windows-features-and-commands/
+
 wink is written in rust using cargo and intended to be run from the Windows Console (cmd.exe), PowerShell, and Windows Subsystem for Linux (WSL) bash.exe shell windows.
 
 wink is a constant work in progress as its author(s) learn about rust and discover(s) more Windows features and how to access them and add(s) support for more third-party Windows applications.
@@ -41,19 +43,3 @@ derive-new = "0.5"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 ```
-
-Some sources for command lines and command codes:
-
-* https://docs.microsoft.com/en-us/windows/uwp/launch-resume/launch-settings-app
-
-* https://4sysops.com/wiki/list-of-ms-settings-uri-commands-to-open-specific-settings-in-windows-10/
-
-Files in the /src directory:
-
-- invocable.rs (struct): Metadata about a command that the system can invoke.
-- invocablecategory.rs (struct): A named list of invocables.
-- invocablecategorylist.rs (struct): A list of named lists of invocables.
-- invoker (struct): Invokes the command specified by an invocable.
-- wsl (lib): Function to convert between WSL and Windows file paths.
-- file.rs (lib): Function to read a file into a string.
-- main.rs (program): Processes command line arguments, creates an InvocableCategoryList, identify and run the Invocable or render help
