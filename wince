@@ -1,6 +1,8 @@
 #!/bin/sh -x
 
 clear
+
+export RUST_BACKTRACE=true
 rustup update
 
 projdir=/mnt/c/temp/wink    # directory containing cargo.toml
@@ -9,62 +11,72 @@ winbld='C:\temp\wink.build' # Windows path to directory for building Windows bin
 lwinbld=`wslpath $winbld`   # WSL path to directory for building Windows binary
 linstall=~/bin              # WSL binary install path
 
-cd $projdir
-cargo check                 # error out quickly if compile is not possible
+cd $projdir                 # avoid specifying project path for all commands
 
-if [ $? -ne 0 ]; then
+                            # error out quickly if compile is not possible
+result=$( cargo check 3>&1 1>&2 2>&3 | tee /dev/fd/2 )
+
+if [ "$?" -ne "0" ] || echo $result | egrep -qi "error|warning"; then
     echo cargo check failed
     cd - > /dev/null # revert to the previous directory
     exit 2
 fi
 
-cargo fmt --all -v -- --config max_width=2500 
+result=$( cargo fmt --all -v -- --config max_width=2500 3>&1 1>&2 2>&3 | tee /dev/fd/2 )
 
-if [ $? -ne 0 ]; then
+if [ "$?" -ne "0" ] || echo $result | egrep -qi "error|warning"; then
     echo cargo fmt failed
     cd - > /dev/null # revert to the previous directory
     exit 3
-else
-    set +x
-    
-    for f in "$(find . -iname \*.rs -print)"; do
-        ls -l $f
-        wc -clw $f
-    done
-
-    set -x
-    cargo update -v 
-    cargo-clippy 2>&1 | egrep -iq warning
-
-    if [ $? -eq 0 ]; then
-        cargo-clippy 
-        echo cargo-clippy failed
-        cd - > /dev/null # revert to the previous directory
-        exit 4
-    else
-#        cargo clean --target-dir /tmp/wink.build       # kills build performance    
-        cargo doc -v --target-dir $linbld               # --open to open in browser
-        cargo build -v --target-dir $linbld --release   # affects binary build path below 
-
-        if [ $? -ne 0 ]; then
-            echo cargo build failed
-            exit 5
-        else
-            ls -l ${linbld}/release/wink            # show WSL binary file size and build date
-            rm ${linstall}/wink                     # remove installed WSL binary
-            cp ${linbld}/release/wink $linstall     # install new WSL binary
-            cargo.exe build --release --target-dir "$winbld" # --release affects binary path below 
-            `wslpath ${winbld}`/release/wink.exe -ep > ${linbld}/doc/wink/wink.json # export JSON to docs
-            ls -l ${linbld}/doc/wink/wink.json      # show JSON file size and touch time
-            cp ${linbld}/doc/wink/wink.json .       # copy JSON to project root for github
-            path=`cmd.exe /c echo %USERPROFILE% | sed -e 's/\r//g'` # install Windows binary to this directory in %PATH%
-            path=`wslpath $path | sed -e 's/\r//g'`/AppData/Local/Microsoft/WindowsApps 
-            cp ${lwinbld}/release/wink.exe $path # install Windows binary
-            ${linstall}/wink $@ # run Linux build with parameters supplied on command line
-        fi
-    fi
 fi
 
+set +x
+    
+for f in "$(find . -iname \*.rs -print)"; do
+    ls -l $f
+    wc -clw $f
+done
+
+set -x
+cargo update -v 
+result=$( cargo-clippy 3>&1 1>&2 2>&3 | tee /dev/fd/2 )
+
+if [ "$?" -ne "0" ] || echo $result | egrep -qi "error|warning"; then
+    echo cargo-clippy failed
+    cd - > /dev/null # revert to the previous directory
+    exit 4
+fi
+
+#        cargo clean --target-dir /tmp/wink.build       # kills build performance    
+# -release determines  binary build path below 
+result=$( cargo build -v --target-dir $linbld --release | sed -e s'/--error-format=json/disregard/g' 3>&1 1>&2 2>&3 | tee /dev/fd/2 )
+
+if [ "$?" -ne "0" ] || echo $result | egrep -qi "error|warning"; then
+    echo cargo build failed
+    cd - > /dev/null # revert to the previous directory
+    exit 5
+fi
+
+result=$( cargo test 3>&1 1>&2 2>&3 | tee /dev/fd/2 )
+
+if [ "$?" -ne "0" ] || echo $result | egrep -qi "error|warning"; then
+    echo cargo test faileed
+    cd - > /dev/null # revert to the previous directory
+    exit 6
+fi
+
+cargo doc -v --target-dir $linbld               # --open to open in browser
+ls -l ${linbld}/release/wink            # show WSL binary file size and build date
+rm ${linstall}/wink                     # remove installed WSL binary
+cp ${linbld}/release/wink $linstall     # install new WSL binary
+cargo.exe build --release --target-dir "$winbld" # --release affects binary path below 
+`wslpath ${winbld}`/release/wink.exe -ep > ${linbld}/doc/wink/wink.json # export JSON to docs
+ls -l ${linbld}/doc/wink/wink.json      # show JSON file size and touch time
+cp ${linbld}/doc/wink/wink.json .       # copy JSON to project root for github
+path=`cmd.exe /c echo %USERPROFILE% | sed -e 's/\r//g'` # install Windows binary to this directory in %PATH%
+path=`wslpath $path | sed -e 's/\r//g'`/AppData/Local/Microsoft/WindowsApps 
+cp ${lwinbld}/release/wink.exe $path # install Windows binary
+${linstall}/wink $@ # run Linux build with parameters supplied on command line
 cp /mnt/c/temp/wink/wince $linstall # install any updates to this wince shell script
 cd - > /dev/null # revert to the previous directory
 exit 0
