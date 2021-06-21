@@ -87,3 +87,16 @@ fn get_config_file_path(name: &str) -> String {
         format!("{0}/.{1}", get_user_home_default(), name)
     }
 }
+
+#[cfg(test)]
+mod tests {
+    #[test]
+    fn fail() {
+        panic!("intentional test failure");
+    }
+
+    #[test]
+    fn get_user_home_default() {
+        assert!(true);
+    }
+}

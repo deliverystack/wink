@@ -2,7 +2,7 @@
 
 clear
 
-export RUST_BACKTRACE=true
+export RUST_BACKTRACE=1
 rustup update
 
 projdir=/mnt/c/temp/wink    # directory containing cargo.toml
