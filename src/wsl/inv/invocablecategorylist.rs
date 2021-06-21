@@ -5,7 +5,7 @@
 //TODO: is there a better way to reference the get_config_file_path function and the InvocableCategory struct?
 
 use crate::wsl::get_config_file_path;
-use crate::wsl::invocablecategory::InvocableCategory;
+use crate::wsl::inv::invocablecategory::InvocableCategory;
 
 #[derive(serde::Serialize, serde::Deserialize, Debug, Clone)]
 pub struct InvocableCategoryList {

@@ -3,7 +3,7 @@
 
 //TODO: is this the best way to reference the Invocable struct and the wsl_path_or_self() function?
 
-use crate::wsl::invocable::Invocable;
+use crate::wsl::inv::invocable::Invocable;
 use crate::wsl::wsl_path_or_self;
 
 pub struct Invoker {}

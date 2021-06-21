@@ -19,10 +19,11 @@ if [ $? -ne 0 ]; then
 fi
 
 # this is the directory that contains the source code
-rustfmt --config max_width=2500 $projdir/src/*.rs
+#rustfmt --config max_width=2500 $projdir/src/*.rs
+cargo fmt --all -v -- --config max_width=2500 
 
 if [ $? -ne 0 ]; then
-    echo rustfmt failed
+    echo cargo fmt/rustfmt failed
     cd - > /dev/null # revert to the previous directory
     exit 3
 else

@@ -2,7 +2,7 @@
 
 //TODO: is there a better way to reference Invocable?
 
-use crate::wsl::invocable::Invocable;
+use crate::wsl::inv::invocable::Invocable;
 
 #[derive(Clone, serde::Serialize, serde::Deserialize, Debug)]
 

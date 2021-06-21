@@ -14,10 +14,11 @@
 /// };
 /// ```
 // note: // unc path must start with \\; be careful not to replace \\ with / unintionally
-pub mod invocable;
-pub mod invocablecategory;
-pub mod invocablecategorylist;
-pub mod invoker;
+//pub mod invocable;
+//pub mod invocablecategory;
+//pub mod invocablecategorylist;
+//pub mod invoker;
+pub mod inv;
 
 pub fn wsl_path_or_self(arg: &str, unix: bool) -> String {
     let exists = std::path::Path::new(arg).exists();
