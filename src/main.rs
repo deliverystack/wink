@@ -264,15 +264,17 @@ fn main() {
         }
     }
 
-    if export {
+    if export && first_arg.is_empty() {
         if pretty {
             println!("{}", serde_json::to_string_pretty(&category_list).unwrap());
         } else {
             println!("{}", serde_json::to_string(&category_list).unwrap());
         }
+
+        std::process::exit(0);
     }
 
-    if export || dry_run {
+    if (first_arg.is_empty() || !export) && dry_run {
         std::process::exit(0);
     }
 
