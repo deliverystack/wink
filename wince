@@ -14,10 +14,17 @@ linstall=~/bin              # WSL binary install path
 cd $projdir                 # avoid specifying project path for all commands
 
                             # error out quickly if compile is not possible
-result=$( cargo check 3>&1 1>&2 2>&3 | tee /dev/fd/2 )
+result=$( cargo check -v --workspace --all-features 3>&1 1>&2 2>&3 | tee /dev/fd/2 )
 
-if [ "$?" -ne "0" ] || echo $result | egrep -qi "error|warning"; then
-    echo cargo check failed
+if [ "$?" -ne "0" ]; then
+    echo cargo check failed with non-zero exit code
+    cd - > /dev/null # revert to the previous directory
+    exit 2
+fi
+
+if echo $result | egrep -qi "error|warning"; then
+    echo cargo check failed with error or warning
+    echo $result | egrep -qi "error|warning"
     cd - > /dev/null # revert to the previous directory
     exit 2
 fi
@@ -39,7 +46,7 @@ done
 
 set -x
 cargo update -v 
-result=$( cargo-clippy 3>&1 1>&2 2>&3 | tee /dev/fd/2 )
+result=$( cargo-clippy -v 3>&1 1>&2 2>&3 | tee /dev/fd/2 )
 
 if [ "$?" -ne "0" ] || echo $result | egrep -qi "error|warning"; then
     echo cargo-clippy failed
@@ -47,25 +54,25 @@ if [ "$?" -ne "0" ] || echo $result | egrep -qi "error|warning"; then
     exit 4
 fi
 
-#        cargo clean --target-dir /tmp/wink.build       # kills build performance    
-# -release determines  binary build path below 
-result=$( cargo build -v --target-dir $linbld --release | sed -e s'/--error-format=json/disregard/g' 3>&1 1>&2 2>&3 | tee /dev/fd/2 )
+result=$( cargo test -v --target-dir $linbld -- --show-output 3>&1 1>&2 2>&3 | tee /dev/fd/2 )
 
-if [ "$?" -ne "0" ] || echo $result | egrep -qi "error|warning"; then
-    echo cargo build failed
+if [ "$?" -ne "0" ] || echo $result | egrep -qi "could not compile|test result: FAILED"; then
+    echo cargo test failed
     cd - > /dev/null # revert to the previous directory
     exit 5
 fi
 
-result=$( cargo test 3>&1 1>&2 2>&3 | tee /dev/fd/2 )
+#        cargo clean --target-dir /tmp/wink.build       # kills build performance    
+# -release determines  binary build path below 
+result=$( cargo build -v --target-dir $linbld --release | sed -e s'/error\-format/3rror\-format=json/g' 3>&1 1>&2 2>&3 | tee /dev/fd/2 )
 
 if [ "$?" -ne "0" ] || echo $result | egrep -qi "error|warning"; then
-    echo cargo test faileed
+    echo cargo build failed
     cd - > /dev/null # revert to the previous directory
     exit 6
 fi
 
-cargo doc -v --target-dir $linbld               # --open to open in browser
+#cargo doc -v --target-dir $linbld               # --open to open in browser
 ls -l ${linbld}/release/wink            # show WSL binary file size and build date
 rm ${linstall}/wink                     # remove installed WSL binary
 cp ${linbld}/release/wink $linstall     # install new WSL binary
@@ -76,6 +83,7 @@ cp ${linbld}/doc/wink/wink.json .       # copy JSON to project root for github
 path=`cmd.exe /c echo %USERPROFILE% | sed -e 's/\r//g'` # install Windows binary to this directory in %PATH%
 path=`wslpath $path | sed -e 's/\r//g'`/AppData/Local/Microsoft/WindowsApps 
 cp ${lwinbld}/release/wink.exe $path # install Windows binary
+set +x
 ${linstall}/wink $@ # run Linux build with parameters supplied on command line
 cp /mnt/c/temp/wink/wince $linstall # install any updates to this wince shell script
 cd - > /dev/null # revert to the previous directory
