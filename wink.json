@@ -3865,7 +3865,7 @@
         {
           "command_code": "gowindow",
           "description": "GoWindow (God Mode)",
-          "command": "mkdir /mnt/c/temp/GoWindow.{ED7BA470-8E54-465E-825C-99712043E01C} > /dev/null 2>&1 ; explorer.exe \"C:\\temp\\GoWindow.{ED7BA470-8E54-465E-825C-99712043E01C}\"",
+          "command": "mkdir /mnt/temp/GoWindow.{ED7BA470-8E54-465E-825C-99712043E01C} 2>/dev/null ; explorer.exe 'C:\\temp\\GoWindow.{ED7BA470-8E54-465E-825C-99712043E01C}'",
           "use_cmd": false,
           "use_start": false,
           "background": false,
