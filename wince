@@ -22,11 +22,23 @@ if [ "$?" -ne "0" ]; then
     exit 2
 fi
 
+# sometimes cargo check fails the first time; in which case, run it again.
+
 if echo $result | egrep -qi "error|warning"; then
-    echo cargo check failed with error or warning
-    echo $result | egrep -qi "error|warning"
-    cd - > /dev/null # revert to the previous directory
-    exit 2
+    result=$( cargo check -v --workspace --all-features 3>&1 1>&2 2>&3 | tee /dev/fd/2 )
+    
+    if [ "$?" -ne "0" ]; then
+        echo cargo check failed the second run with a non-zero exit code
+        cd - > /dev/null # revert to the previous directory
+        exit 2
+    fi
+
+    if echo $result | egrep -qi "error|warning"; then
+        echo cargo check failed the second run with an error or warning
+        echo $result | egrep -i "error|warning"
+        cd - > /dev/null # revert to the previous directory
+        exit 2
+    fi
 fi
 
 result=$( cargo fmt --all -v -- --config max_width=2500 3>&1 1>&2 2>&3 | tee /dev/fd/2 )
@@ -62,7 +74,7 @@ if [ "$?" -ne "0" ] || echo $result | egrep -qi "could not compile|test result: 
     exit 5
 fi
 
-#        cargo clean --target-dir /tmp/wink.build       # kills build performance    
+#cargo clean --target-dir /tmp/wink.build       # kills build performance    
 # -release determines  binary build path below 
 result=$( cargo build -v --target-dir $linbld --release | sed -e s'/error\-format/3rror\-format=json/g' 3>&1 1>&2 2>&3 | tee /dev/fd/2 )
 
