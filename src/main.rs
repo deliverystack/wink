@@ -1,3 +1,8 @@
+//TODO: check for same command in multiple invocables accross all categories
+//TODO: sysinternals not working?
+// "get" => Invoker::cmd("echo"), // Windows File System explorer //TODO: rename echo?
+//        "exp" => Invoker::exp("", &[]),    // Windows File System explorer
+
 // $ wink gowindow
 // wslpath: C:/temp/GoWindow.{ED7BA470-8E54-465E-825C-99712043E01C}: No such file or directory
 
@@ -173,11 +178,9 @@ fn main() {
     }
 
     // if not running under WSL or Windows, it should not be possible to run Windows commands
-
     if !crate::wsl::is_windows_or_wsl() {
         help("Runs only under Windows and Windows Subsystem for Linux (WSL). Define WSL_DISTRO_NAME environment variable to override.", config, category_list.categories);
         std::process::exit(2);
-        //                return;
     }
 
     if config.pretty_print && !config.export {
@@ -205,7 +208,6 @@ fn main() {
                 }
 
                 Invoker {}.invoke(invocable, config.dry_run, config.verbose, config.cmd_args);
-                // avoid help() default below
                 std::process::exit(0); // TODO: return result from invoking command
             }
         }
@@ -237,8 +239,3 @@ fn color(msg: &str) {
     print!("{0}", msg);
     terminal.reset().unwrap();
 }
-
-//TODO: check for same command in multiple invocables accross all categories
-//TODO: sysinternals not working?
-// "get" => Invoker::cmd("echo"), // Windows File System explorer //TODO: rename echo?
-//        "exp" => Invoker::exp("", &[]),    // Windows File System explorer
