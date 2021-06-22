@@ -15,6 +15,7 @@
 //! Run wink with no command line parameters to get usage information.
 
 mod wsl;
+//use lib;
 
 use wsl::inv::{invocablecategory::InvocableCategory, invocablecategorylist::InvocableCategoryList, invoker::Invoker};
 
@@ -22,32 +23,35 @@ use wsl::inv::{invocablecategory::InvocableCategory, invocablecategorylist::Invo
 /// The msg argument is a message indicating why the command rendered usage information.
 /// The args argument is the command line including the invoked command (wink) and command line arguments.
 /// The categories argument contains lists of invocables used to render usage information.
-fn help(msg: &str, args: Vec<String>, mut categories: Vec<InvocableCategory>) {
+fn help(msg: &str, config: wink::WinkConfig, mut categories: Vec<InvocableCategory>) {
     // cmd = basename(wink.exe)
-    let cmd = regex::Regex::new(r".*[\\/](?P<name>[^\\/]+$)").unwrap().replace_all(args[0].as_str(), "$name");
-
+    //    let cmd = regex::Regex::new(r".*[\\/](?P<name>[^\\/]+$)").unwrap().replace_all(args[0].as_str(), "$name");
+    //TODO: render invoked command line from config.
     print!(
         "
 -----------------------------------------------------------------------------
 {0:>12} : access  Windows and WSL features : {1}
 -----------------------------------------------------------------------------
-
+{0:>12} : invoked as : {2}
 -----------------------------------------------------------------------------
 {0:>12} ",
-        cmd, msg
+        config.cmd_name,
+        msg,
+        config.all_args.join(" ")
     );
     color("EXP");
+
     print!(
         "                explorer.exe
 -----------------------------------------------------------------------------
 {0:>12} ",
-        cmd
+        config.cmd_name
     );
     color("EXP");
     print!(
         " <file.ext>     Set/open default application for extension
 {0:>12} ",
-        cmd
+        config.cmd_name
     );
 
     color("EXP");
@@ -57,20 +61,20 @@ fn help(msg: &str, args: Vec<String>, mut categories: Vec<InvocableCategory>) {
 
 -----------------------------------------------------------------------------
 {0:>12} ",
-        cmd
+        config.cmd_name
     );
     color("CMD");
     print!(
         "                cmd.exe /c
 -----------------------------------------------------------------------------
 {0:>12} ",
-        cmd
+        config.cmd_name
     );
     color("CMD");
     print!(
         " <cmd> [args]   Invoke Windows console command line
 {0:>12} ",
-        cmd
+        config.cmd_name
     );
     color("CMD");
     print!(
@@ -79,20 +83,20 @@ fn help(msg: &str, args: Vec<String>, mut categories: Vec<InvocableCategory>) {
 
 -----------------------------------------------------------------------------
 {0:>12} ",
-        cmd
+        config.cmd_name
     );
     color("BASH");
     print!(
         "               bash.exe -c
 -----------------------------------------------------------------------------
 {0:>12} ",
-        cmd
+        config.cmd_name
     );
     color("BASH");
     print!(
         " /path [args]  Invoke shell command line
 {0:>12} ",
-        cmd
+        config.cmd_name
     );
     color("BASH");
     print!(
@@ -101,7 +105,7 @@ fn help(msg: &str, args: Vec<String>, mut categories: Vec<InvocableCategory>) {
 
 -----------------------------------------------------------------------------
 {0:>12} ",
-        cmd
+        config.cmd_name
     );
     color("CODE");
     println!(
@@ -133,19 +137,19 @@ fn help(msg: &str, args: Vec<String>, mut categories: Vec<InvocableCategory>) {
         }
     }
 
-    println!("\n{0:>12} : {1} known command codes\n", cmd, count);
-    println!("{0:>12} : access Windows features : {1}\n", cmd, msg);
-    print!("{0:>12} [opts] <", cmd);
+    println!("\n{0:>12} : {1} known command codes\n", config.cmd_name, count);
+    println!("{0:>12} : access Windows features : {1}\n", config.cmd_name, msg);
+    print!("{0:>12} [opts] <", config.cmd_name);
     color("CODE");
     println!("> [arguments]");
     println!("            -d dry (do not execute)");
     println!("            -e export (configuraiton JSON)");
     println!("            -p pretty-print (for use with -e)");
     println!("            -v verbose (print command line)\n");
-    print!("{0} ", cmd);
+    print!("{0} ", config.cmd_name);
     color("HELP");
     println!(" :                  display command usage information");
-    print!("{0} ", cmd);
+    print!("{0} ", config.cmd_name);
     color("HELP");
 
     if cfg!(target_os = "windows") {
@@ -158,114 +162,57 @@ fn help(msg: &str, args: Vec<String>, mut categories: Vec<InvocableCategory>) {
 /// The main() function of the program accepts command line arguments through env::args.collect()
 /// rather than as parameters.
 fn main() {
-    // command line arguments
-    let args: Vec<String> = std::env::args().collect();
+    let config = wink::WinkConfig::get_from_cmd_line_args();
 
     // categories contain lists of invocables that map command codes to commands
     let category_list = InvocableCategoryList::get();
 
+    if !config.help_msg.is_empty() {
+        help(&config.help_msg.to_string(), config, category_list.categories);
+        std::process::exit(2);
+    }
+
     // if not running under WSL or Windows, it should not be possible to run Windows commands
 
     if !crate::wsl::is_windows_or_wsl() {
-        help("Runs only under Windows and Windows Subsystem for Linux (WSL). Define WSL_DISTRO_NAME environment variable to override.", args, category_list.categories.to_vec());
-        std::process::exit(1);
+        help("Runs only under Windows and Windows Subsystem for Linux (WSL). Define WSL_DISTRO_NAME environment variable to override.", config, category_list.categories);
+        std::process::exit(2);
         //                return;
     }
 
-    let mut dry_run: bool = false; // -d command line option
-    let mut verbose: bool = false; // -v command line option
-    let mut export: bool = false; // -e command line option
-    let mut pretty: bool = false; // -p command line option
-    let mut first_arg_index = 1; // number of processed command line arguments (first is command name)
-
-    for arg in args.iter().skip(1) {
-        let prefix: char = arg.to_lowercase().chars().next().unwrap();
-
-        if arg == "help" {
-            help("Help requested", args, category_list.categories.to_vec());
-            std::process::exit(1);
-            //            return;
-        }
-
-        // if the argument is not help and does not start with a slash or a dash, then it should be a command code
-        if prefix != '/' && prefix != '-' {
-            break;
-        }
-
-        for char in arg.chars() {
-            // ignore slashes and dashes
-            if char == '/' || char == '-' {
-                continue;
-            // show help for -h or -?
-            } else if char == 'h' || char == '?' {
-                help("Help requested", args, category_list.categories.to_vec());
-                std::process::exit(1);
-            //                return;
-            // -v
-            } else if char == 'v' {
-                verbose = true;
-            // -d
-            } else if char == 'd' {
-                dry_run = true;
-            } else if char == 'p' {
-                pretty = true;
-            } else if char == 'e' {
-                export = true;
-            } else {
-                help(format!("Unrecognized command line option in {0} : {1}", arg, char).as_str(), args, category_list.categories.to_vec());
-                std::process::exit(1);
-                //                return;
-            }
-        }
-
-        first_arg_index += 1;
+    if config.pretty_print && !config.export {
+        help("-p invalid without -e", config, category_list.categories);
+        std::process::exit(3);
     }
 
-    if pretty && !export {
-        help("-p invalid without -e", args, category_list.categories.to_vec()); //TODO: help could print command line passed to it
-        std::process::exit(1);
-    }
-
-    // first_arg should be the command code
-    let first_arg = match args.get(first_arg_index) {
-        Some(arg) => arg.to_lowercase(),
-        None => String::new(),
-    };
-
-    if first_arg.is_empty() && !(export || dry_run) {
-        help("No command specified", args, category_list.categories.to_vec());
-        std::process::exit(1);
-        //        return;
+    if config.command_code.is_empty() && !(config.export || config.dry_run) {
+        help("No command specified", config, category_list.categories);
+        std::process::exit(4);
     }
 
     // find the invocable maching the argument from the list of invocable categories
     for category in category_list.categories.iter() {
         for invocable in category.invocables.iter() {
-            if invocable.command_code == first_arg {
+            if invocable.command_code == config.command_code {
                 // pass remaining command line arguments to the invocable
-                let mut pass: Vec<String> = vec![];
 
-                for arg in args.iter().skip(first_arg_index + 1) {
-                    pass.push(wsl::wsl_path_or_self(arg, false));
-                }
-
-                if export {
-                    if pretty {
+                if config.export {
+                    if config.pretty_print {
                         println!("{}", serde_json::to_string_pretty(&invocable).unwrap());
                     } else {
                         println!("{}", serde_json::to_string(&invocable).unwrap());
                     }
                 }
 
-                Invoker {}.invoke(invocable, dry_run, verbose, pass);
+                Invoker {}.invoke(invocable, config.dry_run, config.verbose, config.cmd_args);
                 // avoid help() default below
-                std::process::exit(0); // TODO: return result from command
+                std::process::exit(0); // TODO: return result from invoking command
             }
         }
     }
 
-    if export && first_arg.is_empty() {
-        if pretty {
+    if config.export && config.command_code.is_empty() {
+        if config.pretty_print {
             println!("{}", serde_json::to_string_pretty(&category_list).unwrap());
         } else {
             println!("{}", serde_json::to_string(&category_list).unwrap());
@@ -274,13 +221,12 @@ fn main() {
         std::process::exit(0);
     }
 
-    if (first_arg.is_empty() || !export) && dry_run {
+    if (config.command_code.is_empty() || !config.export) && config.dry_run {
         std::process::exit(0);
     }
 
-    help(&format!("Command not recognized: {0}", first_arg), args, category_list.categories.to_vec());
-    std::process::exit(2);
-    // return
+    help(&format!("Command not recognized: {0}", config.command_code), config, category_list.categories);
+    std::process::exit(5);
 }
 
 /// Writes the given message to STDOUT in a color other than the default.

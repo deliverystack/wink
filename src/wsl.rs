@@ -91,12 +91,38 @@ fn get_config_file_path(name: &str) -> String {
 #[cfg(test)]
 mod tests {
     #[test]
+    #[should_panic]
     fn fail() {
-        panic!("intentional test failure");
+        println!("wsl::tests::fail()");
+        panic!("wsl::tests::fail()");
     }
+
+    //fn get_user_home() -> Result<String, Box<dyn std::error::Error>> {
+    //fn get_user_home_default() -> String {
+    //fn get_config_file_path(name: &str) -> String {
+    //wslpath_or_self
 
     #[test]
     fn get_user_home_default() {
-        assert!(true);
+        println!("wsl::tests::get_user_home_default()");
+        //TODO:
+    }
+
+    #[test]
+    fn is_windows_or_wsl() {
+        println!("wsl::tests::is_windows_or_wsl()");
+        assert_eq!(super::is_windows_or_wsl(), true, "Run the tests against the Linux binary under WSL.");
+    }
+
+    #[test]
+    fn is_windows() {
+        println!("wsl::tests::is_windows()");
+        assert_eq!(super::is_windows(), false, "Run the tests against the Linux binary under WSL.");
+    }
+
+    #[test]
+    fn is_wsl() {
+        println!("wsl::tests::is_wsl()");
+        assert_eq!(super::is_wsl(), true, "Run the tests against the Linux binary under WSL.");
     }
 }
