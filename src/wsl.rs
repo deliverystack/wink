@@ -41,7 +41,7 @@ pub fn wsl_path_or_self(arg: &str, unix: bool) -> String {
         let result = String::from_utf8_lossy(&val.stdout).trim().to_string(); //.replace("\n", "");
 
         // if exaclty one non-whitespace line written to stdout
-        if !result.is_empty() && result.as_bytes().iter().filter(|&&c| c == b'\n').count() < 1 {
+        if arg.len() != result.len() && (!result.is_empty()) && result.as_bytes().iter().filter(|&&c| c == b'\n').count() < 1 {
             return result;
         }
     }
