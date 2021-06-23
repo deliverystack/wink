@@ -17,7 +17,9 @@ impl InvocableCategoryList {
     /// Return an InvocableCategoryList populated from a hard-coded list of categories
     /// plus the contents of $HOME/.wink.json (WSL) or $USERPROFILE/wink.json (Windows).
     pub fn get() -> InvocableCategoryList {
-        let mut category_list = InvocableCategoryList { categories: Vec::new() };
+        let mut category_list = InvocableCategoryList {
+            categories: Vec::new(),
+        };
 
         //TODO: convert to a list of names and delegate methods
 
@@ -85,7 +87,8 @@ impl InvocableCategoryList {
 
         if std::path::Path::new(&path).exists() {
             // if the path exists, then propagate all errors, so OK to unwrap from here
-            let data = std::fs::read_to_string(&path).unwrap_or_else(|_| panic!("Unable to read {0}", &path));
+            let data = std::fs::read_to_string(&path)
+                .unwrap_or_else(|_| panic!("Unable to read {0}", &path));
             let deserialized: InvocableCategoryList = serde_json::from_str(&data).unwrap();
 
             //TODO: replace following check to update hard-coded categories with anything from the configuration file.
@@ -94,7 +97,10 @@ impl InvocableCategoryList {
             for category in deserialized.categories.iter() {
                 for existing in category_list.categories.iter() {
                     if category.name == existing.name {
-                        eprintln!("Category {0} defined in multiple places including {1}", category.name, path);
+                        eprintln!(
+                            "Category {0} defined in multiple places including {1}",
+                            category.name, path
+                        );
                     }
                 }
 
@@ -122,7 +128,14 @@ impl InvocableCategoryList {
                             for compinv in compcat.invocables.iter() {
                                 if invocable.command_code == compinv.command_code {
                                     //TODO: enhance to error messages to show command line or at least wink command name
-                                    eprintln!("Command code {0} defined for both {1} {2} and {3} {4}", invocable.command_code, category.name, invocable.command, compcat.name, compinv.command);
+                                    eprintln!(
+                                        "Command code {0} defined for both {1} {2} and {3} {4}",
+                                        invocable.command_code,
+                                        category.name,
+                                        invocable.command,
+                                        compcat.name,
+                                        compinv.command
+                                    );
                                 }
                             }
                         }

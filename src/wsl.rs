@@ -41,7 +41,10 @@ pub fn wsl_path_or_self(arg: &str, unix: bool) -> String {
         let result = String::from_utf8_lossy(&val.stdout).trim().to_string(); //.replace("\n", "");
 
         // if exaclty one non-whitespace line written to stdout
-        if arg.len() != result.len() && (!result.is_empty()) && result.as_bytes().iter().filter(|&&c| c == b'\n').count() < 1 {
+        if arg.len() != result.len()
+            && (!result.is_empty())
+            && result.as_bytes().iter().filter(|&&c| c == b'\n').count() < 1
+        {
             return result;
         }
     }
@@ -111,18 +114,30 @@ mod tests {
     #[test]
     fn is_windows_or_wsl() {
         println!("wsl::tests::is_windows_or_wsl()");
-        assert_eq!(super::is_windows_or_wsl(), true, "Run the tests against the Linux binary under WSL.");
+        assert_eq!(
+            super::is_windows_or_wsl(),
+            true,
+            "Run the tests against the Linux binary under WSL."
+        );
     }
 
     #[test]
     fn is_windows() {
         println!("wsl::tests::is_windows()");
-        assert_eq!(super::is_windows(), false, "Run the tests against the Linux binary under WSL.");
+        assert_eq!(
+            super::is_windows(),
+            false,
+            "Run the tests against the Linux binary under WSL."
+        );
     }
 
     #[test]
     fn is_wsl() {
         println!("wsl::tests::is_wsl()");
-        assert_eq!(super::is_wsl(), true, "Run the tests against the Linux binary under WSL.");
+        assert_eq!(
+            super::is_wsl(),
+            true,
+            "Run the tests against the Linux binary under WSL."
+        );
     }
 }

@@ -22,7 +22,10 @@
 mod wsl;
 //use lib;
 
-use wsl::inv::{invocablecategory::InvocableCategory, invocablecategorylist::InvocableCategoryList, invoker::Invoker};
+use wsl::inv::{
+    invocablecategory::InvocableCategory, invocablecategorylist::InvocableCategoryList,
+    invoker::Invoker,
+};
 
 /// The help() function renders usage information about the wink command to stdout.
 /// The msg argument is a message indicating why the command rendered usage information.
@@ -123,7 +126,10 @@ fn help(msg: &str, config: wink::WinkConfig, mut categories: Vec<InvocableCatego
     let mut terminal = term::stdout().unwrap();
 
     for mut category in categories {
-        println!("\n{0}\n-----------------------------------------------------------------------------", category.name);
+        println!(
+            "\n{0}\n-----------------------------------------------------------------------------",
+            category.name
+        );
         category.invocables.sort();
 
         for invocable in category.invocables {
@@ -142,8 +148,14 @@ fn help(msg: &str, config: wink::WinkConfig, mut categories: Vec<InvocableCatego
         }
     }
 
-    println!("\n{0:>12} : {1} known command codes\n", config.cmd_name, count);
-    println!("{0:>12} : access Windows features : {1}\n", config.cmd_name, msg);
+    println!(
+        "\n{0:>12} : {1} known command codes\n",
+        config.cmd_name, count
+    );
+    println!(
+        "{0:>12} : access Windows features : {1}\n",
+        config.cmd_name, msg
+    );
     print!("{0:>12} [opts] <", config.cmd_name);
     color("CODE");
     println!("> [arguments]");
@@ -173,7 +185,11 @@ fn main() {
     let category_list = InvocableCategoryList::get();
 
     if !config.help_msg.is_empty() {
-        help(&config.help_msg.to_string(), config, category_list.categories);
+        help(
+            &config.help_msg.to_string(),
+            config,
+            category_list.categories,
+        );
         std::process::exit(2);
     }
 
@@ -227,7 +243,11 @@ fn main() {
         std::process::exit(0);
     }
 
-    help(&format!("Command not recognized: {0}", config.command_code), config, category_list.categories);
+    help(
+        &format!("Command not recognized: {0}", config.command_code),
+        config,
+        category_list.categories,
+    );
     std::process::exit(5);
 }
 

@@ -58,8 +58,24 @@ impl PartialEq for Invocable {
 
 impl Invocable {
     /// Construct and return a default invocable.
-    fn base(command_code: &'static str, command: &'static str, description: &'static str, args: &[&str]) -> Invocable {
-        let mut inv = Invocable { command_code: command_code.to_string(), command: command.to_string(), description: description.to_string(), use_cmd: false, use_start: false, background: false, use_call: false, use_explorer: false, use_bash: false, arguments: vec![] };
+    fn base(
+        command_code: &'static str,
+        command: &'static str,
+        description: &'static str,
+        args: &[&str],
+    ) -> Invocable {
+        let mut inv = Invocable {
+            command_code: command_code.to_string(),
+            command: command.to_string(),
+            description: description.to_string(),
+            use_cmd: false,
+            use_start: false,
+            background: false,
+            use_call: false,
+            use_explorer: false,
+            use_bash: false,
+            arguments: vec![],
+        };
 
         for arg in args.iter() {
             inv.arguments.push(arg.to_string());
@@ -70,19 +86,33 @@ impl Invocable {
 
     /// Construct and return an invocable that calls an executable directly without explorer.exe, cmd.exe, or bash.exe.
     /// Accepts command line arguments specified by invocable construction.
-    pub fn bin_with(command_code: &'static str, command: &'static str, description: &'static str, args: &[&str]) -> Invocable {
+    pub fn bin_with(
+        command_code: &'static str,
+        command: &'static str,
+        description: &'static str,
+        args: &[&str],
+    ) -> Invocable {
         Invocable::base(command_code, command, description, args)
     }
 
     /// Return an Invocable that calls an executable directly without explorer.exe, cmd.exe, or bash.exe.
     /// Convenience method for common case of no configured command line arguments; ; user may specify command line arguments for invocable.
-    pub fn bin(command_code: &'static str, command: &'static str, description: &'static str) -> Invocable {
+    pub fn bin(
+        command_code: &'static str,
+        command: &'static str,
+        description: &'static str,
+    ) -> Invocable {
         Invocable::bin_with(command_code, command, description, &[])
     }
 
     /// Return an Invocable that uses explorer.exe.
     /// Accepts command line arguments specified by invocable construction.
-    pub fn exp_with(command_code: &'static str, command: &'static str, description: &'static str, args: &[&str]) -> Invocable {
+    pub fn exp_with(
+        command_code: &'static str,
+        command: &'static str,
+        description: &'static str,
+        args: &[&str],
+    ) -> Invocable {
         let mut inv = Invocable::base(command_code, command, description, args);
         inv.use_explorer = true;
         inv
@@ -90,13 +120,22 @@ impl Invocable {
 
     /// Return an Invocable that uses explorer.exe. Convenience method for no command line arguments.
     /// Convenience method for common case of no configured command line arguments; ; user may specify command line arguments for invocable.
-    pub fn exp(command_code: &'static str, command: &'static str, description: &'static str) -> Invocable {
+    pub fn exp(
+        command_code: &'static str,
+        command: &'static str,
+        description: &'static str,
+    ) -> Invocable {
         Invocable::exp_with(command_code, command, description, &[])
     }
 
     /// Return an invocable that uses cmd.exe start /b.
     /// Accepts command line arguments specified by invocable construction.
-    pub fn bkg_with(command_code: &'static str, command: &'static str, description: &'static str, args: &[&str]) -> Invocable {
+    pub fn bkg_with(
+        command_code: &'static str,
+        command: &'static str,
+        description: &'static str,
+        args: &[&str],
+    ) -> Invocable {
         let mut inv = Invocable::base(command_code, command, description, args);
         inv.background = true;
         inv
@@ -104,13 +143,22 @@ impl Invocable {
 
     /// Return an invocable that uses cmd.exe start /b.
     /// Convenience method for common case of no configured command line arguments; ; user may specify command line arguments for invocable.
-    pub fn bkg(command_code: &'static str, command: &'static str, description: &'static str) -> Invocable {
+    pub fn bkg(
+        command_code: &'static str,
+        command: &'static str,
+        description: &'static str,
+    ) -> Invocable {
         Invocable::bkg_with(command_code, command, description, &[])
     }
 
     /// Return an invocable that uses cmd.exe.
     /// Accepts command line arguments specified by invocable construction.
-    pub fn cmd_with(command_code: &'static str, command: &'static str, description: &'static str, args: &[&str]) -> Invocable {
+    pub fn cmd_with(
+        command_code: &'static str,
+        command: &'static str,
+        description: &'static str,
+        args: &[&str],
+    ) -> Invocable {
         let mut inv = Invocable::base(command_code, command, description, args);
         inv.use_cmd = true;
         inv
@@ -118,13 +166,22 @@ impl Invocable {
 
     /// Return an invocable that uses cmd.exe.
     /// Convenience method for common case of no configured command line arguments; ; user may specify command line arguments for invocable.
-    pub fn cmd(command_code: &'static str, command: &'static str, description: &'static str) -> Invocable {
+    pub fn cmd(
+        command_code: &'static str,
+        command: &'static str,
+        description: &'static str,
+    ) -> Invocable {
         Invocable::cmd_with(command_code, command, description, &[])
     }
 
     /// Return an invocable that uses bash.exe.
     /// Accepts command line arguments specified by invocable construction.
-    pub fn sh_with(command_code: &'static str, command: &'static str, description: &'static str, args: &[&str]) -> Invocable {
+    pub fn sh_with(
+        command_code: &'static str,
+        command: &'static str,
+        description: &'static str,
+        args: &[&str],
+    ) -> Invocable {
         let mut inv = Invocable::base(command_code, command, description, args);
         inv.use_bash = true;
         inv
@@ -132,7 +189,11 @@ impl Invocable {
 
     /// Return an invocable that uses bash.exe.
     /// Convenience method for common case of no configured command line arguments; ; user may specify command line arguments for invocable.
-    pub fn sh(command_code: &'static str, command: &'static str, description: &'static str) -> Invocable {
+    pub fn sh(
+        command_code: &'static str,
+        command: &'static str,
+        description: &'static str,
+    ) -> Invocable {
         Invocable::sh_with(command_code, command, description, &[])
     }
 }

@@ -13,21 +13,42 @@ impl Invoker {
     /// writes that command line to stdout if verbose is true,
     /// and invokes that command line.
     //TODO:     invoker::Invoker::invoke(invocable, dry_run, verbose, pass); just doesn't look right to document.
-    pub fn invoke(&self, invocable: &Invocable, dry_run: bool, verbose: bool, args: Vec<String>) -> String {
+    pub fn invoke(
+        &self,
+        invocable: &Invocable,
+        dry_run: bool,
+        verbose: bool,
+        args: Vec<String>,
+    ) -> String {
         // create three constants for substituting tokens in command paths
-        let results = std::process::Command::new("cmd.exe").arg("/c").arg("echo").arg("%USERPROFILE%").output().expect("failed to execute process");
+        let results = std::process::Command::new("cmd.exe")
+            .arg("/c")
+            .arg("echo")
+            .arg("%USERPROFILE%")
+            .output()
+            .expect("failed to execute process");
         let userpath: String = match results.status.code() {
             Some(0) => wsl_path_or_self(String::from_utf8_lossy(&results.stdout).trim(), false),
             _ => String::new(),
         };
 
-        let results = std::process::Command::new("cmd.exe").arg("/c").arg("echo").arg("%ProgramFiles%").output().expect("failed to execute process");
+        let results = std::process::Command::new("cmd.exe")
+            .arg("/c")
+            .arg("echo")
+            .arg("%ProgramFiles%")
+            .output()
+            .expect("failed to execute process");
         let pf64: String = match results.status.code() {
             Some(0) => wsl_path_or_self(String::from_utf8_lossy(&results.stdout).trim(), false),
             _ => String::new(),
         };
 
-        let results = std::process::Command::new("cmd.exe").arg("/c").arg("echo").arg("%ProgramFiles(x86)%").output().expect("failed to execute process");
+        let results = std::process::Command::new("cmd.exe")
+            .arg("/c")
+            .arg("echo")
+            .arg("%ProgramFiles(x86)%")
+            .output()
+            .expect("failed to execute process");
         let pf86 = match results.status.code() {
             Some(0) => wsl_path_or_self(String::from_utf8_lossy(&results.stdout).trim(), false),
             _ => String::new(),
@@ -44,7 +65,15 @@ impl Invoker {
         // otherwise invoke the executable directly
         // this would be the executable to invoke
         //TODO: create maybe_executable in else block below instead of here; maybe requires cmd to be String?
-        let maybe_executable = &wsl_path_or_self(&invocable.command.replace("$pf64", &pf64).replace("$pf86", &pf86).replace("$userpath", &userpath).replace("$syslive", "\\\\live.sysinternals.com\\tools\\"), !cfg!(target_os = "windows"));
+        let maybe_executable = &wsl_path_or_self(
+            &invocable
+                .command
+                .replace("$pf64", &pf64)
+                .replace("$pf86", &pf86)
+                .replace("$userpath", &userpath)
+                .replace("$syslive", "\\\\live.sysinternals.com\\tools\\"),
+            !cfg!(target_os = "windows"),
+        );
 
         // if directed to use cmd.exe or start or start /b, then use cmd.exe /c
         // else if directed to use explorer.exe, then use explorer.exe
@@ -101,8 +130,22 @@ impl Invoker {
         }
 
         // if executable specified with cmd.exe then add windows path to executable to command line
-        if (invocable.use_cmd || invocable.use_start || invocable.background || invocable.use_explorer || invocable.use_bash) && !invocable.command.is_empty() {
-            let command: &String = &wsl_path_or_self(&invocable.command.replace("$pf64", &pf64).replace("$pf86", &pf86).replace("$userpath", &userpath).replace("$syslive", "\\\\live.sysinternals.com\\tools\\"), invocable.use_bash);
+        if (invocable.use_cmd
+            || invocable.use_start
+            || invocable.background
+            || invocable.use_explorer
+            || invocable.use_bash)
+            && !invocable.command.is_empty()
+        {
+            let command: &String = &wsl_path_or_self(
+                &invocable
+                    .command
+                    .replace("$pf64", &pf64)
+                    .replace("$pf86", &pf86)
+                    .replace("$userpath", &userpath)
+                    .replace("$syslive", "\\\\live.sysinternals.com\\tools\\"),
+                invocable.use_bash,
+            );
             torun.arg(command);
             command_line.push_str(command);
             command_line.push(' ');
