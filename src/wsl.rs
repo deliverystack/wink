@@ -5,14 +5,6 @@
 /// Convert between Unix and Windows file paths.
 /// The arg argument is the path to the file.
 /// The unix argument indicates whether to convert that path to Unix or Windows.
-/// Example usage:
-/// ```
-/// let results = Command::new("cmd.exe").arg("/c").arg("echo").arg("%USERPROFILE%").output().expect("failed to execute process");
-/// let userpath: String = match results.status.code() {
-///     Some(0) => wsl_path_or_self(String::from_utf8_lossy(&results.stdout).trim(), false /*unix*/ ),
-///    _ => String::new(),
-/// };
-/// ```
 // note: // unc path must start with \\; be careful not to replace \\ with / unintionally
 //pub mod invocable;
 //pub mod invocablecategory;
