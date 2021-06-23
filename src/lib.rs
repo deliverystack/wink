@@ -283,7 +283,6 @@ fn color(msg: &str) {
     terminal.reset().unwrap();
 }
 
-
 #[cfg(test)]
 mod tests {
     #[test]
