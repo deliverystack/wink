@@ -39,7 +39,7 @@ impl WinkConfig {
                 break;
             }
 
-            if arg == "--show-output" {
+            if arg == "--show-output" || arg == "--nocapture" {
                 // ignore parameters to test binary from cargo test
                 first_arg_index += 1;
                 continue;
@@ -87,6 +87,8 @@ impl WinkConfig {
 #[cfg(test)]
 mod tests {
     #[test]
+    /// to pass, run tests like this:
+    // cargo test -v --all-features --all=targets --target-dir $linbld -- --show-output -epdv word a b c
     fn it_gets_from_command_line_args() {
         let wink_config = crate::WinkConfig::get_from_cmd_line_args();
         println!("it_gets_from_command_line_args: {0}", wink_config);
@@ -105,5 +107,12 @@ mod tests {
 
         //        pub all_args: Vec<String>,
         //        pub cmd_args: Vec<String>,
+    }
+
+    #[test]
+    #[should_panic]
+    /// this test renders the path to the parent of this tests module
+    fn it_has_a_path() {
+        panic!("it_has_a_path intentional panic to render path to parent of this tests module.")
     }
 }
