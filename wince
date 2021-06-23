@@ -2,7 +2,7 @@
 
 clear
 
-export RUST_BACKTRACE=1
+export RUST_BACKTRACE=full # or 1
 rustup update
 
 projdir=/mnt/c/temp/wink    # directory containing cargo.toml
@@ -14,10 +14,12 @@ linstall=~/bin              # WSL binary install path
 cd $projdir                 # avoid specifying project path for all commands
 
                             # error out quickly if compile is not possible
-result=$( cargo check -v --workspace --all-features 3>&1 1>&2 2>&3 | tee /dev/fd/2 )
+cmd="cargo check -v --workspace --all-features"
+result=$( $cmd 3>&1 1>&2 2>&3 | tee /dev/fd/2 )
 
 if [ "$?" -ne "0" ]; then
     echo cargo check failed with non-zero exit code
+    echo To reproduce: cd `pwd` \; $cmd
     cd - > /dev/null # revert to the previous directory
     exit 2
 fi
@@ -25,10 +27,11 @@ fi
 # sometimes cargo check fails the first time; in which case, run it again.
 
 if echo $result | egrep -qi "error|warning"; then
-    result=$( cargo check -v --workspace --all-features 3>&1 1>&2 2>&3 | tee /dev/fd/2 )
+    result=$( $cmd 3>&1 1>&2 2>&3 | tee /dev/fd/2 )
     
     if [ "$?" -ne "0" ]; then
         echo cargo check failed the second run with a non-zero exit code
+        echo To reproduce: cd `pwd` \; $cmd # and look for error/warning
         cd - > /dev/null # revert to the previous directory
         exit 2
     fi
@@ -36,6 +39,7 @@ if echo $result | egrep -qi "error|warning"; then
     if echo $result | egrep -qi "error|warning"; then
         echo cargo check failed the second run with an error or warning
         echo $result | egrep -i "error|warning"
+        echo To reproduce: cd `pwd` \; $cmd # and look for error/warning
         cd - > /dev/null # revert to the previous directory
         exit 2
     fi
@@ -43,10 +47,12 @@ fi
 
 #//TODO: confirm this formats all source files under /src
 #result=$( cargo fmt --all-targets -v -- --config max_width=2500 3>&1 1>&2 2>&3 | tee /dev/fd/2 )
-result=$( find . -name "*.rs" -exec rustfmt --config max_width=2500 {} \; 3>&1 1>&2 2>&3 | tee /dev/fd/2 )
+cmd="find . -name \*.rs -exec rustfmt --config max_width=2500 {} \;"
+result=$( $cmd 3>&1 1>&2 2>&3 | tee /dev/fd/2 )
 
 if [ "$?" -ne "0" ] || echo $result | egrep -qi "error|warning"; then
     echo cargo fmt failed
+    echo To reproduce: cd `pwd` \; $cmd # and look for error/warning
     cd - > /dev/null # revert to the previous directory
     exit 3
 fi
@@ -60,34 +66,41 @@ done
 
 set -x
 cargo update -v 
-result=$( cargo-clippy -v 3>&1 1>&2 2>&3 | tee /dev/fd/2 )
+cmd='cargo-clippy -v'
+result=$( $cmd 3>&1 1>&2 2>&3 | tee /dev/fd/2 )
 
 if [ "$?" -ne "0" ] || echo $result | egrep -qi "error|warning"; then
     echo cargo-clippy failed
+    echo To reproduce: cd `pwd` ; $cmd
     cd - > /dev/null # revert to the previous directory
     exit 4
 fi
 
 # excludes --doc
-result=$( cargo test -v --all-features --all=targets --target-dir $linbld -- --show-output -- -epdv word a b c 3>&1 1>&2 2>&3 | tee /dev/fd/2 )^C
+# --all-targets is a bit excessive... //--show-output is unnecessary // --no-fail-fast
+cmd="cargo test -v --workspace --all-features --target-dir $linbld -- --nocapture -- -epdv word a b c"
+result=$( $cmd 3>&1 1>&2 2>&3 | tee /dev/fd/2 )
 
 if [ "$?" -ne "0" ] || echo $result | egrep -qi "could not compile|warning|test result. FAILED|error. test failed"; then
     echo cargo test failed
+    echo To reproduce: cd `pwd` \; $cmd
     cd - > /dev/null # revert to the previous directory
     exit 5
 fi
 
-#cargo clean --target-dir /tmp/wink.build       # kills build performance    
+#cargo clean --target-dir /tmp/wink.build       # kills build performance and result in err/warn that may cause script to abort   
 # -release determines  binary build path below 
-result=$( cargo build -v --target-dir $linbld --release | sed -e s'/error\-format/3rror\-format=json/g' 3>&1 1>&2 2>&3 | tee /dev/fd/2 )
+cmd="cargo build -v --target-dir $linbld --release"
+result=`$cmd 3>&1 1>&2 2>&3 | tee /dev/fd/2`
 
-if [ "$?" -ne "0" ] || echo $result | egrep -qi "error|warning"; then
+if [ "$?" -ne "0" ] || echo $result | sed -e s'/error.format/3rror.format/g' | egrep -qi "error|warning"; then
     echo cargo build failed
+    echo To reproduce: cd `pwd` \; $cmd
     cd - > /dev/null # revert to the previous directory
     exit 6
 fi
 
-#cargo doc -v --target-dir $linbld               # --open to open in browser
+cargo doc -v --target-dir $linbld               # --open to open in browser
 ls -l ${linbld}/release/wink            # show WSL binary file size and build date
 rm ${linstall}/wink                     # remove installed WSL binary
 cp ${linbld}/release/wink $linstall     # install new WSL binary
