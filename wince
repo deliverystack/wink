@@ -41,7 +41,9 @@ if echo $result | egrep -qi "error|warning"; then
     fi
 fi
 
-result=$( cargo fmt --all -v -- --config max_width=2500 3>&1 1>&2 2>&3 | tee /dev/fd/2 )
+#//TODO: confirm this formats all source files under /src
+#result=$( cargo fmt --all-targets -v -- --config max_width=2500 3>&1 1>&2 2>&3 | tee /dev/fd/2 )
+result=$( find . -name "*.rs" -exec rustfmt --config max_width=2500 {} \; 3>&1 1>&2 2>&3 | tee /dev/fd/2 )
 
 if [ "$?" -ne "0" ] || echo $result | egrep -qi "error|warning"; then
     echo cargo fmt failed
@@ -66,9 +68,10 @@ if [ "$?" -ne "0" ] || echo $result | egrep -qi "error|warning"; then
     exit 4
 fi
 
-result=$( cargo test -v --target-dir $linbld -- --show-output 3>&1 1>&2 2>&3 | tee /dev/fd/2 )
+# excludes --doc
+result=$( cargo test -v --all-features --all=targets --target-dir $linbld -- --show-output -- -epdv word a b c 3>&1 1>&2 2>&3 | tee /dev/fd/2 )^C
 
-if [ "$?" -ne "0" ] || echo $result | egrep -qi "could not compile|test result: FAILED"; then
+if [ "$?" -ne "0" ] || echo $result | egrep -qi "could not compile|warning|test result. FAILED|error. test failed"; then
     echo cargo test failed
     cd - > /dev/null # revert to the previous directory
     exit 5
