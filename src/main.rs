@@ -19,8 +19,8 @@
 
 //! Run wink with no command line parameters to get usage information.
 
-use wink::wsl::inv::invoker::Invoker;
 use wink::wsl::inv::invocablecategorylist::InvocableCategoryList;
+use wink::wsl::inv::invoker::Invoker;
 
 /// The main() function of the program accepts command line arguments through env::args.collect()
 /// rather than as parameters.
@@ -55,24 +55,17 @@ fn main() {
         std::process::exit(4);
     }
 
-    // find the invocable maching the argument from the list of invocable categories
-    for category in category_list.categories.iter() {
-        for invocable in category.invocables.iter() {
-            if invocable.command_code == config.command_code {
-                // pass remaining command line arguments to the invocable
-
-                if config.export {
-                    if config.pretty_print {
-                        println!("{}", serde_json::to_string_pretty(&invocable).unwrap());
-                    } else {
-                        println!("{}", serde_json::to_string(&invocable).unwrap());
-                    }
-                }
-
-                Invoker {}.invoke(invocable, config.dry_run, config.verbose, config.cmd_args);
-                std::process::exit(0); // TODO: return result from invoking command
+    if let Some(invocable) = category_list.get_invocable(&config.command_code) {
+        if config.export {
+            if config.pretty_print {
+                println!("{}", serde_json::to_string_pretty(&invocable).unwrap());
+            } else {
+                println!("{}", serde_json::to_string(&invocable).unwrap());
             }
         }
+
+        Invoker {}.invoke(invocable, config.dry_run, config.verbose, config.cmd_args);
+        std::process::exit(0); // TODO: return result from invoking command
     }
 
     if config.export && config.command_code.is_empty() {
