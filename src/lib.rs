@@ -39,6 +39,12 @@ impl WinkConfig {
                 break;
             }
 
+            if arg == "--show-output" {
+                // ignore parameters to test binary from cargo test
+                first_arg_index += 1;
+                continue;
+            }
+
             let prefix: char = arg.to_lowercase().chars().next().unwrap();
 
             // if the argument is not help and does not start with a slash or a dash, then it should be a command code
@@ -75,5 +81,29 @@ impl WinkConfig {
         }
 
         WinkConfig { cmd_name: regex::Regex::new(r".*[\\/](?P<name>[^\\/]+$)").unwrap().replace_all(args[0].as_str(), "$name").to_string(), verbose, dry_run, command_code, export, pretty_print, cmd_args: (args[first_arg_index..]).to_vec(), all_args: args, help_msg }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    #[test]
+    fn it_gets_from_command_line_args() {
+        let wink_config = crate::WinkConfig::get_from_cmd_line_args();
+        println!("it_gets_from_command_line_args: {0}", wink_config);
+        assert!(
+            wink_config.cmd_name.starts_with("wink"), // cargo test adds a suffix
+            "{0} !starts_with({1})",
+            wink_config,
+            "wink"
+        );
+        assert!(wink_config.verbose);
+        assert!(wink_config.dry_run);
+        assert!(wink_config.export);
+        assert!(wink_config.pretty_print);
+        assert_eq!(wink_config.command_code, "word");
+        assert!(wink_config.help_msg.is_empty(), "{}", wink_config.help_msg);
+
+        //        pub all_args: Vec<String>,
+        //        pub cmd_args: Vec<String>,
     }
 }
