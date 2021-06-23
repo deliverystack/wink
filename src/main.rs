@@ -36,7 +36,7 @@ fn main() {
             config,
             category_list.categories,
         );
-        std::process::exit(2);
+        std::process::exit(1);
     }
 
     // if not running under WSL or Windows, it should not be possible to run Windows commands
