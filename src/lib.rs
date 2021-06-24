@@ -3,6 +3,64 @@
 
 pub mod wsl;
 use crate::wsl::inv::invocablecategory::InvocableCategory;
+use crate::wsl::inv::invocablecategorylist::InvocableCategoryList;
+use crate::wsl::inv::invoker::Invoker;
+
+pub fn run(config: WinkConfig) -> Result<u8, Box<dyn std::error::Error>> {
+    // categories contain lists of invocables that map command codes to commands
+    let category_list = InvocableCategoryList::get();
+    let result: u8;
+
+    //TODO: convert to Err()
+    if !config.help_msg.is_empty() {
+        help(
+            &config.help_msg.to_string(),
+            config,
+            category_list.categories,
+        );
+
+        result = 1;
+    } else if !wsl::is_windows_or_wsl() {
+        help("Runs only under Windows and Windows Subsystem for Linux (WSL). Define WSL_DISTRO_NAME environment variable to override.", config, category_list.categories);
+        result = 2;
+    } else if config.pretty_print && !config.export {
+        help("-p invalid without -e", config, category_list.categories);
+        result = 3;
+    } else if config.command_code.is_empty() && !(config.export || config.dry_run) {
+        help("No command specified", config, category_list.categories);
+        result = 4;
+    } else if let Some(invocable) = category_list.get_invocable(&config.command_code) {
+        if config.export {
+            if config.pretty_print {
+                println!("{}", serde_json::to_string_pretty(&invocable).unwrap());
+            } else {
+                println!("{}", serde_json::to_string(&invocable).unwrap());
+            }
+        }
+
+        Invoker {}.invoke(invocable, config.dry_run, config.verbose, config.cmd_args);
+        result = 0;
+    } else if config.export && config.command_code.is_empty() {
+        if config.pretty_print {
+            println!("{}", serde_json::to_string_pretty(&category_list).unwrap());
+        } else {
+            println!("{}", serde_json::to_string(&category_list).unwrap());
+        }
+
+        result = 0;
+    } else if (config.command_code.is_empty() || !config.export) && config.dry_run {
+        result = 0;
+    } else {
+        help(
+            &format!("Command not recognized: {0}", config.command_code),
+            config,
+            category_list.categories,
+        );
+        result = 5;
+    }
+
+    Ok(result)
+}
 
 /// The help() function renders usage information about the wink command to stdout.
 /// The msg argument is a message indicating why the command rendered usage information.

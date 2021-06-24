@@ -325,6 +325,23 @@
           ]
         },
         {
+          "command_code": "killslak",
+          "description": "Kill Zoom",
+          "command": "taskkill.exe",
+          "use_cmd": true,
+          "use_start": false,
+          "background": false,
+          "use_call": false,
+          "use_explorer": false,
+          "use_bash": false,
+          "arguments": [
+            "/t",
+            "/f",
+            "/im",
+            "slack.exe"
+          ]
+        },
+        {
           "command_code": "ransack",
           "description": "Mozilla Thunderbird email client",
           "command": "$pf64/Mythicsoft/Agent Ransack/AgentRansack.exe",

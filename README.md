@@ -2,7 +2,8 @@
 
 WARNING: WINK WAS NOT WRITTEN BY ANYONE WITH ANY EXPERTISE IN RUST, WINDOWS, LINUX, OR SYSTEMS PROGRAMMING, AND IS LARGELY UNTESTED, ESPECIALLY ANY PARTS INVOLVING CONFIGURATION FILES. USE AT YOUR OWN RISK, NOTING THAT SOME COMMANDS MAY SHUT DOWN THE COMPUTER.
 
-The wink command line tool lets you access hundreds of Linux and Windows applications and features with just a few keystrokes from both Windows Console and Windows Subsystem for Linux (WSL) shells.
+The wink command line tool lets you access hundreds of Linux and Windows applications and features with just a few keystrokes from both Windows Console and Windows Subsystem for Linux (WSL) shells. For a list, run wink with no command line arguments, which will show usage information, or see https://github.com/deliverystack/wink/blob/main/src/wsl/inv/invocablecategory.rs. You can use a JSON file to add your own categories to this list.
+
 
 https://wslguy.net/2021/05/25/rust-command-line-tool-to-access-windows-features-and-commands/
 
@@ -38,4 +39,10 @@ regex = "1"
 derive-new = "0.5"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
+```
+
+Bash shell users may want to define this function to launch processes in the background, though any output to stdout or stderr is lost.
+
+```
+function win { nohup wink $@ > /dev/null 2>&1 & } 
 ```
