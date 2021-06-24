@@ -25,7 +25,7 @@ use wink::wsl::inv::invoker::Invoker;
 /// The main() function of the program accepts command line arguments through env::args.collect()
 /// rather than as parameters.
 fn main() {
-    let config = wink::WinkConfig::get_from_cmd_line_args();
+    let config = wink::WinkConfig::new(std::env::args().collect());
 
     // categories contain lists of invocables that map command codes to commands
     let category_list = InvocableCategoryList::get();
