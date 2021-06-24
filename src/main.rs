@@ -19,13 +19,16 @@
 
 //! Run wink with no command line parameters to get usage information.
 
-//use wink::wsl::inv::invocablecategorylist::InvocableCategoryList;
-//use wink::wsl::inv::invoker::Invoker;
+use wink::wsl::inv::invocablecategorylist::InvocableCategoryList;
 
 /// The main() function of the program accepts command line arguments through env::args.collect()
 /// rather than as parameters.
 fn main() {
-    if let Err(e) = wink::run(wink::WinkConfig::new(std::env::args().collect())) {
-        panic!("{0}", e);
-    }
+    let category_list = InvocableCategoryList::get();
+    let config = wink::WinkConfig::new(std::env::args().collect());
+
+    std::process::exit(match config {
+        Ok(config) => wink::run(config, category_list),
+        Err((config, e)) => wink::help(&e.to_string(), config, category_list.categories),
+    });
 }

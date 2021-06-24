@@ -6,30 +6,10 @@ use crate::wsl::inv::invocablecategory::InvocableCategory;
 use crate::wsl::inv::invocablecategorylist::InvocableCategoryList;
 use crate::wsl::inv::invoker::Invoker;
 
-pub fn run(config: WinkConfig) -> Result<u8, Box<dyn std::error::Error>> {
+pub fn run(config: WinkConfig, category_list: InvocableCategoryList) -> i32 {
+    // -> Result<u8, Box<dyn std::error::Error>> {
     // categories contain lists of invocables that map command codes to commands
-    let category_list = InvocableCategoryList::get();
-    let result: u8;
-
-    //TODO: convert to Err()
-    if !config.help_msg.is_empty() {
-        help(
-            &config.help_msg.to_string(),
-            config,
-            category_list.categories,
-        );
-
-        result = 1;
-    } else if !wsl::is_windows_or_wsl() {
-        help("Runs only under Windows and Windows Subsystem for Linux (WSL). Define WSL_DISTRO_NAME environment variable to override.", config, category_list.categories);
-        result = 2;
-    } else if config.pretty_print && !config.export {
-        help("-p invalid without -e", config, category_list.categories);
-        result = 3;
-    } else if config.command_code.is_empty() && !(config.export || config.dry_run) {
-        help("No command specified", config, category_list.categories);
-        result = 4;
-    } else if let Some(invocable) = category_list.get_invocable(&config.command_code) {
+    if let Some(invocable) = category_list.get_invocable(&config.command_code) {
         if config.export {
             if config.pretty_print {
                 println!("{}", serde_json::to_string_pretty(&invocable).unwrap());
@@ -38,8 +18,9 @@ pub fn run(config: WinkConfig) -> Result<u8, Box<dyn std::error::Error>> {
             }
         }
 
-        Invoker {}.invoke(invocable, config.dry_run, config.verbose, config.cmd_args);
-        result = 0;
+        let invoker = Invoker {};
+        invoker.invoke(invocable, config.dry_run, config.verbose, config.cmd_args);
+        return 0;
     } else if config.export && config.command_code.is_empty() {
         if config.pretty_print {
             println!("{}", serde_json::to_string_pretty(&category_list).unwrap());
@@ -47,26 +28,23 @@ pub fn run(config: WinkConfig) -> Result<u8, Box<dyn std::error::Error>> {
             println!("{}", serde_json::to_string(&category_list).unwrap());
         }
 
-        result = 0;
+        return 0;
     } else if (config.command_code.is_empty() || !config.export) && config.dry_run {
-        result = 0;
-    } else {
-        help(
-            &format!("Command not recognized: {0}", config.command_code),
-            config,
-            category_list.categories,
-        );
-        result = 5;
+        return 0;
     }
 
-    Ok(result)
+    help(
+        &format!("Command not recognized: {0}", config.command_code),
+        config,
+        category_list.categories,
+    )
 }
 
 /// The help() function renders usage information about the wink command to stdout.
 /// The msg argument is a message indicating why the command rendered usage information.
 /// The args argument is the command line including the invoked command (wink) and command line arguments.
 /// The categories argument contains lists of invocables used to render usage information.
-pub fn help(msg: &str, config: WinkConfig, mut categories: Vec<InvocableCategory>) {
+pub fn help(msg: &str, config: WinkConfig, mut categories: Vec<InvocableCategory>) -> i32 {
     // cmd = basename(wink.exe)
     //    let cmd = regex::Regex::new(r".*[\\/](?P<name>[^\\/]+$)").unwrap().replace_all(args[0].as_str(), "$name");
     //TODO: render invoked command line from config.
@@ -209,6 +187,8 @@ pub fn help(msg: &str, config: WinkConfig, mut categories: Vec<InvocableCategory
     } else {
         println!(" | grep -i \"text\" # identify command code matching text");
     }
+
+    1
 }
 
 /// Writes the given message to STDOUT in a color other than the default.
@@ -247,9 +227,8 @@ pub struct WinkConfig {
 
     /// unprocessed command line arguments to pass to the command that wink will invoke.
     pub cmd_args: Vec<String>,
-
-    /// empty unless there is a problem parsing command line arguments
-    pub help_msg: String,
+    // empty unless there is a problem parsing command line arguments
+    //    pub help_msg: String,
 }
 
 /// Implement the Display trait for WinkConfig to render the struct as JSON.
@@ -266,7 +245,7 @@ impl std::fmt::Display for WinkConfig {
 impl WinkConfig {
     /// The get_from_cmd_line_args function return a WinkConfig
     /// created from parsing the command line.
-    pub fn new(args: Vec<String>) -> WinkConfig {
+    pub fn new(args: Vec<String>) -> Result<WinkConfig, (WinkConfig, Box<dyn std::error::Error>)> {
         let mut dry_run: bool = false; // -d command line option
         let mut verbose: bool = false; // -v command line option
         let mut export: bool = false; // -e command line option
@@ -315,7 +294,7 @@ impl WinkConfig {
             first_arg_index += 1;
         }
 
-        WinkConfig {
+        let result = WinkConfig {
             cmd_name: regex::Regex::new(r".*[\\/](?P<name>[^\\/]+$)")
                 .unwrap()
                 .replace_all(args[0].as_str(), "$name")
@@ -327,8 +306,46 @@ impl WinkConfig {
             pretty_print,
             cmd_args: (args[first_arg_index..]).to_vec(),
             all_args: args,
-            help_msg,
+        };
+
+        if help_msg.is_empty() {
+            if !wsl::is_windows_or_wsl() {
+                help_msg = "Runs only under Windows and Windows Subsystem for Linux (WSL). Define WSL_DISTRO_NAME environment variable to override.".to_string();
+            } else if result.pretty_print && !result.export {
+                help_msg = "-p invalid without -e".to_string();
+            } else if result.command_code.is_empty() && !(result.export || result.dry_run) {
+                help_msg = "No command code found on command line".to_string();
+            }
         }
+
+        if help_msg.is_empty() {
+            Ok(result)
+        } else {
+            Err((result, Box::new(HelpError::new(help_msg))))
+        }
+    }
+}
+
+#[derive(Debug)]
+struct HelpError {
+    message: String,
+}
+
+impl HelpError {
+    fn new(msg: String) -> HelpError {
+        HelpError { message: msg }
+    }
+}
+
+impl std::fmt::Display for HelpError {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        write!(f, "{}", self.message)
+    }
+}
+
+impl std::error::Error for HelpError {
+    fn description(&self) -> &str {
+        &self.message
     }
 }
 
@@ -347,23 +364,30 @@ mod tests {
             args.remove(pos);
         }
 
-        let wink_config = crate::WinkConfig::new(args);
-        println!("it_gets_from_command_line_args: {0}", wink_config);
-        assert!(
-            wink_config.cmd_name.starts_with("wink"), // cargo test adds a suffix
-            "{0} !starts_with({1})",
-            wink_config,
-            "wink"
-        );
-        assert!(wink_config.verbose);
-        assert!(wink_config.dry_run);
-        assert!(wink_config.export);
-        assert!(wink_config.pretty_print);
-        assert_eq!(wink_config.command_code, "word");
-        assert!(wink_config.help_msg.is_empty(), "{}", wink_config.help_msg);
-
-        //        pub all_args: Vec<String>,
-        //        pub cmd_args: Vec<String>,
+        let result = crate::WinkConfig::new(args);
+        std::process::exit(match result {
+            Ok(config) => {
+                println!("it_gets_from_command_line_args: {0}", config);
+                assert!(
+                    config.cmd_name.starts_with("wink"), // cargo test adds a suffix
+                    "{0} !starts_with({1})",
+                    config,
+                    "wink"
+                );
+                assert!(config.verbose);
+                assert!(config.dry_run);
+                assert!(config.export);
+                assert!(config.pretty_print);
+                assert_eq!(config.command_code, "word");
+                0
+            }
+            Err((_config, e)) => {
+                println!("{}", e);
+                1
+            }
+        });
+        //TODO: include pub all_args: Vec<String>,
+        //TODO: include pub cmd_args: Vec<String>,
     }
 
     #[test]
