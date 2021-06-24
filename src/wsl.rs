@@ -2,15 +2,12 @@
 
 //TODO: this logic belongs in a library, not wink
 
+pub mod inv; // interpret /inv.rs as wink::wsl::inv
+
 /// Convert between Unix and Windows file paths.
 /// The arg argument is the path to the file.
 /// The unix argument indicates whether to convert that path to Unix or Windows.
-// note: // unc path must start with \\; be careful not to replace \\ with / unintionally
-//pub mod invocable;
-//pub mod invocablecategory;
-//pub mod invocablecategorylist;
-//pub mod invoker;
-pub mod inv;
+/// let param: &String = &wsl_path_or_self("C:\\", true /*unix*/ );
 
 pub fn wsl_path_or_self(arg: &str, unix: bool) -> String {
     let exists = std::path::Path::new(arg).exists();
@@ -101,6 +98,16 @@ mod tests {
     fn get_user_home_default() {
         println!("wsl::tests::get_user_home_default()");
         //TODO:
+    }
+
+    #[test]
+    fn it_converts_c_drive() {
+        assert_eq!(
+            &crate::wsl::wsl_path_or_self("C:\\", true /*unix*/),
+            "/mnt/c/"
+        );
+
+        //        assert_eq!(&crate::wsl::wsl_path_or_self("C:", true /*unix*/), "/mnt/c"); wslpath unexpectedly returns C:
     }
 
     #[test]
