@@ -1,7 +1,6 @@
 #!/bin/sh -x
 
 clear
-
 export RUST_BACKTRACE=full # or 1
 rustup update
 
@@ -14,7 +13,7 @@ linstall=~/bin              # WSL binary install path
 cd $projdir                 # avoid specifying project path for all commands
 
                             # error out quickly if compile is not possible
-cmd="cargo check -v --workspace --all-features"
+cmd="time cargo check -v --workspace --all-features"
 result=$( $cmd 3>&1 1>&2 2>&3 | tee /dev/fd/2 )
 
 if [ "$?" -ne "0" ]; then
@@ -27,7 +26,7 @@ fi
 # sometimes cargo check fails the first time; in which case, run it again.
 
 if echo $result | egrep -qi "error|warning"; then
-    result=$( $cmd 3>&1 1>&2 2>&3 | tee /dev/fd/2 )
+    result=$( time $cmd 3>&1 1>&2 2>&3 | tee /dev/fd/2 )
     
     if [ "$?" -ne "0" ]; then
         echo cargo check failed the second run with a non-zero exit code
@@ -45,12 +44,12 @@ if echo $result | egrep -qi "error|warning"; then
     fi
 fi
 
-cmd='find . -name *.rs -exec rustfmt -l -v {} ;'
-result=$( $cmd 3>&1 1>&2 2>&3 | tee /dev/fd/2 )
+#//TODO: exclude invocablecategory.rs may not be working
+result=$( time find . -type f \( -iname "*.rs" -not -iname "invocablecategory.rs" \) -exec rustfmt -l -v {} \; 3>&1 1>&2 2>&3 | tee /dev/fd/2 )
 
 if [ "$?" -ne "0" ] || echo $result | egrep -qi "error|warning"; then
     echo cargo fmt failed
-    echo To reproduce: cd `pwd` \; $cmd # and look for error/warning
+    echo To reproduce: cd `pwd` \; find . -type f \( -iname "*.rs" -not -iname "invocablecategory.rs" \) -exec rustfmt -l -v {} \; # and look for error/warning
     cd - > /dev/null # revert to the previous directory
     exit 3
 fi
@@ -66,7 +65,7 @@ done
 
 set -x
 cargo update -v 
-cmd='cargo-clippy -v'
+cmd='time cargo-clippy -v'
 result=$( $cmd 3>&1 1>&2 2>&3 | tee /dev/fd/2 )
 
 if [ "$?" -ne "0" ] || echo $result | egrep -qi "error|warning"; then
@@ -78,7 +77,7 @@ fi
 
 # excludes --doc
 # --all-targets is a bit excessive... //--show-output is unnecessary // --no-fail-fast
-cmd="cargo test -v --workspace --all-features --target-dir $linbld -- --nocapture -- -epdv word a b c"
+cmd="time cargo test -v --workspace --all-features --target-dir $linbld -- --nocapture -- -epdv word a b c"
 result=$( $cmd 3>&1 1>&2 2>&3 | tee /dev/fd/2 )
 
 if [ "$?" -ne "0" ] || echo $result | egrep -qi "could not compile|warning|test result. FAILED|error. test failed"; then
@@ -90,7 +89,7 @@ fi
 
 #cargo clean --target-dir /tmp/wink.build       # kills build performance and result in err/warn that may cause script to abort   
 # -release determines  binary build path below 
-cmd="cargo build -v --target-dir $linbld --release"
+cmd="time cargo build -v --target-dir $linbld --release"
 result=`$cmd 3>&1 1>&2 2>&3 | tee /dev/fd/2`
 
 if [ "$?" -ne "0" ] || echo $result | sed -e s'/error.format/3rror.format/g' | egrep -qi "error|warning"; then
@@ -100,19 +99,18 @@ if [ "$?" -ne "0" ] || echo $result | sed -e s'/error.format/3rror.format/g' | e
     exit 6
 fi
 
-cargo doc -v --target-dir $linbld               # --open to open in browser
+time cargo doc -v --target-dir $linbld               # --open to open in browser
 ls -l ${linbld}/release/wink            # show WSL binary file size and build date
 rm ${linstall}/wink                     # remove installed WSL binary
 cp ${linbld}/release/wink $linstall     # install new WSL binary
-cargo.exe build --release --target-dir "$winbld" # --release affects binary path below 
+time cargo.exe build --release --target-dir "$winbld" # --release affects binary path below 
 `wslpath ${winbld}`/release/wink.exe -ep > ${linbld}/doc/wink/wink.json # export JSON to docs
 ls -l ${linbld}/doc/wink/wink.json      # show JSON file size and touch time
 cp ${linbld}/doc/wink/wink.json .       # copy JSON to project root for github
 path=`cmd.exe /c echo %USERPROFILE% | sed -e 's/\r//g'` # install Windows binary to this directory in %PATH%
 path=`wslpath $path | sed -e 's/\r//g'`/AppData/Local/Microsoft/WindowsApps 
 cp ${lwinbld}/release/wink.exe $path # install Windows binary
-set +x
-${linstall}/wink $@ # run Linux build with parameters supplied on command line
+time ${linstall}/wink $@ # run Linux build with parameters supplied on command line
 cp /mnt/c/temp/wink/wince $linstall # install any updates to this wince shell script
 cd - > /dev/null # revert to the previous directory
 exit 0
