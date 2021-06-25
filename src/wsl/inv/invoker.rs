@@ -1,3 +1,4 @@
+//TODO: try using bash.exe -c 'nohup cmd.exe <> &' instead of cmd.exe start /b
 //! Invoker contains a function that creates and invokes a command line
 //! based on metadata in an Invocable and command line arguments.
 
