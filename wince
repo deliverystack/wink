@@ -45,17 +45,31 @@ if echo $result | egrep -qi "error|warning"; then
 fi
 
 #//TODO: exclude invocablecategory.rs may not be working
-result=$( time find . -type f \( -iname "*.rs" -not -iname "invocablecategory.rs" \) -exec rustfmt -l -v {} \; 3>&1 1>&2 2>&3 | tee /dev/fd/2 )
+
+#set +x
+set -x
+cmd="time rustfmt -l -v ./src/main.rs ./src/lib.rs"
+result=$( time $cmd 3>&1 1>&2 2>&3 | tee /dev/fd/2 )
 
 if [ "$?" -ne "0" ] || echo $result | egrep -qi "error|warning"; then
-    echo cargo fmt failed
-    echo To reproduce: cd `pwd` \; find . -type f \( -iname "*.rs" -not -iname "invocablecategory.rs" \) -exec rustfmt -l -v {} \; # and look for error/warning
+    echo rustfmt all failed
+    echo To reproduce: cd `pwd` \; $cmd # and look for error/warning
     cd - > /dev/null # revert to the previous directory
     exit 3
 fi
 
+cmd="time rustfmt -l -v --config max_width=2500 ./src/wsl/inv/invocablecategory.rs"
+result=$( time $cmd 3>&1 1>&2 2>&3 | tee /dev/fd/2 )
+
 # this file is more manageable this way
-rustfmt -l -v --config max_width=2500 ./src/wsl/inv/invocablecategory.rs
+
+if [ "$?" -ne "0" ] || echo $result | egrep -qi "error|warning"; then
+    echo rustfmt invocablecategory.cs failed
+    echo To reproduce: cd `pwd` \; $cmd # and look for error/warning
+    cd - > /dev/null # revert to the previous directory
+    exit 3
+fi
+
 set +x
     
 for f in "$(find . -iname \*.rs -print)"; do
