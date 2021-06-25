@@ -20,7 +20,6 @@ impl Invoker {
         verbose: bool,
         args: Vec<String>,
     ) -> String {
-        // create three constants for substituting tokens in command paths
         let results = std::process::Command::new("cmd.exe")
             .arg("/c")
             .arg("echo")
