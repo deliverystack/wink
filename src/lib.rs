@@ -181,6 +181,10 @@ pub fn help(
     println!("> [arguments]");
     println!("            -d dry (do not execute)");
     println!("            -e export (configuraiton JSON)");
+    println!(
+        "            -h help (display this {0} command usage information)",
+        config.cmd_name
+    );
     println!("            -p pretty-print (for use with -e)");
     println!("            -v verbose (print command line)\n");
     print!("{0} ", config.cmd_name);
