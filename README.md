@@ -6,7 +6,7 @@ The wink command line tool lets you access hundreds of Linux and Windows applica
 
 ![wink command line usage](https://wslguy.files.wordpress.com/2021/06/image-14.png)
 
-https://wslguy.net/2021/05/25/rust-command-line-tool-to-access-windows-features-and-commands/
+https://rustapopoulos.com/2021/06/24/anatomy-of-a-rust-program-part-i-wink-cargo-toml/
 
 wink is written in rust using cargo and intended to be run from the Windows Console (cmd.exe), PowerShell, and Windows Subsystem for Linux (WSL) bash.exe shell windows.
 
