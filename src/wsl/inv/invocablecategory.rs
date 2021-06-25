@@ -431,7 +431,7 @@ impl InvocableCategory {
         self.add(Invocable::exp("showd", "shell:::{3080F90D-D7AD-11D9-BD98-0000947B0257}", "Show Windows desktop"));
         self.add(Invocable::exp("trouble", "ms-settings:troubleshoot", "Troubleshooting Windows"));
         self.add(Invocable::cmd("quickass", "quickassist.exe", "Windows Quick Assist"));
-        self.add(Invocable::bin_with("wupdate", "wsl.exe", "Update WSL", &["--update"]));
+        //        self.add(Invocable::cmd_with("wupdate", "runas.exe", "Update WSL", &["/env", "/user:administrator", "wsl.exe --update"])); // runas from wink does not allow password entry
     }
 
     /// Add Windows utilities Invocables to the list of Invocables in this InvocableCategory.
