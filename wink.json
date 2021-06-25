@@ -4123,20 +4123,6 @@
           "use_explorer": false,
           "use_bash": false,
           "arguments": []
-        },
-        {
-          "command_code": "wupdate",
-          "description": "Update WSL",
-          "command": "wsl.exe",
-          "use_cmd": false,
-          "use_start": false,
-          "background": false,
-          "use_call": false,
-          "use_explorer": false,
-          "use_bash": false,
-          "arguments": [
-            "--update"
-          ]
         }
       ]
     },
