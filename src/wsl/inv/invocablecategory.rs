@@ -566,9 +566,9 @@ impl InvocableCategory {
         self.add(Invocable::bin("spotify", "$userpath/AppData/Roaming/Spotify/Spotify.exe", "Spotify"));
         self.add(Invocable::bin("mdp", "$pf86/MarkdownPad 2/MarkdownPad2.exe", "MarkdownPad2"));
         self.add(Invocable::bin("postman", "$userpath/AppData/Local/Postman/Postman.exe", "Postman"));
-        self.add(Invocable::bin("zoom", "$userpath/AppData/Roaming/Zoom/bin/Zoom.exe", "Zoom"));
+        self.add(Invocable::bkg("zoom", "$userpath/AppData/Roaming/Zoom/bin/Zoom.exe", "Zoom"));
         self.add(Invocable::cmd_with("killzoom", "taskkill.exe", "Kill Zoom", &["/t", "/f", "/im", "zoom.exe"]));
-        self.add(Invocable::cmd_with("killslak", "taskkill.exe", "Kill Zoom", &["/t", "/f", "/im", "slack.exe"]));
+        self.add(Invocable::cmd_with("killslak", "taskkill.exe", "Kill Slack", &["/t", "/f", "/im", "slack.exe", "/im", "zoom.exe"])); // kill zoom too, just for good measure.
         self.add(Invocable::bin("ransack", "$pf64/Mythicsoft/Agent Ransack/AgentRansack.exe", "Mozilla Thunderbird email client"));
         self.add(Invocable::bin("email", "shell:::{2559a1f5-21d7-11d4-bdaf-00c04f60b9f0}", "Default email program"));
         self.add(Invocable::bin("slack", "$userpath/AppData/Local/slack/slack.exe", "Slack"));
