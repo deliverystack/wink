@@ -45,13 +45,14 @@ impl std::fmt::Display for WinkConfig {
 impl WinkConfig {
     /// The get_from_cmd_line_args function return a WinkConfig
     /// created from parsing the command line.
-    pub fn new(args: Vec<String>) -> Result<WinkConfig, (WinkConfig, Box<dyn std::error::Error>)> {
+    pub fn new(args: Vec<String>) -> Result<WinkConfig, (WinkConfig, crate::helperror::HelpError)> {
         let mut dry_run: bool = false; // -d command line option
         let mut verbose: bool = false; // -v command line option
         let mut export: bool = false; // -e command line option
         let mut pretty_print: bool = false; // -p command line option
         let mut first_arg_index = 1; // number of processed command line arguments (first is command name, such as wink)
         let mut help_msg = String::new();
+        let mut bad_args: bool = false;
 
         for arg in args.iter().skip(first_arg_index) {
             if arg.to_lowercase() == "help" {
@@ -78,6 +79,7 @@ impl WinkConfig {
                         break;
                     }
                     _ => {
+                        bad_args = true;
                         help_msg = format!("Unrecognized command line option: {0}", arg);
                         break;
                     }
@@ -121,7 +123,10 @@ impl WinkConfig {
         if help_msg.is_empty() {
             Ok(result)
         } else {
-            Err((result, Box::new(crate::helperror::HelpError::new(help_msg))))
+            Err((
+                result,
+                crate::helperror::HelpError::new(help_msg, !bad_args),
+            ))
         }
     }
 }

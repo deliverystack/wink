@@ -21,6 +21,6 @@ fn main() {
     // otherwise, Err enum value contains the WinkConfig and a HelpError
     std::process::exit(match config {
         Ok(config) => wink::run(config, category_list), // what if this raises an error
-        Err((config, e)) => wink::help(&e.to_string(), config, category_list.categories),
+        Err((config, e)) => wink::help(&e.message, config, category_list.categories, e.help_requested),
     });
 }

@@ -1,11 +1,15 @@
 #[derive(Debug)]
 pub struct HelpError {
     pub message: String,
+    pub help_requested: bool,
 }
 
 impl HelpError {
-    pub fn new(msg: String) -> HelpError {
-        HelpError { message: msg }
+    pub fn new(message: String, help_requested: bool) -> HelpError {
+        HelpError {
+            message,
+            help_requested,
+        }
     }
 }
 

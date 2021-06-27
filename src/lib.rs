@@ -40,6 +40,7 @@ pub fn run(config: crate::winkconfig::WinkConfig, category_list: InvocableCatego
         &format!("Command not recognized: {0}", config.command_code),
         config,
         category_list.categories,
+        false,
     )
 }
 
@@ -51,6 +52,7 @@ pub fn help(
     msg: &str,
     config: crate::winkconfig::WinkConfig,
     mut categories: Vec<InvocableCategory>,
+    help_requested: bool,
 ) -> i32 {
     // cmd = basename(wink.exe)
     //    let cmd = regex::Regex::new(r".*[\\/](?P<name>[^\\/]+$)").unwrap().replace_all(args[0].as_str(), "$name");
@@ -67,7 +69,7 @@ pub fn help(
         msg,
         config.all_args.join(" ")
     );
-    color("EXP");
+    cyan("EXP");
 
     print!(
         "                explorer.exe
@@ -75,14 +77,14 @@ pub fn help(
 {0:>12} ",
         config.cmd_name
     );
-    color("EXP");
+    cyan("EXP");
     print!(
         " <file.ext>     Set/open default application for extension
 {0:>12} ",
         config.cmd_name
     );
 
-    color("EXP");
+    cyan("EXP");
     print!(
         " <shell:sendto> Invoke command code (replace <shell:sendto>)
 -----------------------------------------------------------------------------
@@ -91,20 +93,20 @@ pub fn help(
 {0:>12} ",
         config.cmd_name
     );
-    color("CMD");
+    cyan("CMD");
     print!(
         "                cmd.exe /c
 -----------------------------------------------------------------------------
 {0:>12} ",
         config.cmd_name
     );
-    color("CMD");
+    cyan("CMD");
     print!(
         " <cmd> [args]   Invoke Windows console command line
 {0:>12} ",
         config.cmd_name
     );
-    color("CMD");
+    cyan("CMD");
     print!(
         " echo %PATH%    Display Windows environment variable
 -----------------------------------------------------------------------------
@@ -113,20 +115,20 @@ pub fn help(
 {0:>12} ",
         config.cmd_name
     );
-    color("BASH");
+    cyan("BASH");
     print!(
         "               bash.exe -c
 -----------------------------------------------------------------------------
 {0:>12} ",
         config.cmd_name
     );
-    color("BASH");
+    cyan("BASH");
     print!(
         " /path [args]  Invoke shell command line
 {0:>12} ",
         config.cmd_name
     );
-    color("BASH");
+    cyan("BASH");
     print!(
         " echo '$USER'  Display WSL environment variable
 -----------------------------------------------------------------------------
@@ -135,7 +137,7 @@ pub fn help(
 {0:>12} ",
         config.cmd_name
     );
-    color("CODE");
+    cyan("CODE");
     println!(
         " [args]        See command code tables below
 -----------------------------------------------------------------------------",
@@ -143,7 +145,7 @@ pub fn help(
 
     let mut count = 0;
     categories.sort();
-    let mut terminal = term::stdout().unwrap();
+//    let mut terminal = term::stdout().unwrap();
 
     for mut category in categories {
         println!(
@@ -159,11 +161,10 @@ pub fn help(
                 desc = invocable.command;
             }
 
-            terminal.fg(term::color::BRIGHT_CYAN).unwrap();
-            terminal.attr(term::Attr::Bold).unwrap();
-            print!("{:>31}", invocable.command_code.to_uppercase());
-            terminal.reset().unwrap();
-            println!(" {}", desc);
+            cyan(&format!("{:>31}", invocable.command_code.to_uppercase()));
+            print!(" ");
+            blue(&desc);
+            println!();
             count += 1;
         }
     }
@@ -172,12 +173,19 @@ pub fn help(
         "\n{0:>12} : {1} known command codes\n",
         config.cmd_name, count
     );
-    println!(
-        "{0:>12} : access Windows features : {1}\n",
-        config.cmd_name, msg
+    print!(
+        "{0:>12} : access Windows features : ",
+        config.cmd_name
     );
-    print!("{0:>12} [opts] <", config.cmd_name);
-    color("CODE");
+
+    if help_requested {
+        cyan(msg);
+    } else {
+        red(msg);
+    }    
+        
+    print!("\n\n{0:>12} [opts] <", config.cmd_name);
+    cyan("CODE");
     println!("> [arguments]");
     println!("            -d dry (do not execute)");
     println!("            -e export (configuraiton JSON)");
@@ -188,10 +196,10 @@ pub fn help(
     println!("            -p pretty-print (for use with -e)");
     println!("            -v verbose (print command line)\n");
     print!("{0} ", config.cmd_name);
-    color("HELP");
+    cyan("HELP");
     println!(" :                  display command usage information");
     print!("{0} ", config.cmd_name);
-    color("HELP");
+    cyan("HELP");
 
     if cfg!(target_os = "windows") {
         println!(" | find /i \"text\" :: identify command code matching text");
@@ -202,14 +210,32 @@ pub fn help(
     1
 }
 
-/// Writes the given message to STDOUT in a color other than the default.
-fn color(msg: &str) {
+/// Writes the given message to STDOUT in a cyan other than the default.
+fn cyan(msg: &str) {
     let mut terminal = term::stdout().unwrap();
     terminal.fg(term::color::BRIGHT_CYAN).unwrap();
     terminal.attr(term::Attr::Bold).unwrap();
     print!("{0}", msg);
     terminal.reset().unwrap();
 }
+
+fn red(msg: &str) {
+    let mut terminal = term::stdout().unwrap();
+    terminal.fg(term::color::RED).unwrap();
+    terminal.attr(term::Attr::Bold).unwrap();
+    print!("{0}", msg);
+    terminal.reset().unwrap();
+}
+
+fn blue(msg: &str) {
+    let mut terminal = term::stdout().unwrap();
+    terminal.fg(term::color::BLUE).unwrap();
+    terminal.attr(term::Attr::Bold).unwrap();
+    print!("{0}", msg);
+    terminal.reset().unwrap();
+}
+
+
 
 #[cfg(test)]
 mod tests {
