@@ -301,7 +301,7 @@
           "command": "$userpath/AppData/Roaming/Zoom/bin/Zoom.exe",
           "use_cmd": false,
           "use_start": false,
-          "background": false,
+          "background": true,
           "use_call": false,
           "use_explorer": false,
           "use_bash": false,
@@ -326,7 +326,7 @@
         },
         {
           "command_code": "killslak",
-          "description": "Kill Zoom",
+          "description": "Kill Slack",
           "command": "taskkill.exe",
           "use_cmd": true,
           "use_start": false,
@@ -338,7 +338,9 @@
             "/t",
             "/f",
             "/im",
-            "slack.exe"
+            "slack.exe",
+            "/im",
+            "zoom.exe"
           ]
         },
         {
